@@ -7,6 +7,7 @@ A game engine with a currently pending name and readme.
 - Python
 - Vulkan SDK
 - G++, MSVC, or compatible C++ compiler
+- (Optionally, though preferably) Make
 
 ## TODOs
 
