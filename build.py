@@ -4,13 +4,25 @@ import sys
 # Variables, lots of them
 
 # Default G++ flags
-default_gcc = "-O2 -Wall -pedantic -I./ -Walloca"
+default_gcc = "-O2 -Wall -pedantic"
 
 # Quick build G++ flags
-quick_gcc = "-Ofast -Wall -pedantic -Walloca -I./"
+quick_gcc = "-Ofast -pedantic"
 
 # Debug build G++ flags
-debug_gcc = "-Og -Wall -Wextra -Walloca -I./"
+debug_gcc = "-Og -Wall -Wextra"
+
+# Default MSVC flags
+default_cl = "-O2 -Wall"
+
+# Quick build MSVC flags
+quick_cl = "-Od"
+
+# Debug build MSVC flags
+debug_cl = "-Od -GF -Wall"
+
+# Compiler flags
+flags : str
 
 def main():
     print("Team citrus build system.")
