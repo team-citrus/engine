@@ -13,3 +13,24 @@ Same thing for a system build system.
 
 If a compatible build system is found, based on the arguments provided, and some defaults baked in to the system, a file for it is generated and executed.
 If nothing is found, the build system manually executes the commands necessary.
+
+## Advanced function
+
+First the proper compiler and flags are gathered from the configuration file.
+Arguments are parsed, and the variables are changed accordingly.
+Any unprovided arguments are searched for, and the variables are changed accordingly.
+If nothing is found, a termination message is sent stating it.
+
+First, on Linux, gcc is searched for, then clang, then mingw64.
+First, on Windows, mingw64 is searched for, then msvc, then clang.
+
+If Visual Studio is found, the latest version found for visual studio is used.
+Community is used first, then business, then enterprise.
+Then vcvars64.bat is run, unless 32 bit mode is set, then vcvars32.bat is run.
+No matter what, from here, msvc (cl.exe) and nmake are used, unless custom cxxflags are set.
+
+The only compatible build systems are make and nmake.
+
+If make is found, a makefile is generated.
+If nmake is found, an nmake makefile is generated.
+If neither are found, each command is manually generated and executed.
