@@ -18,3 +18,6 @@ A game engine with a currently pending name and readme.
 - [ ] Create build system
 - [ ] Create code structure
 - [ ] Create formating guide
+- [ ] Write headers for the graphics API
+- [ ] Write headers for the phyics API
+- [ ] Write headers for general engine information
