@@ -105,20 +105,20 @@ def main():
         elif re.compile("--cxxflags=\"?.+\"?$").match(argv[i]) !=  None:
             mode = int(3)
             # Filter the cxxflags value down to the useful parts
-            flags = re.sub("--cxxflags=\"", '', argv[i])
+            flags = re.sub("--cxxflags=\"?", '', argv[i])
             tmpflags = flags[:len(flags)-1]
             flags = tmpflags
 
-        elif re.compile("(--compiler=)|(-C)|(-c=)\"?.+\"?$").match(argv[i]) != None:
+        elif re.compile("(--compiler=)|(-C)|(-c)\"?.+\"?$").match(argv[i]) != None:
             # Filter the compiler value down to the useful parts
-            compiler = re.sub("(--compiler=)|(-C)|(-c=)\"?", '', argv[i])
+            compiler = re.sub("(--compiler=)|(-C)|(-c)=?\"?", '', argv[i])
             if compiler[len(compiler)-1] == '"':
                 tmpcompiler = compiler[:len(flags)-1]
                 compiler = tmpcompiler
 
-        elif re.compile("(--parellelism=)|(--threads=)|(-p)|(-t).+").match(argv[i]) != None:
+        elif re.compile("(--parellelism=)|(--threads=)|(-p)|(-t)=?.+").match(argv[i]) != None:
             # Filter the paralellism value dow to the useful parts, and convert to an integer
-            paralellism_str = re.sub("(--parellelism=)|(--threads=)|(-p)|(-t)", '', argv[i])
+            paralellism_str = re.sub("(--parellelism=)|(--threads=)|(-p)|(-t)=?", '', argv[i])
             paralellism = int(paralellism_str)
 
 if __name__ == "__main__":
