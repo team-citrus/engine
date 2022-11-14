@@ -28,9 +28,6 @@ quick_cl = "-Od"
 # Debug build MSVC flags
 debug_cl = "-Od -GF -Wall"
 
-# Compiler flags
-flags : str
-
 # Compiler
 compiler : str
 
@@ -89,11 +86,7 @@ def main():
     argc = len(sys.argv)
     # Get typical argv
     argv = sys.argv
-
-    # Current argument parsing state
-    cxxflagsParsing = False
-    compilerParsing = False
-
+    
     for i in range(argc):
         # Check arguments
         if re.compile("(--debug)|(-d)").match(argv[i]):
