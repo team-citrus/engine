@@ -61,27 +61,65 @@ def main():
         elif ln == "quick":
             mode = int(1)
 
-        elif re.compile("cxxflags=\".+\"", flags=0).match(ln) !=  None:
+        elif re.compile("cxxflags=\".+\"").match(ln) !=  None:
             mode = int(3)
             # Filter the cxxflags value down to the useful parts
             flags = re.sub("cxxflags=\"", '', ln)
             tmpflags = flags[:len(flags)-1]
             flags = tmpflags
 
-        elif re.compile("compiler=?\"?.+\"?", flags=0).match(ln) != None:
+        elif re.compile("compiler=\"?.+\"?").match(ln) != None:
             # Filter the compiler value down to the useful parts
-            compiler = re.sub("compiler=?\"?")
+            compiler = re.sub("compiler=\"?", '', ln)
             if compiler[len(compiler)-1] == '"':
                 tmpcompiler = compiler[:len(flags)-1]
                 compiler = tmpcompiler
 
-        elif re.compile("(parellelism)|(threads)=.+", flags=0).match(ln) != None:
+        elif re.compile("(parellelism)|(threads)=.+").match(ln) != None:
             # Filter the paralellism value dow to the useful parts, and convert to an integer
             paralellism_str = re.sub("(parellelism)|(threads)=", '', ln)
             paralellism = int(paralellism_str)
 
         # Read the next line
-        eof = conf.readline()    
+        eof = conf.readline()
+    
+    # Parse console arguments
+
+    # Get typical argc
+    argc = len(sys.argv)
+    # Get typical argv
+    argv = sys.argv
+
+    # Current argument parsing state
+    cxxflagsParsing = False
+    compilerParsing = False
+
+    for i in range(argc):
+        # Check arguments
+        if re.compile("(--debug)|(-d)").match(argv[i]):
+            mode = int(2)
+
+        elif re.compile("(--quick)|(-q)").match(argv[i]):
+            mode = int(1)
+
+        elif re.compile("--cxxflags=\".+\"").match(argv[i]) !=  None:
+            mode = int(3)
+            # Filter the cxxflags value down to the useful parts
+            flags = re.sub("--cxxflags=\"", '', argv[i])
+            tmpflags = flags[:len(flags)-1]
+            flags = tmpflags
+
+        elif re.compile("(--compiler=)|(-C)|(-c=)\"?.+\"?").match(argv[i]) != None:
+            # Filter the compiler value down to the useful parts
+            compiler = re.sub("(--compiler=)|(-C)|(-c=)\"?", '', argv[i])
+            if compiler[len(compiler)-1] == '"':
+                tmpcompiler = compiler[:len(flags)-1]
+                compiler = tmpcompiler
+
+        elif re.compile("(--parellelism=)|(--threads=)|(-p)|(-t).+").match(argv[i]) != None:
+            # Filter the paralellism value dow to the useful parts, and convert to an integer
+            paralellism_str = re.sub("(--parellelism=)|(--threads=)|(-p)|(-t)", '', argv[i])
+            paralellism = int(paralellism_str)
 
 if __name__ == "__main__":
     main()

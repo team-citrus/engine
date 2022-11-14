@@ -10,7 +10,7 @@ snake_case should be used as well.
 `#pragma once` should be avoided.
 Instead traditional `#ifndef ... #define ...` include guards should be used.
 Include guard defines should use the following naming scheme:
-`CITRUS_ENGINE_{FILENAME}_{EXTRA_STUFF}_HPP_`.
+`CITRUS_ENGINE_{FILENAME}_{EXTRA_STUFF}_HPP__`.
 
 ## Function naming
 
