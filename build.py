@@ -1,5 +1,6 @@
 import os
 import sys
+import argparse
 
 # Variables, lots of them
 
@@ -22,7 +23,16 @@ quick_cl = "-Od"
 debug_cl = "-Od -GF -Wall"
 
 # Compiler flags
-flags : str
+parser = argparse.ArgumentParser()
+# TODO: Add all compiler flags using the following format.
+#   USE:
+#       parser.add_argument("-FLAG", "--FLAGNAME", help="NAME", type=TYPE
+#       print(args.FLAGNAME)
+#   EXAMPLE: 
+#       parser.add_argument("-test", "--test", help="Test", type=str
+#       print(args.test)
+args = parser.parse_args()
+# End Compiler Flags
 
 def main():
     print("Team citrus build system.")
