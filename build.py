@@ -102,14 +102,14 @@ def main():
         elif re.compile("(--quick)|(-q)").match(argv[i]):
             mode = int(1)
 
-        elif re.compile("--cxxflags=\".+\"").match(argv[i]) !=  None:
+        elif re.compile("--cxxflags=\"?.+\"?$").match(argv[i]) !=  None:
             mode = int(3)
             # Filter the cxxflags value down to the useful parts
             flags = re.sub("--cxxflags=\"", '', argv[i])
             tmpflags = flags[:len(flags)-1]
             flags = tmpflags
 
-        elif re.compile("(--compiler=)|(-C)|(-c=)\"?.+\"?").match(argv[i]) != None:
+        elif re.compile("(--compiler=)|(-C)|(-c=)\"?.+\"?$").match(argv[i]) != None:
             # Filter the compiler value down to the useful parts
             compiler = re.sub("(--compiler=)|(-C)|(-c=)\"?", '', argv[i])
             if compiler[len(compiler)-1] == '"':
