@@ -4,7 +4,7 @@ import os
 flags = ["-O2", "-Wall", "-Wextra"]
 include_paths = ["./"]
 target = "./bin/target"
-library_paths : list
+library_paths = []
 libraries = ["Vulkan", "OpenGL", "box2d", "bullet", "GLFW", "GLM"]
 
 print("Started building...")
@@ -12,15 +12,15 @@ print("Started building...")
 # Set up the environment
 env = Environment(CPPFLAGS=flags, CCFLAGS=flags, CPPPATH=include_paths, LIBPATH=library_paths, LIBS=libraries)
 
-# Search for files and scripts
-files = []
+# Search for files_list and scripts
+files_list = []
 objs = []
 
-for root, directories, file in os.walk("./"):
-    for file in file:
-        if file.endswith([".cpp", ".cxx", ".c"]):
+for root, directories, files in os.walk("./"):
+    for file in files:
+        if file.endswith(".cpp") or file.endswith(".cxx") or file.endswith(".c"):
             # Add file to list
-            files.append(os.path.join(root,file))
+            files_list.append(os.path.join(root,file))
         elif file.endswith(".py"):
             # Execute the file
             script = open(os.path.join(root,file), "r")
@@ -30,10 +30,10 @@ for root, directories, file in os.walk("./"):
 
 # Final compilation
 
-# Generate object files
-for i in files:
+# Generate object files_list_lis
+for i in files_list:
     o = ""
-    if i.endswith([".cpp", ".cxx"]):
+    if i.endswith(".cpp") or i.endswith(".cxx") or i.endswith(".c"):
         o = i[:len(i)-4]
     else:
         o = i[:len(i)-2]
@@ -42,4 +42,4 @@ for i in files:
     objs.append()
 
 # Generate final binary
-Default(env.Program(target=target, source=files))
+Default(env.Program(target=target, source=files_list))
