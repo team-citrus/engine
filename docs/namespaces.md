@@ -6,7 +6,9 @@
     - `engine::internals::OpenGL` - OpenGL internal functions used to provide abstractions over OpenGL for other graphics functions
     - `engine::internals::sound` - Low level sound manipulation
     - `engine::internals::core` - Low level core information meant to be accessed from higher level namespaces
+    - `engine::internals::physics` - Physics internal functions meant to abstract over box2d and Bullet
   - `engine::physics` - Physics functions to provide physics abstractions for game code
+    - `engine::physics::core` - Advanced physics functions, with more direct access to the simulations themselves
   - `engine::render` - Rendering pipeline direct access
   - `engine::sound` - Sound management functions
   - `engine::UI` - UI manipulation
