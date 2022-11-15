@@ -1,11 +1,18 @@
 # Team Citrus Game Engine
 
 A game engine with a currently pending name and readme.
+For this game engine, we have a simple goal in mind, we want to create a simple, extendable, well documented, game engine.
 
 ## Compiling requirements
 
 - Python
+- SCons
 - Vulkan SDK
+- OpenGL SDK
+- GLFW
+- GLM
+- box2d
+- Bullet
 - G++, MSVC, or compatible C++ compiler
 - (Optionally, though preferably) Make
 
