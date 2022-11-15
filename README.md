@@ -2,6 +2,7 @@
 
 A game engine with a currently pending name and readme.
 For this game engine, we have a simple goal in mind, we want to create a simple, extendable, well documented, game engine.
+We also intend to use this game engine in our future projects, and hope others adopt it as well.
 
 ## Compiling requirements
 
