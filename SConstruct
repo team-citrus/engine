@@ -31,6 +31,7 @@ for root, directories, files in os.walk("./"):
 # Final compilation
 
 # Generate object files_list_lis
+# We'll probably have to rework all of this later, but this will do for now.
 for i in files_list:
     o = ""
     if i.endswith(".cpp") or i.endswith(".cxx") or i.endswith(".c"):
