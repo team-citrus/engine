@@ -14,3 +14,11 @@
   - `engine::UI` - UI manipulation
   - `engine::scenes` - Scene loading and manipulation
   - `engine::core` - Advanced engine core manipulation between the levels of `engine` and `engine::internals::core`
+
+## Some additional details about namespaces
+
+Anything from `engine::internals` shouldn't be used in any non-`engine::internals` header.
+If a public facing header needs something from `engine::internals`, they should be moved up a level into a public facing namespace, unless absolutely necessary.
+They can however, be included in any source file that needs them.
+
+`engine::internals` level things can include anything they need.
