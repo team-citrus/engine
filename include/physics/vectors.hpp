@@ -61,7 +61,7 @@ namespace engine
                 // Constructors
 
                 vec3();
-                vec3(double cx, double cy);
+                vec3(double cx, double cy, double cz);
 
                 // Convert to a ivec3
                 ivec3 toIVec3();
@@ -106,7 +106,7 @@ namespace engine
                 // Constructors
 
                 vec4();
-                vec4(double cx, double cy);
+                vec4(double cx, double cy, double cz, double cw);
 
                 // Convert to a ivec4
                 ivec4 toIVec4();
@@ -193,7 +193,7 @@ namespace engine
                 // Constructors
 
                 ivec3();
-                ivec3(int64_t cx, int64_t cy);
+                ivec3(int64_t cx, int64_t cy, int64_t cz);
 
                 // Convert to a vec3
                 vec3 toVec3();
@@ -238,7 +238,7 @@ namespace engine
                 // Constructors
 
                 ivec4();
-                ivec4(int64_t cx, int64_t cy);
+                ivec4(int64_t cw, int64_t cx, int64_t cy, int64_t cz);
 
                 // Convert to a vec4
                 vec4 toVec4();
