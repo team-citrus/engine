@@ -194,6 +194,8 @@ void ivec2::operator/=(int x)
     *this /= ivec2(x, x);
 }
 
+// ivec3 operators
+
 ivec3 ivec3::operator+(ivec3 &vec)
 {
     return ivec3(x + vec.x, y + vec.y, z + vec.z);
@@ -312,4 +314,126 @@ void ivec3::operator*=(int x)
 void ivec3::operator/=(int x)
 {
     *this /= ivec3(x, x, x);
+}
+
+// ivec4 operator
+
+ivec4 ivec4::operator+(ivec4 &vec)
+{
+    return ivec4(w + vec.w, x + vec.x, y + vec.w, z + vec.z);
+}
+
+ivec4 ivec4::operator-(ivec4 &vec)
+{
+    return ivec4(w - vec.w, x - vec.x, y - vec.w, z - vec.z);
+}
+
+ivec4 ivec4::operator*(ivec4 &vec)
+{
+    return ivec4(w * vec.w, x * vec.x, y * vec.w, z * vec.z);
+}
+
+ivec4 ivec4::operator/(ivec4 &vec)
+{
+    return ivec4(w / vec.w, x / vec.x, y / vec.w, z / vec.z);
+}
+
+void ivec4::operator+=(ivec4 &vec)
+{
+    *this = *this + vec;
+}
+
+void ivec4::operator-=(ivec4 &vec)
+{
+    *this = *this - vec;
+}
+
+void ivec4::operator*=(ivec4 &vec)
+{
+    *this = *this * vec;
+}
+
+void ivec4::operator/=(ivec4 &vec)
+{
+    *this = *this / vec;
+}
+
+ivec4 ivec4::operator+(double x)
+{
+    return *this + vec4(x, x, x, x).toIVec4();
+}
+
+ivec4 ivec4::operator-(double x)
+{
+    return *this - vec4(x, x, x, x).toIVec4();
+}
+
+ivec4 ivec4::operator*(double x)
+{
+    return *this * vec4(x, x, x, x).toIVec4();
+}
+
+ivec4 ivec4::operator/(double x)
+{
+    return *this / vec4(x, x, x, x).toIVec4();
+}
+
+void ivec4::operator+=(double x)
+{
+    *this += vec4(x, x, x, x).toIVec4();
+}
+
+void ivec4::operator-=(double x)
+{
+    *this -= vec4(x, x, x, x).toIVec4();
+}
+
+void ivec4::operator*=(double x)
+{
+    *this *= vec4(x, x, x, x).toIVec4();
+}
+
+void ivec4::operator/=(double x)
+{
+    *this /= vec4(x, x, x, x).toIVec4();
+}
+
+ivec4 ivec4::operator+(int x)
+{
+    return *this + ivec4(x, x, x, x);
+}
+
+ivec4 ivec4::operator-(int x)
+{
+    return *this - ivec4(x, x, x, x);
+}
+
+ivec4 ivec4::operator*(int x)
+{
+    return *this * ivec4(x, x, x, x);
+}
+
+ivec4 ivec4::operator/(int x)
+{
+    return *this / ivec4(x, x, x, x);
+}
+
+void ivec4::operator+=(int x)
+{
+    *this += ivec4(x, x, x, x);
+}
+
+void ivec4::operator-=(int x)
+{
+    *this -= ivec4(x, x, x, x);
+}
+
+void ivec4::operator*=(int x)
+{
+    *this *= ivec4(x, x, x, x);
+}
+
+void ivec4::operator/=(int x)
+{
+    *this /= ivec4(x, x, x, x);
 }

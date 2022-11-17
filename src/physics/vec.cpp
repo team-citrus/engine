@@ -44,7 +44,7 @@ vec4::vec4()
     return;
 }
 
-vec4::vec4(double cx, double cy, double cz, double cw)
+vec4::vec4(double cw, double cx, double cy, double cz)
 {
     w = cw;
     x = cx;
@@ -84,108 +84,84 @@ ivec4 vec4::toIVec4()
 
 //  vec2 operators
 
-vec2 vec2::operator+(vec2 &obj)
+vec2 vec2::operator+(vec2 &vec)
 {
-    vec2 ret = *this;
-    ret.x += obj.x;
-    ret.y += obj.y;
-    return ret;
+    return vec2(x + vec.x, y + vec.y);
 }
 
-vec2 vec2::operator-(vec2 &obj)
+vec2 vec2::operator-(vec2 &vec)
 {
-    vec2 ret = *this;
-    ret.x -= obj.x;
-    ret.y -= obj.y;
-    return ret;
+    return vec2(x - vec.x, y - vec.y);
 }
 
-vec2 vec2::operator*(vec2 &obj)
+vec2 vec2::operator*(vec2 &vec)
 {
-    vec2 ret = *this;
-    ret.x += obj.x;
-    ret.y += obj.y;
-    return ret;
+    return vec2(x * vec.x, y * vec.y);
 }
 
-vec2 vec2::operator/(vec2 &obj)
+vec2 vec2::operator/(vec2 &vec)
 {
-    vec2 ret = *this;
-    ret.x -= obj.x;
-    ret.y -= obj.y;
-    return ret;
+    return vec2(x / vec.x, y / vec.y);
 }
 
-void vec2::operator+=(vec2 &obj)
+void vec2::operator+=(vec2 &vec)
 {
-    *this = *this + obj;
+    *this = *this + vec;
 }
 
-void vec2::operator-=(vec2 &obj)
+void vec2::operator-=(vec2 &vec)
 {
-    *this = *this - obj;
+    *this = *this - vec;
 }
 
-void vec2::operator*=(vec2 &obj)
+void vec2::operator*=(vec2 &vec)
 {
-    *this = *this * obj;
+    *this = *this * vec;
 }
 
-void vec2::operator/=(vec2 &obj)
+void vec2::operator/=(vec2 &vec)
 {
-    *this = *this / obj;
+    *this = *this / vec;
 }
 
 vec2 vec2::operator+(double x)
 {
-    vec2 ret = *this;
-    ret.x += x;
-    ret.y += x;
-    return ret;
+    return *this + vec2(x, x);
 }
 
 vec2 vec2::operator-(double x)
 {
-    vec2 ret = *this;
-    ret.x -= x;
-    ret.y -= x;
-    return ret;
+    return *this - vec2(x, x);
 }
 
 vec2 vec2::operator*(double x)
 {
-    vec2 ret = *this;
-    ret.x *= x;
-    ret.y *= x;
-    return ret;
+    return *this * vec2(x, x);
 }
 
 vec2 vec2::operator/(double x)
 {
-    vec2 ret = *this;
-    ret.x /= x;
-    ret.y /= x;
-    return ret;
+    return *this / vec2(x, x);
 }
 
 void vec2::operator+=(double x)
 {
-    *this = *this + x;
+    *this += vec2(x, x);
 }
 
 void vec2::operator-=(double x)
 {
-    *this = *this - x;
+    *this -= vec2(x, x);
 }
 
 void vec2::operator*=(double x)
 {
-    *this = *this * x;
+    *this += vec2(x, x);
 }
 
 void vec2::operator/=(double x)
 {
-    *this = *this / x;
+    *this += vec2(x, x);
 }
 
 vec2 vec2::operator+(int x)
@@ -205,7 +181,7 @@ vec2 vec2::operator*(int x)
 
 vec2 vec2::operator/(int x)
 {
-    return *this + ivec2(x, x).toVec2();
+    return *this / ivec2(x, x).toVec2();
 }
 
 void vec2::operator+=(int x)
@@ -228,118 +204,86 @@ void vec2::operator/=(int x)
     *this /= ivec2(x, x).toVec2();
 }
 
-//  vec3 operators
+// vec3 operators
 
-vec3 vec3::operator+(vec3 &obj)
+vec3 vec3::operator+(vec3 &vec)
 {
-    vec3 ret = *this;
-    ret.x += obj.x;
-    ret.y += obj.y;
-    ret.z += obj.z;
-    return ret;
+    return vec3(x + vec.x, y + vec.y, z + vec.z);
 }
 
-vec3 vec3::operator-(vec3 &obj)
+vec3 vec3::operator-(vec3 &vec)
 {
-    vec3 ret = *this;
-    ret.x -= obj.x;
-    ret.y -= obj.y;
-    ret.z -= obj.z;
-    return ret;
+    return vec3(x - vec.x, y - vec.y, z - vec.z);
 }
 
-vec3 vec3::operator*(vec3 &obj)
+vec3 vec3::operator*(vec3 &vec)
 {
-    vec3 ret = *this;
-    ret.x *= obj.x;
-    ret.y *= obj.y;
-    ret.z *= obj.z;
-    return ret;
+    return vec3(x * vec.x, y * vec.y, z * vec.z);
 }
 
-vec3 vec3::operator*(vec3 &obj)
+vec3 vec3::operator/(vec3 &vec)
 {
-    vec3 ret = *this;
-    ret.x /= obj.x;
-    ret.y /= obj.y;
-    ret.z /= obj.z;
-    return ret;
+    return vec3(x / vec.x, y / vec.y, z / vec.z);
 }
 
-void vec3::operator+=(vec3 &obj)
+void vec3::operator+=(vec3 &vec)
 {
-    *this = *this + obj;
+    *this = *this + vec;
 }
 
-void vec3::operator-=(vec3 &obj)
+void vec3::operator-=(vec3 &vec)
 {
-    *this = *this - obj;
+    *this = *this - vec;
 }
 
-void vec3::operator*=(vec3 &obj)
+void vec3::operator*=(vec3 &vec)
 {
-    *this = *this * obj;
+    *this = *this * vec;
 }
 
-void vec3::operator/=(vec3 &obj)
+void vec3::operator/=(vec3 &vec)
 {
-    *this = *this / obj;
+    *this = *this / vec;
 }
 
 vec3 vec3::operator+(double x)
 {
-    vec3 ret = *this;
-    ret.x += x;
-    ret.y += x;
-    ret.z += x;
-    return ret;
+    return *this + vec3(x, x, x);
 }
 
 vec3 vec3::operator-(double x)
 {
-    vec3 ret = *this;
-    ret.x -= x;
-    ret.y -= x;
-    ret.z -= x;
-    return ret;
+    return *this - vec3(x, x, x);
 }
 
 vec3 vec3::operator*(double x)
 {
-    vec3 ret = *this;
-    ret.x *= x;
-    ret.y *= x;
-    ret.z *= x;
-    return ret;
+    return *this * vec3(x, x, x);
 }
 
-vec3 vec3::operator+(double x)
+vec3 vec3::operator/(double x)
 {
-    vec3 ret = *this;
-    ret.x /= x;
-    ret.y /= x;
-    ret.z /= x;
-    return ret;
+    return *this / vec3(x, x, x);
 }
 
 void vec3::operator+=(double x)
 {
-    *this = *this + x;
+    *this += vec3(x, x, x);
 }
 
 void vec3::operator-=(double x)
 {
-    *this = *this - x;
+    *this -= vec3(x, x, x);
 }
 
 void vec3::operator*=(double x)
 {
-    *this = *this * x;
+    *this *= vec3(x, x, x);
 }
 
 void vec3::operator/=(double x)
 {
-    *this = *this / x;
+    *this /= vec3(x, x, x);
 }
 
 vec3 vec3::operator+(int x)
@@ -359,7 +303,7 @@ vec3 vec3::operator*(int x)
 
 vec3 vec3::operator/(int x)
 {
-    return *this + ivec3(x, x, x).toVec3();
+    return *this / ivec3(x, x, x).toVec3();
 }
 
 void vec3::operator+=(int x)
@@ -382,126 +326,86 @@ void vec3::operator/=(int x)
     *this /= ivec3(x, x, x).toVec3();
 }
 
-//  vec4 operators
+// vec4 operators
 
-vec4 vec4::operator+(vec4 &obj)
+vec4 vec4::operator+(vec4 &vec)
 {
-    vec4 ret = *this;
-    ret.w += obj.w;
-    ret.x += obj.x;
-    ret.y += obj.y;
-    ret.z += obj.z;
-    return ret;
+    return vec4(w + vec.w, x + vec.x, y + vec.y, z + vec.z);
 }
 
-vec4 vec4::operator-(vec4 &obj)
+vec4 vec4::operator-(vec4 &vec)
 {
-    vec4 ret = *this;
-    ret.w -= obj.w;
-    ret.x -= obj.x;
-    ret.y -= obj.y;
-    ret.z -= obj.z;
-    return ret;
+    return vec4(w - vec.w, x - vec.x, y - vec.y, z - vec.z);
 }
 
-vec4 vec4::operator*(vec4 &obj)
+vec4 vec4::operator*(vec4 &vec)
 {
-    vec4 ret = *this;
-    ret.w *= obj.w;
-    ret.x *= obj.x;
-    ret.y *= obj.y;
-    ret.z *= obj.z;
-    return ret;
+    return vec4(w * vec.w, x * vec.x, y * vec.y, z * vec.z);
 }
 
-vec4 vec4::operator/(vec4 &obj)
+vec4 vec4::operator/(vec4 &vec)
 {
-    vec4 ret = *this;
-    ret.w /= obj.w;
-    ret.x /= obj.x;
-    ret.y /= obj.y;
-    ret.z /= obj.z;
-    return ret;
+    return vec4(w / vec.w, x / vec.x, y / vec.y, z / vec.z);
 }
 
-void vec4::operator+=(vec4 &obj)
+void vec4::operator+=(vec4 &vec)
 {
-    *this = *this + obj;
+    *this = *this + vec;
 }
 
-void vec4::operator-=(vec4 &obj)
+void vec4::operator-=(vec4 &vec)
 {
-    *this = *this - obj;
+    *this = *this - vec;
 }
 
-void vec4::operator*=(vec4 &obj)
+void vec4::operator*=(vec4 &vec)
 {
-    *this = *this * obj;
+    *this = *this * vec;
 }
 
-void vec4::operator/=(vec4 &obj)
+void vec4::operator/=(vec4 &vec)
 {
-    *this = *this / obj;
+    *this = *this / vec;
 }
 
 vec4 vec4::operator+(double x)
 {
-    vec4 ret = *this;
-    ret.w += x;
-    ret.x += x;
-    ret.y += x;
-    ret.z += x;
-    return ret;
+    return *this + vec4(x, x, x, x);
 }
 
 vec4 vec4::operator-(double x)
 {
-    vec4 ret = *this;
-    ret.w -= x;
-    ret.x -= x;
-    ret.y -= x;
-    ret.z -= x;
-    return ret;
+    return *this - vec4(x, x, x, x);
 }
 
 vec4 vec4::operator*(double x)
 {
-    vec4 ret = *this;
-    ret.w *= x;
-    ret.x *= x;
-    ret.y *= x;
-    ret.z *= x;
-    return ret;
+    return *this * vec4(x, x, x, x);
 }
 
 vec4 vec4::operator/(double x)
 {
-    vec4 ret = *this;
-    ret.w /= x;
-    ret.x /= x;
-    ret.y /= x;
-    ret.z /= x;
-    return ret;
+    return *this / vec4(x, x, x, x);
 }
 
 void vec4::operator+=(double x)
 {
-    *this = *this + x;
+    *this += vec4(x, x, x, x);
 }
 
 void vec4::operator-=(double x)
 {
-    *this = *this - x;
+    *this -= vec4(x, x, x, x);
 }
 
 void vec4::operator*=(double x)
 {
-    *this = *this * x;
+    *this *= vec4(x, x, x, x);
 }
 
 void vec4::operator/=(double x)
 {
-    *this = *this / x;
+    *this /= vec4(x, x, x, x);
 }
 
 vec4 vec4::operator+(int x)

@@ -106,7 +106,7 @@ namespace engine
                 // Constructors
 
                 vec4();
-                vec4(double cx, double cy, double cz, double cw);
+                vec4(double cw, double cx, double cy, double cz);
 
                 // Convert to a ivec4
                 ivec4 toIVec4();
