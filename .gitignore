@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# vim swap files and the .vscode directory
+*.swp
+.vscode/
