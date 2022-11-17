@@ -6,6 +6,7 @@ include_paths = ["./"]
 target = "./bin/target"
 library_paths = []
 libraries = ["Vulkan", "OpenGL", "box2d", "bullet", "GLFW", "GLM"]
+file_types = [".cpp", ".cxx", ".c"]
 
 print("Started building...")
 
@@ -18,7 +19,7 @@ objs = []
 
 for root, directories, files in os.walk("./"):
     for file in files:
-        if file.endswith(".cpp") or file.endswith(".cxx") or file.endswith(".c"):
+        if file.endswith in file_types:
             # Add file to list
             files_list.append(os.path.join(root,file))
         elif file.endswith(".py"):
@@ -34,9 +35,10 @@ for root, directories, files in os.walk("./"):
 # We'll probably have to rework all of this later, but this will do for now.
 for i in files_list:
     o = ""
-    if i.endswith(".cpp") or i.endswith(".cxx") or i.endswith(".c"):
+    if i.endswith in file_types:
         o = i[:len(i)-4]
     else:
+        #TODO: Rewrite this to avoid issues with 2+ character file types.
         o = i[:len(i)-2]
     env.Object(target=o, source=[i])
     o = o + ".o" if os.name == "posix" else o + ".obj"
