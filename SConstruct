@@ -5,7 +5,7 @@ flags = ["-O2", "-Wall", "-Wextra"]
 include_paths = ["./"]
 target = "./bin/target"
 library_paths = []
-libraries = ["Vulkan", "OpenGL", "box2d", "bullet", "GLFW", "GLM"]
+libraries = ["Vulkan", "OpenGL", "box2d", "bullet", "GLM"]
 file_types = [".cpp", ".cxx", ".c"]
 
 print("Started building...")

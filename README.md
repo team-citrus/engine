@@ -10,7 +10,6 @@ We also intend to use this game engine in our future projects, and hope others a
 - SCons
 - Vulkan SDK
 - OpenGL SDK
-- GLFW
 - GLM
 - box2d
 - Bullet
