@@ -1,5 +1,12 @@
 # C++ Code Style Guide
 
+## Compiler extensions
+
+**DO NOT USE ANY INLINE ASSEMBLY WHATSOEVER. WE CANNOT STRESS THIS ENOUGH.**
+
+You should refrain from using any compiler extensions, anonymous structs and unions are exceptions.
+Use them only when necessary.
+
 ## Preprocessor defines
 
 Preprocessor defines should be written in all caps.

@@ -1,0 +1,23 @@
+# A Brief Programmer's Guide to Contributing
+
+## Before you write a line of code
+
+**Before writing any C++ code, you must read the style guide (found at docs/style.md).**
+You should also read the namespace documentation (found at docs/namespaces.md) and the technology documentation (found at docs/tech.md), however it isn't manditory.
+
+## Styling
+
+**For the majority of styling information, you should refer to the style guide (found at docs/style.md).**
+Your code should be easy to read, it shouldn't be rocket science to figure out what a function does.
+Your code should also be well commented, to save all of us time figuring out what each line of code does later.
+Remember, ***DO NOT USE ANY INLINE ASSEMBLY WHATSOEVER.***
+
+## Documentation
+
+All you need to do is write readable code, use some comments to make it clear what is going on, and add descriptions in comment form above declarations for classes, methods, macros, and functions.
+This should be sufficient for most programmers to understand what is going on, and make documentaion unnecessary.
+
+If documentation is necessary, someone else will handle it.
+You don't need to write your own documentation.
+Most of docs/ is used for design stuff, anyway.
+If you want to write your own documentation anyway, you are free to do so.
