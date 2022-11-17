@@ -1,8 +1,11 @@
 # Team Citrus Game Engine
 
-A game engine with a currently pending name and readme.
-For this game engine, we have a simple goal in mind, we want to create a simple, extendable, well documented, game engine.
+A game engine with a currently pending name.
+
+For this game engine, we have a simple goal in mind, **we want to create a simple, extendable, well documented, game engine**.
 We also intend to use this game engine in our future projects, and hope others adopt it as well.
+
+***If you are looking to contribute, the style guide can be found at docs/style.md, and the programmer's guide can be found at docs/guide.md.***
 
 ## Compiling requirements
 
@@ -14,7 +17,6 @@ We also intend to use this game engine in our future projects, and hope others a
 - box2d
 - Bullet
 - G++, MSVC, or compatible C++ compiler
-- (Optionally, though preferably) Make
 
 ## TODOs
 
