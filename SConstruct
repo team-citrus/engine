@@ -36,10 +36,11 @@ for root, directories, files in os.walk("./"):
 for i in files_list:
     o = ""
     if i.endswith in file_types:
-        o = i[:len(i)-4]
+        for ext in file_types:
+           if ext == i.endswith:
+               o = i.split("ext", 1)[0]
     else:
-        #TODO: Rewrite this to avoid issues with 2+ character file types.
-        o = i[:len(i)-2]
+        o = i.split(".", 1)[0]
     env.Object(target=o, source=[i])
     o = o + ".o" if os.name == "posix" else o + ".obj"
     objs.append()
