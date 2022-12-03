@@ -1,77 +1,83 @@
-#ifndef CITRUS_ENGINE_PHYSICS_OBJECTS_HPP__
-#define CITRUS_ENGINE_PHYSICS_OBJECTS_HPP__
+#ifndef CITRUS_ENGINE_RIGIDBODIES_HPP__
+#define CITRUS_ENGINE_RIGIDBODIES_HPP__
 
-#include <cstdint>
 #include "include/physics/vectors.hpp"
+#include "include/physics/physobject.hpp"
+
+#define RB_FORCEMODE_IMPULSE 0
+#define RB_FORCEMODE_FORCE 1
+#define RB_FORCEMODE_ACCELERATION 2
+#define RB_FORCEMODE_VELOCITY 3
+
+#define RB_AWAKE true
+#define RB_ASLEEP false
 
 namespace engine
 {
 	namespace physics
 	{
-		/*  The underlying class of anything that needs physics
-		*   This is directly interfaced by the physics API frequently, and is the primary object for physics code
-		*/
-		class physobject
+		class rigidbody
 		{
 			private:
-
-				// Transform is some anonymous unions to save memory and make our lives easier
-
-				// Cordinates, right handed X coordinate
-				union
-				{
-					engine::physics::vec3 coordinates3D;
-					engine::physics::vec2 coordinates2D;
-				};
-
-				// Rotation, pitch, yaw, and roll form, technically is only used for quaternion conversions in 3d mode
-				union
-				{
-					engine::physics::vec3 rotation3D;
-					engine::physics::vec2 rotation2D;
-				};
-
-				// Scale, like lens magnification, negative values invert the object on the axis
-				union
-				{
-					engine::physics::vec3 scale3D;
-					engine::physics::vec2 scale2D;
-				};
-
-				// QUATERNIONS
-				engine::physics::vec4 quaternion;
-
-				/*  TODO: Add engine::physics::rigidbody, engine::physics::collider, and engine::object
+				/*  TODO: engine::physics::collider, and engine::object
 				*   bool usesRigidbody;
 				*
 				*   engine::physics::collider *colliders;
 				*   engine::physics::rigidbody rigidbody;
 				*
-				*	Since the pointers for simulations are tagged whenever they are passed to internal functions
-				*	We can do things like this with no consequences
-				*
-				*	union
-				*	{
-				*   	engine::object *owner;
-				*		engine::physics::simulation *sOwner;
-				*		uintptr_t ptr;
-				*	};
-				*	bool ownerSet;
+				*	engine::physobject *owner;
 				*/
 
+				bool ownerSet;
+
+				// See if we should keep calculating it, or not. Useful for optimization
+				bool awake;
 			public:
 				// Constructors
-				physobject();
-				physobject(vec2 pos);
-				physobject(vec2 pos, vec2 rot);
-				physobject(vec2 pos, vec2 rot, vec2 scale);
-				physobject(vec3 pos);
-				physobject(vec3 pos, vec3 rot);
-				physobject(vec3 pos, vec3 rot, vec3 scale);
+				rigidbody();
+				rigidbody(physobject *Owner);
 
-				// Locks
-				bool lockPosX, lockPosY, lockPosZ;
-				bool lockRotX, lockRotY, lockRotZ;
+				// Rigidbody stuff
+
+				// Awakes the rigidbody if it's asleep
+				void awaken();
+
+				// Get sleep status
+				bool isAwake();
+
+				// Forces
+
+				/*	Practically identical to Unity's Rigidbody.AddForce()
+				*	@param force The force to apply, based on coordinates
+				*	@param mode The mode of the force
+				*/
+				void applyForce(vec2 force, int mode);
+
+				/*	Practically identical to Unity's Rigidbody.AddForce()
+				*	@param force The force to apply, based on coordinates
+				*	@param mode The mode of the force
+				*/
+				void applyForce(vec3 force, int mode);
+
+				// Velocity
+
+				// Gets the velocity in the form of a vec2
+				vec2 getVelocity2();
+				
+				// Gets the velocity in the form of a vec3
+				vec3 getVelocity3();
+
+				/*	Sets the velocity
+				*	@param velocity The new velocity
+				*/
+				void setVelocity(vec3 velocity);
+
+				/*	Sets the velocity
+				*	@param velocity The new velocity
+				*/
+				void setVelocity(vec2 velocity);
+
+				// Copied from engine::physobject
 
 				// Transform stuff
 
@@ -157,7 +163,7 @@ namespace engine
 				*/
 				void *getOwner();
 		};
-	};
-};
+	}
+}
 
 #endif

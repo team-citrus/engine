@@ -9,17 +9,17 @@ namespace engine
 {
 namespace internals
 {
-    namespace Vulkan
-    {
-        /* Allocate memory of size bytes, of type type */
-        void *malloc(size_t bytes, int type);
-        
-        /* Reallocate memory of size bytes, of type type */
-        void *realloc(void *alloc, size_t bytes, int type);
+	namespace Vulkan
+	{
+		/* Allocate memory of size bytes, of type type */
+		void *malloc(size_t bytes, int type);
+		
+		/* Reallocate memory of size bytes, of type type */
+		void *realloc(void *alloc, size_t bytes, int type);
 
-        /* Free memory */
-        void free(void *alloc);
-    };
+		/* Free memory */
+		void free(void *alloc);
+	};
 };
 };
 
