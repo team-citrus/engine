@@ -4,7 +4,7 @@
 
 **DO NOT USE ANY INLINE ASSEMBLY WHATSOEVER. WE CANNOT STRESS THIS ENOUGH.**
 
-You should refrain from using any compiler extensions, anonymous structs and unions are exceptions.
+You should refrain from using any compiler extensions, anonymous structs and unions are exceptions, as msvc, gcc, and clang support them.
 Use them only when necessary.
 
 ## Preprocessor defines
@@ -52,20 +52,23 @@ Namespaces, except in code that defines their function, should be included spari
 
 Templates should be used sparingly, only when necessary.
 Templates should be kept simple, and clear.
+A perfect example of these critera is the Unity function `GetComponent<T>()`, even though it is C# code.
 
 ## Keywords
 
 `const` should be avoided and instead preprocessor defines should be used.
-Classical C bitwise operators should be used instead of the newer ones.
+Classical C bitwise operators should be used instead of the newer ones (`bitand`, `bitor`, etc).
 
-## C++ standard library features
+## Standard library use
 
-Use of `chrono` should be avoided.
-Use of `thread` and `mutex` is required for any multithreading.
-`std::array` should not be used in place of classical C style arrays.
-Use of `std::vector` is encouraged, but not required.
-The default `malloc` and friends allocator and the `new` allocator should be used, not the ones included in `memory`.
-In fact, `memory` should be ignored unless absolutely necessary.
+libc functions don't have any restrictions, they can be used anywhere.
+STL functions and classes should not be used at all, as they frequently abuse templates creating overly complicated symbols.
+If you need proof of this, just read any of your STL header files and see for yourself.
+
+For multithreading, because we cannot use `threads` and `mutex`, to prvenet issues regarding the Windows API and pthreads, we will create our own wrappers around them.
+For replacing `std::vector` and `std::string`, we will create our own solution following a similar interface to the STL version.
+
+Until these versions are created, `std::vector` and `std::string` can be used.
 
 ## C++11 and later features
 
