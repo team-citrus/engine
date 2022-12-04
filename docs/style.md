@@ -6,6 +6,7 @@
 
 You should refrain from using any compiler extensions, anonymous structs and unions are exceptions, as msvc, gcc, and clang support them.
 Use them only when necessary.
+Common compiler extensions as well as some additional defines can be found in include/core/extensions.hpp, anything defines in that file can be used freely.
 
 ## Preprocessor defines
 
@@ -28,7 +29,9 @@ Function names should use camelCase.
 
 Inline functions should be used sparingly.
 Heavily used but small static functions should always be inlined.
-Extern inline functions should not be used.
+Extern inline functions should not be used, except for class methods.
+
+Operators should be defined with `OPERATOR`, which is a macro defined in include/core/extensions.hpp that will set it to always inline.
 
 ## OOP features
 
