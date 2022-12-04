@@ -1,8 +1,11 @@
 #ifndef CITRUS_ENGINE_PHYSICS_MAIN_HPP__
 #define CITRUS_ENGINE_PHYSICS_MAIN_HPP__
 
-#include <vector>
+#include "include/core/vector.hpp"
 #include "include/physics/sim.hpp"
+
+#define INTERNALS_PHYSICS_DEQUEUE_ERR_NOT_FOUND -1
+#define INTERNALS_PHYSICS_QUEUE_ERR_ALREADY_QUEUED -1
 
 namespace engine
 {
@@ -13,7 +16,7 @@ namespace internals
         using namespace physics;
 
         // The main physics simulation
-        core::simulation mainSim;
+        extern core::simulation mainSim;
 
         // Initalize physics
         void Init();
@@ -32,16 +35,16 @@ namespace internals
         *   @param sim Simulation to queue
         *   @return Any errors that may arise
         */
-        int queue(core::simulation *sim);
+        int queue(physics::core::simulation *sim);
 
         /*  Removes a simulation from the queue
         *   @param sim Simulation to remove from the queue
         *   @return Any errors that may arise
         */
-        int dequeue(core::simulation *sim);
+        int dequeue(physics::core::simulation *sim);
 
         // The queue
-        std::vector<core::simulation*> simQueue;
+        extern Vector<physics::core::simulation*> simQueue;
     };
 };
 };
