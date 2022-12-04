@@ -41,11 +41,12 @@ namespace engine
 				// QUATERNIONS
 				engine::physics::vec4 quaternion;
 
+				engine::physics::rigidbody rigidbody;
+
 				/*  TODO: Add engine::physics::rigidbody, engine::physics::collider, and engine::object
 				*   bool usesRigidbody;
 				*
 				*   engine::physics::collider *colliders;
-				*   engine::physics::rigidbody rigidbody;
 				*
 				*	Since the pointers for simulations are tagged whenever they are passed to internal functions
 				*	We can do things like this with no consequences
