@@ -2,7 +2,9 @@
 #define CITRUS_ENGINE_PHYSICS_OBJECTS_HPP__
 
 #include <cstdint>
+#include "include/physics/rigidbody.hpp"
 #include "include/physics/vectors.hpp"
+#include "include/core/extensions.hpp"
 
 namespace engine
 {
@@ -20,28 +22,28 @@ namespace engine
 				// Cordinates, right handed X coordinate
 				union
 				{
-					engine::physics::vec3 coordinates3D;
-					engine::physics::vec2 coordinates2D;
+					vec3 coordinates3D;
+					vec2 coordinates2D;
 				};
 
 				// Rotation, pitch, yaw, and roll form, technically is only used for quaternion conversions in 3d mode
 				union
 				{
-					engine::physics::vec3 rotation3D;
-					engine::physics::vec2 rotation2D;
+					vec3 rotation3D;
+					vec2 rotation2D;
 				};
 
 				// Scale, like lens magnification, negative values invert the object on the axis
 				union
 				{
-					engine::physics::vec3 scale3D;
-					engine::physics::vec2 scale2D;
+					vec3 scale3D;
+					vec2 scale2D;
 				};
 
 				// QUATERNIONS
-				engine::physics::vec4 quaternion;
+				vec4 quaternion;
 
-				engine::physics::rigidbody rigidbody;
+				rigidbody rigidbody;
 
 				/*  TODO: Add engine::physics::rigidbody, engine::physics::collider, and engine::object
 				*   bool usesRigidbody;
@@ -80,13 +82,13 @@ namespace engine
 				*	@param x X position
 				*	@param y Y position
 				*/
-				void setPos(double x, double y);
+				OPERATOR void setPos(double x, double y);
 				/*	Set the position
 				*	@param x X position
 				*	@param y Y position
 				*	@param z Z position
 				*/
-				void setPos(double x, double y, double z);
+				OPERATOR void setPos(double x, double y, double z);
 				/*	Set the position
 				*	@param pos The position
 				*/
@@ -100,13 +102,13 @@ namespace engine
 				*	@param x Pitch
 				*	@param y Yaw
 				*/
-				void setRot(double x, double y);
+				OPERATOR void setRot(double x, double y);
 				/* Set the rotation
 				*	@param x Pitch
 				*	@param y Yaw
 				*	@param z Roll
 				*/
-				void setRot(double x, double y, double z);
+				OPERATOR void setRot(double x, double y, double z);
 				/*	Set the rotation
 				*	@param pos The rotation
 				*/
@@ -120,13 +122,13 @@ namespace engine
 				*	@param x X scale
 				*	@param y Y scale
 				*/
-				void setScale(double x, double y);
+				OPERATOR void setScale(double x, double y);
 				/* Set the scale
 				*	@param x X scale
 				*	@param y Y scale
 				*	@param z Z scale
 				*/
-				void setScale(double x, double y, double z);
+				OPERATOR void setScale(double x, double y, double z);
 				/*	Set the scale
 				*	@param scale The scale
 				*/
@@ -144,19 +146,26 @@ namespace engine
 				*	@warning FOR INTERNAL OR EXPERT USE ONLY, CAN CAUSE SEVERE ISSUES
 				*	@param owner Pointer to the owner, assumed to be either an object, or a simulation for internal use.
 				*/
-				void setOwner(void *owner);
+				OPERATOR void setOwner(void *owner);
 
 				/*	Overrides the owner of the physobject.
 				*	Unlocks the owner of the physobject.
 				*	@warning FOR INTERNAL OR EXPERT USE ONLY, CAN CAUSE SEVERE ISSUES
 				*	@param owner Pointer to the owner, assumed to be either an object, or a simulation for internal use.
 				*/
-				void overrideOwner(void *owner);
+				OPERATOR void overrideOwner(void *owner);
 				
 				/*	Gets the owner, tagged if physics simulation
 				*	@warning FOR INTERNAL OR EXPERT USE ONLY, CAN CAUSE SEVERE ISSUES
 				*/
-				void *getOwner();
+				OPERATOR void *getOwner();
+
+				// Adding stuff
+
+				/*	Adds the rigidbody to the physobject
+				*	@return A reference to the rigidbody
+				*/
+				OPERATOR rigidbody &addRigidbody();
 		};
 	};
 };

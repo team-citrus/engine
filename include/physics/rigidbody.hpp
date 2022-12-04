@@ -3,6 +3,7 @@
 
 #include <btBulletDynamicsCommon.h>
 #include <box2d/box2d.h>
+#include "include/core/extensions.hpp"
 #include "include/physics/vectors.hpp"
 #include "include/physics/physobject.hpp"
 
@@ -59,31 +60,31 @@ namespace engine
 				*	@param force The force to apply, based on coordinates
 				*	@param mode The mode of the force
 				*/
-				void applyForce(vec2 force, int mode);
+				OPERATOR void applyForce(vec2 force, int mode);
 
 				/*	Practically identical to Unity's Rigidbody.AddForce()
 				*	@param force The force to apply, based on coordinates
 				*	@param mode The mode of the force
 				*/
-				void applyForce(vec3 force, int mode);
+				OPERATOR void applyForce(vec3 force, int mode);
 
 				// Velocity
 
 				// Gets the velocity in the form of a vec2
-				vec2 getVelocity2();
+				OPERATOR vec2 getVelocity2();
 				
 				// Gets the velocity in the form of a vec3
-				vec3 getVelocity3();
+				OPERATOR vec3 getVelocity3();
 
 				/*	Sets the velocity
 				*	@param velocity The new velocity
 				*/
-				void setVelocity(vec3 velocity);
+				OPERATOR void setVelocity(vec3 velocity);
 
 				/*	Sets the velocity
 				*	@param velocity The new velocity
 				*/
-				void setVelocity(vec2 velocity);
+				OPERATOR void setVelocity(vec2 velocity);
 
 				// Copied from engine::physobject
 
@@ -93,13 +94,13 @@ namespace engine
 				*	@param x X position
 				*	@param y Y position
 				*/
-				void setPos(double x, double y);
+				OPERATOR void setPos(double x, double y);
 				/*	Set the position
 				*	@param x X position
 				*	@param y Y position
 				*	@param z Z position
 				*/
-				void setPos(double x, double y, double z);
+				OPERATOR void setPos(double x, double y, double z);
 				/*	Set the position
 				*	@param pos The position
 				*/
@@ -113,13 +114,13 @@ namespace engine
 				*	@param x Pitch
 				*	@param y Yaw
 				*/
-				void setRot(double x, double y);
+				OPERATOR void setRot(double x, double y);
 				/* Set the rotation
 				*	@param x Pitch
 				*	@param y Yaw
 				*	@param z Roll
 				*/
-				void setRot(double x, double y, double z);
+				OPERATOR void setRot(double x, double y, double z);
 				/*	Set the rotation
 				*	@param pos The rotation
 				*/
@@ -133,24 +134,13 @@ namespace engine
 				*	@param x X scale
 				*	@param y Y scale
 				*/
-				void setScale(double x, double y);
+				OPERATOR void setScale(double x, double y);
 				/* Set the scale
 				*	@param x X scale
 				*	@param y Y scale
 				*	@param z Z scale
 				*/
-				void setScale(double x, double y, double z);
-				/* Set the scale
-				*	@param x X scale
-				*	@param y Y scale
-				*/
-				void setScale(double x, double y);
-				/* Set the scale
-				*	@param x X scale
-				*	@param y Y scale
-				*	@param z Z scale
-				*/
-				void setScale(double x, double y, double z);
+				OPERATOR void setScale(double x, double y, double z);
 				/*	Set the scale
 				*	@param scale The scale
 				*/
@@ -158,7 +148,7 @@ namespace engine
 				/*	Set the scale
 				*	@param pos The scale
 				*/
-				void setScale(vec3 rot);
+				void setScale(vec3 scale);
 
 				// Advanced physics stuff
 
