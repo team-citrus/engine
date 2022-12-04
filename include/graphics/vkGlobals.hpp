@@ -9,8 +9,8 @@ namespace internals
 {
 	namespace Vulkan
 	{
-		VkInstance instance;
-		VkDevice device;
+		extern VkInstance instance;
+		extern VkDevice device;
 	};
 };
 };

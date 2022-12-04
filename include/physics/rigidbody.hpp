@@ -1,6 +1,8 @@
 #ifndef CITRUS_ENGINE_RIGIDBODIES_HPP__
 #define CITRUS_ENGINE_RIGIDBODIES_HPP__
 
+#include <btBulletDynamicsCommon.h>
+#include <box2d/box2d.h>
 #include "include/physics/vectors.hpp"
 #include "include/physics/physobject.hpp"
 
@@ -20,13 +22,19 @@ namespace engine
 		{
 			private:
 				/*  TODO: engine::physics::collider, and engine::object
-				*   bool usesRigidbody;
-				*
 				*   engine::physics::collider *colliders;
-				*   engine::physics::rigidbody rigidbody;
-				*
-				*	engine::physobject *owner;
 				*/
+
+				// Save us some RAM using anonymous unions
+				union
+				{
+					// Box2d rigidbody representation
+					b2Body body2D;
+					// Bullet rigidbody representation
+					btRigidBody body3D;
+				};
+
+				physobject *owner;
 
 				bool ownerSet;
 
@@ -85,13 +93,13 @@ namespace engine
 				*	@param x X position
 				*	@param y Y position
 				*/
-				void setPos(int x, int y);
+				void setPos(double x, double y);
 				/*	Set the position
 				*	@param x X position
 				*	@param y Y position
 				*	@param z Z position
 				*/
-				void setPos(int x, int y, int z);
+				void setPos(double x, double y, double z);
 				/*	Set the position
 				*	@param pos The position
 				*/
@@ -105,13 +113,13 @@ namespace engine
 				*	@param x Pitch
 				*	@param y Yaw
 				*/
-				void setRot(int x, int y);
+				void setRot(double x, double y);
 				/* Set the rotation
 				*	@param x Pitch
 				*	@param y Yaw
 				*	@param z Roll
 				*/
-				void setRot(int x, int y, int z);
+				void setRot(double x, double y, double z);
 				/*	Set the rotation
 				*	@param pos The rotation
 				*/
@@ -125,13 +133,24 @@ namespace engine
 				*	@param x X scale
 				*	@param y Y scale
 				*/
-				void setScale(int x, int y);
+				void setScale(double x, double y);
 				/* Set the scale
 				*	@param x X scale
 				*	@param y Y scale
 				*	@param z Z scale
 				*/
-				void setScale(int x, int y, int z);
+				void setScale(double x, double y, double z);
+				/* Set the scale
+				*	@param x X scale
+				*	@param y Y scale
+				*/
+				void setScale(double x, double y);
+				/* Set the scale
+				*	@param x X scale
+				*	@param y Y scale
+				*	@param z Z scale
+				*/
+				void setScale(double x, double y, double z);
 				/*	Set the scale
 				*	@param scale The scale
 				*/
@@ -147,21 +166,21 @@ namespace engine
 				*	Assumed to be called when being initialized into the scene.
 				*	Locks so it can't be called twice.
 				*	@warning FOR INTERNAL OR EXPERT USE ONLY, CAN CAUSE SEVERE ISSUES
-				*	@param owner Pointer to the owner, assumed to be either an object, or a simulation for internal use.
+				*	@param Owner Pointer to the owner
 				*/
-				void setOwner(void *owner);
+				void setOwner(physobject *Owner);
 
 				/*	Overrides the owner of the physobject.
 				*	Unlocks the owner of the physobject.
 				*	@warning FOR INTERNAL OR EXPERT USE ONLY, CAN CAUSE SEVERE ISSUES
-				*	@param owner Pointer to the owner, assumed to be either an object, or a simulation for internal use.
+				*	@param Owner Pointer to the owner
 				*/
-				void overrideOwner(void *owner);
+				void overrideOwner(physobject *Owner);
 				
-				/*	Gets the owner, tagged if physics simulation
+				/*	Gets the owner, -1 if not set
 				*	@warning FOR INTERNAL OR EXPERT USE ONLY, CAN CAUSE SEVERE ISSUES
 				*/
-				void *getOwner();
+				physobject *getOwner();
 		};
 	}
 }

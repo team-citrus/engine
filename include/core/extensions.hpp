@@ -22,6 +22,6 @@
 #define _FORCE_INLINE_ _ALWAYS_INLINE_
 #define OPERATOR _ALWAYS_INLINE_
 
-#define __STRINGIFY(x) ##x
+#define __STRINGIFY(x) #x
 
 #endif
