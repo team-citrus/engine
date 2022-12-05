@@ -6,10 +6,22 @@
 #define MEM_ALLOC_UNIT_PAGE 2
 #define MEM_ALLOC_UNIT_MB 3
 
-#define HEAP_MAX_ALLOCATION_SIZE 0x1000 
+#define HEAP_MAX_ALLOCATION_SIZE 1024
 
 namespace engine
 {
+	namespace internals
+	{
+		// The class for a pool allocation header
+		class pAllocHeader
+		{
+			bool free;
+			size_t size;	
+		};
+		// The memory pool. Default size 2GB
+		extern void *mempool;
+	};
+
 	/*	Custom memory allocation for large units
 	*	Should be used for anything over HEAP_MAX_ALLOCATION_SIZE
 	*	@param size Size of the allocation in units
@@ -17,7 +29,6 @@ namespace engine
 	*	@return Pointer to the allocated memory
 	*/
 	void *lalloc(size_t size, int unit);
-
 	/*	Custom memory allocation for anything that needs to be executed
 	*	@param size Size of the allocation in units
 	*	@param unit One of the unit defines, sets the units to use
@@ -37,6 +48,6 @@ namespace engine
 
 	/* Frees any memory allocated with lalloc or execalloc */
 	void cfree(void *ptr);
-}
+};
 
 #endif

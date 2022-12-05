@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <box2d/box2d.h>
 #include "include/physics/vectors.hpp"
 #include "include/physics/physobject.hpp"
 #include "include/physics/rigidbody.hpp"
