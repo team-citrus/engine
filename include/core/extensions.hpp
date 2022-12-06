@@ -8,6 +8,7 @@
 #define _ALWAYS_INLINE_ __attribute__((always_inline))
 #define _DEPRECATED_ __attribute__((deprecated))
 #define _NORETURN_ __attribute__((noreturn))
+#define _PACKED_( decl ) __attribute__((__packed__)) decl
 
 #elif defined(_MSC_VER)
 
@@ -16,6 +17,7 @@
 #define _ALWAYS_INLINE_ __forceinline
 #define _DEPRECATED_ __declspec(deprecated)
 #define _NORETURN_ __declspec(noreturn)
+#define _PACKED_( decl ) __pragma(pack(push, 1)) decl __pragma(pack(pop))
 
 #endif
 
