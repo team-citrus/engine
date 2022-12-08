@@ -21,7 +21,7 @@ namespace engine
 	*	@return Pointer to the allocation, NULL if an error occurs
 	*	Errno will be set
 	*/
-	void *memalloc(size_t size, int flags);
+	void *memalloc(size_t size, uint16_t flags);
 
 	/* 	The main memory reallocation function
 	*	@param ptr The old pointer
@@ -30,7 +30,7 @@ namespace engine
 	*	@return Pointer to the new allocation, NULL if an error occurs
 	*	Errno will be set
 	*/
-	void *memrealloc(void *ptr, size_t size, int flags);
+	void *memrealloc(void *ptr, size_t size, uint16_t flags);
 
 	/*	The main memory freeing function
 	*	Really just a wrapper around a couple different functions

@@ -12,6 +12,10 @@ Your code should be easy to read, it shouldn't be rocket science to figure out w
 Your code should also be well commented, to save all of us time figuring out what each line of code does later.
 Remember, ***DO NOT USE ANY INLINE ASSEMBLY WHATSOEVER.***
 
+This project is meant to use [RAII](https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization) for managing data.
+Keep that in mind with your code.
+Small, contained breaks of RAII are fine, however, they should not largely effect the rest of the project.
+
 ## Documentation
 
 All you need to do is write readable code, use some comments to make it clear what is going on, and add descriptions in comment form above declarations for classes, methods, macros, and functions.
