@@ -8,6 +8,7 @@
 #define MEM_FLAG_POOL 1 << 4
 #define MEM_FLAG_ALIGNED 1 << 5
 #define MEM_FLAG_PERM 1 << 6
+#define MEM_FLAG_HEAP 1 << 7
 
 #define HEAP_MAX_ALLOCATION_SIZE 2048
 
