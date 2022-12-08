@@ -114,7 +114,7 @@ static inline void *heapAlloc(size_t size, uint16_t flags)
 	return (void*)((uintptr_t)h + sizeof(allocHeader));
 }
 
-void *memalloc(size_t size, uint16_t flags)
+void *engine::memalloc(size_t size, uint16_t flags)
 {
 	// Evaluate flags
 	if(flags & MEM_FLAG_NO_HEAP)
