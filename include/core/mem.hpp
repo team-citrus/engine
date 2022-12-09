@@ -1,16 +1,19 @@
 #ifndef CITRUS_ENGINE_MEMORY_MANAGEMENT_HPP__
 #define CITRUS_ENGINE_MEMORY_MANAGEMENT_HPP__
 
-#define MEM_FLAG_NO_HEAP 1 << 0
-#define MEM_FLAG_TEMP 1 << 1
-#define MEM_FLAG_SCENE 1 << 2
-#define MEM_FLAG_ARR 1 << 3
-#define MEM_FLAG_POOL 1 << 4
-#define MEM_FLAG_ALIGNED 1 << 5
-#define MEM_FLAG_PERM 1 << 6
-#define MEM_FLAG_HEAP 1 << 7
+#include <cstdlib>
 
-#define HEAP_MAX_ALLOCATION_SIZE 2048
+#define MEM_FLAG_POOL 1 << 0
+#define MEM_FLAG_ALIGNED 1 << 1
+#define MEM_FLAG_UNIT_BYTE 0 << 0
+#define MEM_FLAG_UNIT_WORD 1 << 2
+#define MEM_FLAG_UNIT_DWORD 1 << 3
+#define MEM_FLAG_UNIT_QWORD 1 << 4
+#define MEM_FLAG_UNIT_KB 1 << 5
+#define MEM_FLAG_UNIT_MB 1 << 6
+#define MEM_FLAG_UNIT_PAGE 1 << 7
+
+#define HEAP_MAX_ALLOCATION_SIZE 96
 
 namespace engine
 {

@@ -6,67 +6,80 @@
 
 #define ALLOC_HEADER_MAGIC_NUMBER 0x8BFEDC0A
 
-#define ALLOC_HEADER_TYPE_HEAP 'H'
-#define ALLOC_HEADER_TYPE_MMAP 'M'
-#define ALLOC_HEADER_TYPE_POOL 'P'
-
-#define ALLOC_PAGE_OFFSET(x) (x * 0x1000)
-#define ALLOC_PAGE_START() ((void*)((uintptr_t)poolResvEnd + ALLOC_PAGE_OFFSET(2)))
-#define ALLOC_RESOURCE_START() (ALLOC_PAGE_START + ALLOC_PAGE_OFFSET(200))
+#define POOL_FREE_BLOCK_MAGIC 0x46534545
+#define POOL_ALLOC_BLOCK_MAGIC 0x4E4F474F
 
 namespace engine
 {
 	namespace internals
 	{
-		class poolHeader
+		// Pool block
+		class poolBlock
 		{
 			public:
-				// Pretty much just pool - poolResvEnd
-				ptrdiff_t maxPoolSize;
-				// Size of current allocated pool
-				size_t poolSize;
-				// Unallocated bytes in pool
-				size_t
-				// Size of the area before the pool describing the rest of our memory space, in pages.
-				int metaMemsize;
-				// Meta memory start position
-				void *metaMem;
+				union
+				{
+					// Attempt to force compress the structs
+					union
+					{
+						// Header for a contigous free section
+						struct
+						{
+							// Small magic number for a free section
+							uint32_t fmagic;
+							// Size of section, in blocks
+							int fsize;
+							// Next contigous section, NULL if last
+							poolBlock *next;
+							poolBlock *last;
+						};
+						// Header for an allocated section
+						struct
+						{
+							// Small magic number for an allocated section
+							uint32_t amagic;
+							// Size of section, in blocks
+							int asize;
+							// Flags
+							int flags;
+						};
+					};
+					// Expand the size to 32 bytes
+					uint8_t b[32];
+				};
+		};
 
-
-		// The base address of the pool, always aligned to a page boundary.
-		void *pool;
-
-		// End of the pool reserved space. 
-		void *poolResvEnd;
-		_PACKED_(class allocHeader
+		// The pool, as a class, for convience
+		class Pool
 		{
 			public:
-				uint32_t magic;
-				// The flags given to memalloc(), however the high bit will be set if using page allocation, bit 14 has to be set for pool allocation, or clear for heap allocation
-				uint16_t flags;
-				// How many bytes used to align
-				size_t align : 4;
-				size_t size : 60;
-				OPERATOR bool isValid()
+				// Is the pool locked?
+				bool locked;
+				// The first free section header block
+				poolBlock *head;
+				// The last free section header block
+				poolBlock *tail;
+				// Size, allocated immediately so as to stay contigous
+				size_t size;
+
+				// Allocate some blocks
+				void *allocate(int blocks, int flags);
+				// Free some blocks
+				void free(void *ptr);
+				
+				// Wait
+				OPERATOR void wait()
 				{
-					return (magic == ALLOC_HEADER_MAGIC_NUMBER);
+					while(locked);
+					return;
 				}
 
-				OPERATOR bool isHeap()
-				{
-					return (type == ALLOC_HEADER_TYPE_HEAP);
-				}
+				Pool();
+				~Pool();
+		};
 
-				OPERATOR bool isPool()
-				{
-					return (type == ALLOC_HEADER_TYPE_POOL);
-				}
-
-				OPERATOR bool isMmap()
-				{
-					return (type == ALLOC_HEADER_TYPE_MMAP);
-				}
-		});
+		// The main memory pool
+		Pool pool;
 	};
 };
 
