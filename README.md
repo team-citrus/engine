@@ -4,6 +4,7 @@ The Citrus Engine, a game engine originally created for the Team Citrus project.
 
 For this game engine, we have a simple goal in mind, **we want to create a simple, extendable, well documented, game engine**.
 We also intend to use this game engine in our future projects, and hope others adopt it as well.
+As well, by making the engine free software, we hope to set a precident in the game development world.
 
 ***If you are looking to contribute, the style guide can be found at docs/style.md, and the programmer's guide can be found at docs/guide.md.***
 
@@ -22,11 +23,14 @@ We also intend to use this game engine in our future projects, and hope others a
 
 ### High priority
 
-- [ ] Get a name for the engine
+- [x] Get a name for the engine
 - [ ] Write a proper readme
 - [ ] Create build system
-- [ ] Create code structure
-- [ ] Create formating guide
+- [x] Create code structure
+- [x] Create formating guide
 - [ ] Write headers for the graphics API
 - [ ] Write headers for the phyics API
 - [ ] Write headers for general engine information
+- [ ] Write replacement functions and classes for some standard library functions and classes
+- [ ] Create the rendering pipeline
+- [ ] Create the main loop
