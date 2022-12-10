@@ -3,8 +3,6 @@
 
 #include <cstdlib>
 
-#define MEM_FLAG_POOL 1 << 0
-#define MEM_FLAG_ALIGNED 1 << 1
 #define MEM_FLAG_UNIT_BYTE 0 << 0
 #define MEM_FLAG_UNIT_WORD 1 << 2
 #define MEM_FLAG_UNIT_DWORD 1 << 3

@@ -9,49 +9,71 @@
 
 #endif
 
+#include <cstring>
 #include <cstdint>
 
 #include "include/core/mem.hpp"
 #include "include/core/mem_int.hpp"
 
-void *engine::internals::Pool::allocate(int blocks, int flags)
+// Used to make the code in free() and reallocate() clearer
+OPERATOR void mergeBlocks(engine::internals::poolBlock *nptr)
 {
-	engine::internals::poolBlock *bptr = head;
-	this->wait();
-	locked = true;
+	engine::internals::poolBlock *tptr = nptr + 1;
+	if(!nptr->next) return;
 
+	while(tptr->fmagic != POOL_FREE_BLOCK_MAGIC || tptr->fmagic != POOL_ALLOC_BLOCK_MAGIC) tptr++;
+
+	if(tptr->amagic == POOL_ALLOC_BLOCK_MAGIC) return;
+	else if(tptr->next != NULL)
+		nptr->next = NULL;
+	else
+		nptr->fsize += tptr->fsize;
+
+	tptr->next->last = nptr;
+	tptr->last->next = (tptr->last != nptr) ? nptr : tptr->last->next;
+	nptr->next = tptr->next;
+	nptr->last = (tptr->last != nptr) ? tptr->last : nptr->last;
+	tptr->fmagic = 0;
+}
+
+// Used to make reallocate() fully atomic
+OPERATOR void *alloc(int blocks)
+{
+	engine::internals::poolBlock *bptr = engine::internals::pool.head;
 	if(bptr->next == NULL)
 	{
 		engine::internals::poolBlock *nptr = bptr + blocks;
-		head = nptr;
+		engine::internals::pool.head = nptr;
 		nptr->next = NULL;
+		nptr->last = bptr->last;
+		nptr->last->next = nptr;
 		nptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 		bptr->amagic = POOL_ALLOC_BLOCK_MAGIC;
 		bptr->asize = blocks;
-		bptr->flags = flags;
-		locked = false;
 		return (void*)(bptr+1);
 	}
 	else if(bptr->fsize == blocks)
 	{
-		head = bptr->next;
+		engine::internals::pool.head = bptr->next;
+		bptr->last->next = bptr->next;
+		bptr->next->last = bptr->last;
 		bptr->amagic = POOL_ALLOC_BLOCK_MAGIC;
 		bptr->asize = blocks;
-		bptr->flags = flags;
-		locked = false;
 		return (void*)(bptr+1);
 	}
 	else if(bptr->fsize > blocks + 4)
 	{
 		engine::internals::poolBlock *nptr = bptr;
-		nptr += blocks;
+		nptr += blocks + 1;
 		nptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 		nptr->fsize = bptr->fsize - blocks - 1;
+		nptr->last = bptr->last;
+		bptr->last->next = nptr;
+		bptr->next->last = nptr;
 		nptr->next = bptr->next;
 		bptr->amagic = POOL_ALLOC_BLOCK_MAGIC;
 		bptr->asize = blocks;
-		head = nptr;
-		locked = false;
+		engine::internals::pool.head = nptr;
 		return (void*)(bptr+1);
 	}
 	else if(bptr->fsize < blocks)
@@ -62,35 +84,35 @@ void *engine::internals::Pool::allocate(int blocks, int flags)
 			if(bptr->next == NULL)
 			{
 				engine::internals::poolBlock *nptr = bptr + blocks;
-				bptr->last->next = nptr;
 				nptr->next = NULL;
+				nptr->last = bptr->last;
+				nptr->last->next = nptr;
 				nptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 				bptr->amagic = POOL_ALLOC_BLOCK_MAGIC;
 				bptr->asize = blocks;
-				bptr->flags = flags;
-				locked = false;
 				return (void*)(bptr+1);
 			}
 			else if(bptr->fsize == blocks)
 			{
 				bptr->last->next = bptr->next;
+				bptr->next->last = bptr->last;
 				bptr->amagic = POOL_ALLOC_BLOCK_MAGIC;
 				bptr->asize = blocks;
-				bptr->flags = flags;
-				locked = false;
 				return (void*)(bptr+1);
 			}
 			else if(bptr->fsize > blocks + 4)
 			{
 				engine::internals::poolBlock *nptr = bptr;
-				nptr += blocks;
+				nptr += blocks + 1;
 				nptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 				nptr->fsize = bptr->fsize - blocks - 1;
+				nptr->last = bptr->last;
+				bptr->last->next = nptr;
+				bptr->next->last = nptr;
 				nptr->next = bptr->next;
 				bptr->amagic = POOL_ALLOC_BLOCK_MAGIC;
 				bptr->asize = blocks;
 				bptr->last->next = nptr;
-				locked = false;
 				return (void*)(bptr+1);
 			}
 			bptr = bptr->next;
@@ -98,8 +120,107 @@ void *engine::internals::Pool::allocate(int blocks, int flags)
 	}
 }
 
+void *engine::internals::Pool::allocate(int blocks)
+{
+
+	// Wait for the pool to unlock
+	wait();
+	locked = true;
+	void *ret = alloc(blocks);
+	locked = false;
+	return ret;
+}
+
+void *engine::internals::Pool::reallocate(void *ptr, int blocks)
+{
+	engine::internals::poolBlock *bptr = (engine::internals::poolBlock*)((uintptr_t)ptr - sizeof(engine::internals::poolBlock));
+	if(bptr->amagic != POOL_ALLOC_BLOCK_MAGIC)
+		return allocate(blocks);
+	
+	wait();
+	locked = true;
+
+	if(bptr->asize == blocks)
+		return ptr;
+	else if(bptr->asize > blocks)
+	{
+		engine::internals::poolBlock *nptr = bptr + blocks + 1;
+		nptr->fmagic = POOL_FREE_BLOCK_MAGIC;
+		nptr->fsize = bptr->asize - blocks;
+
+		mergeBlocks(nptr);
+
+		return (void*)(bptr+1);
+	}
+	else if(bptr->asize < blocks)
+	{
+		engine::internals::poolBlock *nptr = bptr;
+		while(nptr->fmagic != POOL_FREE_BLOCK_MAGIC) nptr++;
+		if(nptr->next == NULL)
+		{
+			bptr->asize = blocks;
+			nptr->last->next = bptr + blocks + 1;
+			nptr = nptr->last->next;
+			nptr->fmagic = POOL_FREE_BLOCK_MAGIC;
+			nptr->next = NULL;
+		}
+		else if(nptr->fsize + bptr->asize >= blocks && nptr->fsize + bptr->asize < blocks + 4)
+		{
+			nptr->fmagic = 0;
+			nptr->last->next = nptr->next;
+			nptr->next->last = nptr->last;
+			bptr->fsize += nptr->asize + 1;
+		}
+		else if(nptr->fsize + bptr->asize > blocks)
+		{
+			while(bptr->asize != blocks)
+			{
+				*(nptr+1) = *nptr;
+				nptr->fmagic = 0;
+				nptr++;
+				nptr->next->last++;
+				nptr->last->next++;
+				nptr->fsize--;
+				bptr->asize++;
+			}
+		}
+		else
+		{
+			locked = false;
+			nptr = (engine::internals::poolBlock*)alloc(blocks);
+			memcpy(nptr+1, bptr+1, bptr->asize);
+			free(bptr+1);
+			bptr = nptr;
+		}
+
+		locked = false;
+		return (void*)(bptr+1);
+	}
+}
+
+void engine::internals::Pool::free(void *ptr)
+{
+	engine::internals::poolBlock *bptr = (poolBlock*)ptr - 1;
+	bptr->fsize = bptr->asize;
+	bptr->fmagic = POOL_FREE_BLOCK_MAGIC;
+
+	// Update the variables
+	engine::internals::poolBlock *tptr = start;
+	while(tptr->fmagic != POOL_FREE_BLOCK_MAGIC) tptr++;
+	head = tptr;
+
+	// Merge all the blocks
+	while(tptr->next != NULL)
+	{
+		mergeBlocks(tptr);
+		tptr = tptr->next;
+	}
+	return;
+}
+
 void *engine::memalloc(size_t size, uint16_t flags)
 {
+	// Apply the flags
 	if(flags & MEM_FLAG_UNIT_DWORD)
 		size *= 4;
 	else if(flags & MEM_FLAG_UNIT_QWORD)
@@ -112,26 +233,27 @@ void *engine::memalloc(size_t size, uint16_t flags)
 		size *= 1024;
 	else if(flags & MEM_FLAG_UNIT_MB)
 		size *= 1024 * 1024;
-	
-	if(flags & MEM_FLAG_POOL)
-		return engine::internals::pool.allocate((size % 32) ? size/32 + 1 : size/32, flags);
-	else
-	{
-		if(size > HEAP_MAX_ALLOCATION_SIZE)
-			return engine::internals::pool.allocate((size % 32) ? size/32 + 1 : size/32, flags);
-		else
-		{
-			uintptr_t ret = (uintptr_t)malloc(size + sizeof(engine::internals::allocHeader) + 31);
-			uintptr_t tmp = ret;
-			ret = flags & MEM_FLAG_ALIGNED ? 
-				(((ret + sizeof(engine::internals::allocHeader)) + (32 - 1)) & -32) - sizeof(engine::internals::allocHeader)
-				: ret;
-			engine::internals::allocHeader *h = (engine::internals::allocHeader*)ret;
-			h->align = ret - tmp;
-			h->flags = flags;
-			h->magic = ALLOC_HEADER_MAGIC_NUMBER;
-			h->size = size;
-			return (void*)(ret + sizeof(engine::internals::allocHeader));
-		}
-	}
+
+	// Make a pool allocation with suitable rounding
+	return engine::internals::pool.allocate((size % 32) ? size/32 + 1 : size/32);
+}
+
+void *engine::memrealloc(void *ptr, size_t size, uint16_t flags)
+{
+	// Apply the flags
+	if(flags & MEM_FLAG_UNIT_DWORD)
+		size *= 4;
+	else if(flags & MEM_FLAG_UNIT_QWORD)
+		size *= 8;
+	else if(flags & MEM_FLAG_UNIT_WORD)
+		size *= 2;
+	else if(flags & MEM_FLAG_UNIT_PAGE)
+		size *= 0x1000;
+	else if(flags & MEM_FLAG_UNIT_KB)
+		size *= 1024;
+	else if(flags & MEM_FLAG_UNIT_MB)
+		size *= 1024 * 1024;
+
+	// Perform the actual reallocation with proper rounding
+	return engine::internals::pool.reallocate(ptr, (size % 32) ? size/32 + 1 : size/32);
 }

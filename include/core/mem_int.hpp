@@ -3,9 +3,6 @@
 
 #include <cstdint>
 #include "include/core/extensions.hpp"
-
-#define ALLOC_HEADER_MAGIC_NUMBER 0x8BFEDC0A
-
 #define POOL_FREE_BLOCK_MAGIC 0x46534545
 #define POOL_ALLOC_BLOCK_MAGIC 0x4E4F474F
 
@@ -40,8 +37,6 @@ namespace engine
 							uint32_t amagic;
 							// Size of section, in blocks
 							int asize;
-							// Flags
-							int flags;
 						};
 					};
 					// Expand the size to 32 bytes
@@ -55,15 +50,19 @@ namespace engine
 			public:
 				// Is the pool locked?
 				bool locked;
+				// The start of the pool
+				poolBlock *start;
 				// The first free section header block
 				poolBlock *head;
 				// The last free section header block
 				poolBlock *tail;
-				// Size, allocated immediately so as to stay contigous
+				// Size, allocated immediately so as to stay contigous, in blocks
 				size_t size;
 
 				// Allocate some blocks
-				void *allocate(int blocks, int flags);
+				void *allocate(int blocks);
+				// Realloc
+				void *reallocate(void *ptr, int blocks);
 				// Free some blocks
 				void free(void *ptr);
 				
@@ -78,7 +77,7 @@ namespace engine
 				~Pool();
 		};
 
-		// The main memory pool
+		// Main memory pool
 		Pool pool;
 	};
 };
