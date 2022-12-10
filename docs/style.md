@@ -28,17 +28,20 @@ Function names should use camelCase.
 ## Inline functions
 
 Inline functions should be used sparingly.
-Heavily used but small static functions should always be inlined.
+Heavily used but small static functions should always be inlined (`static inline` not `OPERATOR`).
+Large, but rarely used static functions should always be inlined (`static inline` not `OPERATOR`).
 Extern inline functions should not be used, except for class methods.
 
 Operators should be defined with `OPERATOR`, which is a macro defined in include/core/extensions.hpp that will set it to always inline.
+Although this is not manditory, it is prefered.
+Simple methods of a class should follow that same rule.
 
 ## OOP features
 
 ### `new` and `delete`
 
-The `new` and `delete` keywords should only be used when they clearly and obviously improve code readablity.
-Otherwise, `malloc` and friends should be used.
+The `new` and `delete` keywords should only be used when they clearly and obviously improve code readablity, and have been overriden for the class at hand.
+Otherwise, `engine::memalloc` and friends should be used.
 
 ### Classes
 

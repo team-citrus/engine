@@ -30,9 +30,9 @@ namespace engine
 				union
 				{
 					// Box2d rigidbody representation
-					b2Body body2D;
+					b2Body *body2D;
 					// Bullet rigidbody representation
-					btRigidBody body3D;
+					btRigidBody *body3D;
 				};
 
 				physobject *owner;
@@ -60,31 +60,31 @@ namespace engine
 				*	@param force The force to apply, based on coordinates
 				*	@param mode The mode of the force
 				*/
-				OPERATOR void applyForce(vec2 force, int mode);
+				void applyForce(vec2 force, int mode);
 
 				/*	Practically identical to Unity's Rigidbody.AddForce()
 				*	@param force The force to apply, based on coordinates
 				*	@param mode The mode of the force
 				*/
-				OPERATOR void applyForce(vec3 force, int mode);
+				void applyForce(vec3 force, int mode);
 
 				// Velocity
 
 				// Gets the velocity in the form of a vec2
-				OPERATOR vec2 getVelocity2();
+				vec2 getVelocity2();
 				
 				// Gets the velocity in the form of a vec3
-				OPERATOR vec3 getVelocity3();
+				vec3 getVelocity3();
 
 				/*	Sets the velocity
 				*	@param velocity The new velocity
 				*/
-				OPERATOR void setVelocity(vec3 velocity);
+				void setVelocity(vec3 velocity);
 
 				/*	Sets the velocity
 				*	@param velocity The new velocity
 				*/
-				OPERATOR void setVelocity(vec2 velocity);
+				void setVelocity(vec2 velocity);
 
 				// Copied from engine::physobject
 
@@ -94,13 +94,13 @@ namespace engine
 				*	@param x X position
 				*	@param y Y position
 				*/
-				OPERATOR void setPos(double x, double y);
+				void setPos(double x, double y);
 				/*	Set the position
 				*	@param x X position
 				*	@param y Y position
 				*	@param z Z position
 				*/
-				OPERATOR void setPos(double x, double y, double z);
+				void setPos(double x, double y, double z);
 				/*	Set the position
 				*	@param pos The position
 				*/
@@ -114,13 +114,13 @@ namespace engine
 				*	@param x Pitch
 				*	@param y Yaw
 				*/
-				OPERATOR void setRot(double x, double y);
+				void setRot(double x, double y);
 				/* Set the rotation
 				*	@param x Pitch
 				*	@param y Yaw
 				*	@param z Roll
 				*/
-				OPERATOR void setRot(double x, double y, double z);
+				void setRot(double x, double y, double z);
 				/*	Set the rotation
 				*	@param pos The rotation
 				*/
@@ -134,13 +134,13 @@ namespace engine
 				*	@param x X scale
 				*	@param y Y scale
 				*/
-				OPERATOR void setScale(double x, double y);
+				void setScale(double x, double y);
 				/* Set the scale
 				*	@param x X scale
 				*	@param y Y scale
 				*	@param z Z scale
 				*/
-				OPERATOR void setScale(double x, double y, double z);
+				void setScale(double x, double y, double z);
 				/*	Set the scale
 				*	@param scale The scale
 				*/
