@@ -41,7 +41,7 @@ namespace engine
 				};
 
 				// QUATERNIONS
-				vec4 quaternion;
+				quaternion Quaternion;
 
 				rigidbody rigidbody;
 
