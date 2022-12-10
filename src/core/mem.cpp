@@ -12,6 +12,9 @@
 #include <cstring>
 #include <cstdint>
 
+// We need to override b2Alloc_Default and b2Free_Default
+#include <box2d/b2_settings.h>
+
 #include "include/core/mem.hpp"
 #include "include/core/mem_int.hpp"
 
@@ -198,9 +201,8 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 	}
 }
 
-void engine::internals::Pool::free(void *ptr)
+void engine::internals::Pool::free(engine::internals::poolBlock *bptr)
 {
-	engine::internals::poolBlock *bptr = (poolBlock*)ptr - 1;
 	bptr->fsize = bptr->asize;
 	bptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 
@@ -256,4 +258,20 @@ void *engine::memrealloc(void *ptr, size_t size, uint16_t flags)
 
 	// Perform the actual reallocation with proper rounding
 	return engine::internals::pool.reallocate(ptr, (size % 32) ? size/32 + 1 : size/32);
+}
+
+void engine::memfree(void *ptr)
+{
+	engine::internals::pool.free((engine::internals::poolBlock*)ptr - 1);
+}
+
+// b2Alloc_Default and b2Free_Default overrides
+B2_API void* b2Alloc_Default(int32 size)
+{
+	return engine::memalloc(size, MEM_FLAG_UNIT_BYTE);
+}
+
+B2_API void b2Free_Default(void *mem)
+{
+	engine::memfree(mem);
 }

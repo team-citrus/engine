@@ -1,6 +1,7 @@
 #ifndef CITRUS_ENGINE_MEMORY_MANAGEMENT_HPP__
 #define CITRUS_ENGINE_MEMORY_MANAGEMENT_HPP__
 
+#include <cstdint>
 #include <cstdlib>
 
 #define MEM_FLAG_UNIT_BYTE 0 << 0
@@ -12,6 +13,8 @@
 #define MEM_FLAG_UNIT_PAGE 1 << 7
 
 #define HEAP_MAX_ALLOCATION_SIZE 96
+
+// TODO: add a macro that provides an overload for new, new[], delete, and delete[] or something to that effect.
 
 namespace engine
 {

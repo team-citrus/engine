@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include "include/core/extensions.hpp"
+
 #define POOL_FREE_BLOCK_MAGIC 0x46534545
 #define POOL_ALLOC_BLOCK_MAGIC 0x4E4F474F
 
@@ -54,8 +55,6 @@ namespace engine
 				poolBlock *start;
 				// The first free section header block
 				poolBlock *head;
-				// The last free section header block
-				poolBlock *tail;
 				// Size, allocated immediately so as to stay contigous, in blocks
 				size_t size;
 
@@ -64,7 +63,7 @@ namespace engine
 				// Realloc
 				void *reallocate(void *ptr, int blocks);
 				// Free some blocks
-				void free(void *ptr);
+				void free(engine::internals::poolBlock *bptr);
 				
 				// Wait
 				OPERATOR void wait()
