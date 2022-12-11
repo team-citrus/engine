@@ -19,13 +19,9 @@ namespace engine
 {
 	namespace physics
 	{
-		class rigidbody
+		class rigidbody : component
 		{
 			private:
-				/*  TODO: engine::physics::collider, and engine::object
-				*   engine::physics::collider *colliders;
-				*/
-
 				// Save us some RAM using anonymous unions
 				union
 				{
@@ -151,21 +147,6 @@ namespace engine
 				void setScale(vec3 scale);
 
 				// Advanced physics stuff
-
-				/*	Sets the owner of the physobject.
-				*	Assumed to be called when being initialized into the scene.
-				*	Locks so it can't be called twice.
-				*	@warning FOR INTERNAL OR EXPERT USE ONLY, CAN CAUSE SEVERE ISSUES
-				*	@param Owner Pointer to the owner
-				*/
-				void setOwner(physobject *Owner);
-
-				/*	Overrides the owner of the physobject.
-				*	Unlocks the owner of the physobject.
-				*	@warning FOR INTERNAL OR EXPERT USE ONLY, CAN CAUSE SEVERE ISSUES
-				*	@param Owner Pointer to the owner
-				*/
-				void overrideOwner(physobject *Owner);
 				
 				/*	Gets the owner, -1 if not set
 				*	@warning FOR INTERNAL OR EXPERT USE ONLY, CAN CAUSE SEVERE ISSUES

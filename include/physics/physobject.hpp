@@ -5,6 +5,7 @@
 #include "include/physics/rigidbody.hpp"
 #include "include/physics/vectors.hpp"
 #include "include/core/extensions.hpp"
+#include "include/core/component.hpp"
 
 namespace engine
 {
@@ -13,7 +14,7 @@ namespace engine
 		/*  The underlying class of anything that needs physics
 		*   This is directly interfaced by the physics API frequently, and is the primary object for physics code
 		*/
-		class physobject
+		class physobject : component
 		{
 			private:
 
@@ -45,22 +46,17 @@ namespace engine
 
 				rigidbody rigidbody;
 
-				/*  TODO: Add engine::physics::rigidbody, engine::physics::collider, and engine::object
-				*   bool usesRigidbody;
+				/*  TODO: Add engine::physics::collider
 				*
-				*   engine::physics::collider *colliders;
+				*   collider *colliders;
 				*
-				*	Since the pointers for simulations are tagged whenever they are passed to internal functions
-				*	We can do things like this with no consequences
-				*
-				*	union
-				*	{
-				*   	engine::object *owner;
-				*		engine::physics::simulation *sOwner;
-				*		uintptr_t ptr;
-				*	};
-				*	bool ownerSet;
 				*/
+
+				bool usesRigidbody;
+
+				bool simOwner;
+				physics::core::simulation *sim;
+				
 
 			public:
 				// Constructors
@@ -137,35 +133,15 @@ namespace engine
 				*	@param pos The scale
 				*/
 				void setScale(vec3 rot);
-
-				// Advanced physics stuff
-
-				/*	Sets the owner of the physobject.
-				*	Assumed to be called when being initialized doubleo the scene.
-				*	Locks so it can't be called twice.
-				*	@warning FOR INTERNAL OR EXPERT USE ONLY, CAN CAUSE SEVERE ISSUES
-				*	@param owner Pointer to the owner, assumed to be either an object, or a simulation for internal use.
-				*/
-				OPERATOR void setOwner(void *owner);
-
-				/*	Overrides the owner of the physobject.
-				*	Unlocks the owner of the physobject.
-				*	@warning FOR INTERNAL OR EXPERT USE ONLY, CAN CAUSE SEVERE ISSUES
-				*	@param owner Pointer to the owner, assumed to be either an object, or a simulation for internal use.
-				*/
-				OPERATOR void overrideOwner(void *owner);
 				
-				/*	Gets the owner, tagged if physics simulation
-				*	@warning FOR INTERNAL OR EXPERT USE ONLY, CAN CAUSE SEVERE ISSUES
-				*/
-				OPERATOR void *getOwner();
-
 				// Adding stuff
 
-				/*	Adds the rigidbody to the physobject
+				/*	Adds a rigidbody to the physobject
 				*	@return A reference to the rigidbody
 				*/
 				OPERATOR rigidbody &addRigidbody();
+
+				friend class rigidbody;
 		};
 	};
 };

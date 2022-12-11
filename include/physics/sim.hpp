@@ -66,6 +66,8 @@ namespace physics
 
 				// Get a pointer to the simulation for internal use.
 				void *getPtr();
+
+				friend class physobject;
 		};
 	};
 };
