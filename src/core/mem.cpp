@@ -1,3 +1,13 @@
+/*
+*	This file is part of the Citrus Engine.
+*
+*	The Citrus Engine is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+*
+*	The Citrus Engine is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+*
+*	You should have received a copy of the GNU Lesser General Public License along with the Citrus Engine. If not, see <https://www.gnu.org/licenses/>	
+*/
+
 #ifdef __unix__
 
 #include <unistd.h>
@@ -191,7 +201,7 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 		{
 			locked = false;
 			nptr = (engine::internals::poolBlock*)alloc(blocks);
-			memcpy(nptr+1, bptr+1, bptr->asize);
+			memcpy(nptr+1, bptr+1, bptr->asize * 32);
 			free(bptr+1);
 			bptr = nptr;
 		}

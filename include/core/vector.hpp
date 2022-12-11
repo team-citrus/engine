@@ -1,8 +1,19 @@
+/*
+*	This file is part of the Citrus Engine.
+*
+*	The Citrus Engine is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+*
+*	The Citrus Engine is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+*
+*	You should have received a copy of the GNU Lesser General Public License along with the Citrus Engine. If not, see <https://www.gnu.org/licenses/>	
+*/
+
 #ifndef CITRUS_ENGINE_STD_VECTOR_REPLACEMENT_HPP__
 #define CITRUS_ENGINE_STD_VECTOR_REPLACEMENT_HPP__
 
 #include <cstdlib>
 #include "include/core/extensions.hpp"
+#include "include/core/mem.hpp"
 
 namespace engine
 {
@@ -21,7 +32,7 @@ namespace engine
             OPERATOR void push(T obj)
             {
                 count++;
-                data = realloc(data, count * sizeof(T));
+                data = memrealloc(data, count * sizeof(T));
                 data[count-1] = obj;
             }
 
@@ -31,7 +42,7 @@ namespace engine
                     return;
                 count--;
                 T obj = data[count];
-                data = realloc(data, count * sizeof(T));
+                data = memrealloc(data, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
                 return obj;
             }
 
@@ -42,7 +53,7 @@ namespace engine
                 for(int i = index; i < count - 1; i--)
                     data[i] = data[i+1];
                 count--;
-                data = realloc(data, count * sizeof(T));
+                data = memrealloc(data, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
             }
 
             OPERATOR void insert(int index, T obj)
@@ -50,7 +61,7 @@ namespace engine
                 if(!count)
                     return;
                 count++;
-                data = realloc(data, count * sizeof(T));
+                data = memrealloc(data, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
                 for(int i = count - 2; i > index; i--)
                     data[i+1] = data[i];
                 data[index] = obj;
@@ -74,7 +85,7 @@ namespace engine
 
             Vector()
             {
-                data = malloc(1);
+                data = memalloc(1, MEM_FLAG_UNIT_BYTE);
                 count = 0;
             }
 
