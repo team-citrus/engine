@@ -11,6 +11,8 @@
 #ifndef CITRUS_ENGINE_COMPONENTS_HPP__
 #define CITRUS_ENGINE_COMPONENTS_HPP__
 
+#include <typeinfo>
+#include "include/core/extensions.hpp"
 #include "include/core/object.hpp"
 
 namespace engine
@@ -38,12 +40,17 @@ namespace engine
 			object &getObject();
 
 			// Functions like Unity's getComponent<T>()
-			template <typename T>
-			T &getComponent();
+			OPERATOR template <typename T>
+			T &getComponent()
+			{
+				return owner->getComponet();
+			}
 		private:
 			object *owner;
 			size_t size;
 
+			// Use this to validate component type
+			std::type_info componentID;
 			friend class object;
 	};
 };
