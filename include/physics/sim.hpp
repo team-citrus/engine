@@ -11,10 +11,10 @@
 #ifndef CITRUS_ENGINE_PHYSICS_SIMULATION_HPP__
 #define CITRUS_ENGINE_PHYSICS_SIMULATION_HPP__
 
-#include <vector>
 #include <box2d/box2d.h>
 #include <btDiscreteDynamicsWorld.h>
 #include "include/physics/physobject.hpp"
+#include "include/core/vector.hpp"
 
 namespace engine
 {
@@ -41,7 +41,7 @@ namespace physics
 					btDiscreteDynamicsWorld sim3D;
 				};
 
-				std::vector<engine::physics::physobject> objects;
+				Vector<physics::physobject> objects;
 
 				// Is the simulation queued?
 				bool queued;

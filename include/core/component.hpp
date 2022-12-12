@@ -37,7 +37,10 @@ namespace engine
 			// Functions similar to Unity's onTriggerExit()
 			virtual void onTriggerExit();
 
-			object &getObject();
+			OPERATOR object &getObject()
+			{
+				return *owner;
+			}
 
 			// Functions like Unity's getComponent<T>()
 			OPERATOR template <typename T>
