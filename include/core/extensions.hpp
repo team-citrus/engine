@@ -34,6 +34,7 @@
 #define _FORCE_INLINE_ _ALWAYS_INLINE_
 #define OPERATOR _ALWAYS_INLINE_
 
-#define __STRINGIFY(x) #x
+#define _STRINGIFY_(...) __STRINGIFY__(##__VA_ARGS__)
+#define __STRINGIFY__(...) #__VA_ARGS__
 
 #endif

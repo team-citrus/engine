@@ -43,14 +43,11 @@ namespace engine
 
 				physobject *owner;
 
-				bool ownerSet;
-
 				// See if we should keep calculating it, or not. Useful for optimization
 				bool awake;
 			public:
 				// Constructors
 				rigidbody();
-				rigidbody(physobject *Owner);
 
 				// Rigidbody stuff
 
@@ -158,10 +155,8 @@ namespace engine
 
 				// Advanced physics stuff
 				
-				/*	Gets the owner, -1 if not set
-				*	@warning FOR INTERNAL OR EXPERT USE ONLY, CAN CAUSE SEVERE ISSUES
-				*/
-				physobject *getOwner();
+				//	Gets the owner
+				physobject &getOwner();
 		};
 	}
 }

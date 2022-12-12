@@ -71,8 +71,9 @@ libc functions don't have any restrictions, they can be used anywhere.
 STL functions and classes should not be used at all, as they frequently abuse templates creating overly complicated symbols.
 If you need proof of this, just read any of your STL header files and see for yourself.
 
-For multithreading, because we cannot use `threads` and `mutex`, to prvenet issues regarding the Windows API and pthreads, we will create our own wrappers around them.
-For replacing `std::vector` and `std::string`, we will create our own solution following a similar interface to the STL version.
+STL restrictions have some exceptions, namely, we can use `thread`, `mutex`, and `typeinfo`.
+
+For replacing `std::vector`, `std::map`,  `std::string`, and possibly `std::stringstream`, and `std::fstream` we will create our own solution following a similar interface to the STL version.
 
 Until these versions are created, `std::vector` and `std::string` can be used.
 

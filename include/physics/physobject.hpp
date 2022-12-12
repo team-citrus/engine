@@ -14,6 +14,7 @@
 #include <cstdint>
 #include "include/physics/rigidbody.hpp"
 #include "include/physics/vectors.hpp"
+#include "include/physics/collider.hpp"
 #include "include/core/extensions.hpp"
 #include "include/core/component.hpp"
 
@@ -56,11 +57,7 @@ namespace engine
 
 				rigidbody rigidbody;
 
-				/*  TODO: Add engine::physics::collider
-				*
-				*   collider *colliders;
-				*
-				*/
+				Vector<collider> colliders;
 
 				bool usesRigidbody;
 
