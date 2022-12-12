@@ -32,7 +32,7 @@ namespace engine
             OPERATOR void push(T obj)
             {
                 count++;
-                data = memrealloc(data, count * sizeof(T));
+                data = memrealloc(data, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
                 data[count-1] = obj;
             }
 
@@ -85,7 +85,7 @@ namespace engine
 
             Vector()
             {
-                data = memalloc(1, MEM_FLAG_UNIT_BYTE);
+                data = memalloc(sizeof(T), MEM_FLAG_UNIT_BYTE);
                 count = 0;
             }
 

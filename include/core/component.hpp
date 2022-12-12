@@ -43,8 +43,8 @@ namespace engine
 			}
 
 			// Functions like Unity's getComponent<T>()
-			OPERATOR template <typename T>
-			T &getComponent()
+			template <typename T>
+			OPERATOR T &getComponent()
 			{
 				return owner->getComponet();
 			}

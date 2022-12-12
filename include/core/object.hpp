@@ -25,8 +25,8 @@ namespace engine
             T &addComponent();
 
             // Functions like Unity's GetComponent<T>()
-            OPERATOR template<typename T>
-            T &getComponent()
+            template<typename T>
+            OPERATOR T &getComponent()
             {
                 component *cur = components;
                 for(int i = 0; i < componentCount; i++)
