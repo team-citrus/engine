@@ -12,6 +12,7 @@
 #define CITRUS_ENGINE_VECTORS_HPP__
 
 #include <cstdint>
+#include <cmath>
 #include "include/core/extensions.hpp"
 
 namespace engine
@@ -73,7 +74,23 @@ namespace engine
             {
                 return *this / vec2(x, x);
             }
+
+            // Interpolate between this and b by amount t.
+            vec2 slerp(vec2 b, double t);
+            // Interpolate between this and b by amount t.
+            vec2 lerp(vec2 b, double t);
+
+            // Get the magnitude
+            OPERATOR double magnitude()
+            {
+                return sqrt(((x * x) + (y * y)));
+            }
         };
+
+        // Interpolate between a and b by amount t.
+        vec2 slerp(vec2 a, vec2 b, double t);
+        // Interpolate between a and b by amount t.
+        vec2 lerp(vec2 a, vec2 b, double t);
 
         // Essentially three doubles to make our lives easier with physics
         class vec3
@@ -130,7 +147,22 @@ namespace engine
             {
                 return *this / vec3(x, x, x);
             }
+
+            // Interpolate between this and b by amount t.
+            vec3 slerp(vec3 b, double t);
+            // Interpolate between this and b by amount t.
+            vec3 lerp(vec3 b, double t);
+
+            OPERATOR double magnitude()
+            {
+                return sqrt(((x * x) + (y * y) + (z * z)));
+            }
         };
+
+        // Interpolate between a and b by amount t.
+        vec3 slerp(vec3 a, vec3 b, double t);
+        // Interpolate between a and b by amount t.
+        vec3 lerp(vec3 a, vec3 b, double t);
 
         // Essentially four doubles to make our lives easier with physics
         class vec4
@@ -190,11 +222,44 @@ namespace engine
                 return *this / vec4(x, x, x, x);
             }
 
+            // Interpolate between this and b by amount t.
+            vec4 slerp(vec4 b, double t);
+            // Interpolate between this and b by amount t.
+            vec4 lerp(vec4 b, double t);
+
+            OPERATOR double magnitude()
+            {
+                return sqrt(((w * w) + (x * x) + (y * y) + (z * z)));
+            }
+
+            vec4 normalize();
+
             // TODO: add quaternion functions
         };
 
+        // Interpolate between a and b by amount t.
+        vec4 slerp(vec4 a, vec4 b, double t);
+        // Interpolate between a and b by amount t.
+        vec4 lerp(vec4 a, vec4 b, double t);
+
         // Added for code clarity
         typedef vec4 quaternion;
+
+        vec2 normalized(vec2 vec);
+        vec3 normalized(vec3 vec);
+        vec4 normalized(vec4 vec);
+
+        vec2 distance(vec2 a, vec2 b);
+        vec3 distance(vec3 a, vec3 b);
+        vec4 distance(vec4 a, vec4 b);
+
+        vec2 cross(vec2 a, vec2 b);
+        vec3 cross(vec3 a, vec3 b);
+        vec4 cross(vec4 a, vec4 b);
+
+        vec2 dot(vec2 a, vec2 b);
+        vec3 dot(vec3 a, vec3 b);
+        vec4 dot(vec4 a, vec4 b);
     };
 };
 
