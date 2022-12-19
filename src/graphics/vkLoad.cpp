@@ -24,12 +24,16 @@
 
 #include "include/core/mem.hpp"
 #include "include/core/extensions.hpp"
+#include "include/graphics/vkGlobals.hpp"
 #include "include/graphics/vkInit.hpp"
 
 using namespace engine;
 using namespace internals;
 
 dllptr_t Vulkan::libvulkan;
+
+Vulkan::vkGIPA_t Vulkan::vkGetInstanceProcAddr;
+Vulkan::vkGDPA_t Vulkan::vkGetDeviceProcAddr;
 
 int Vulkan::vkLoad()
 {
@@ -64,16 +68,8 @@ int Vulkan::vkLoad()
 		exit(-1);
 	}
 
-	Vulkan::libvulkan = dlopen("libvulkan.so", RTLD_NOW);
-        if(Vulkan::libvulkan == NULL)
-        {
-                // TODO: Add logging/stdio methods of some sort
-
-                exit(-1);
-        }
-
-        // Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
-        Vulkan::vkGetInstanceProcAddr = (Vulkan::vkGIPA_t)GetProcAddress(Vulkan::libvulkan, _STRINGIFY_(vkGetInstanceProcAddr));
+    // Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
+    Vulkan::vkGetInstanceProcAddr = (Vulkan::vkGIPA_t)GetProcAddress(Vulkan::libvulkan, _STRINGIFY_(vkGetInstanceProcAddr));
 	Vulkan::vkGetDeviceProcAddr = (Vulkan::vkGDPA_t)GetProcAddress(Vulkan::libvulkan, _STRINGIFY_(vkGetDeviceProcAddr));
 
 	if(vkGetInstanceProcAddr == NULL || vkGetDeviceProcAddr == NULL)
