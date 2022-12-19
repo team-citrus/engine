@@ -21,12 +21,24 @@
 #define ERR_VULKAN_INCOMPATIBLE -3
 #define ERR_VULKAN_INSTANCE_FAILURE -4
 
+#ifdef _WIN32
+
+#include <Windows.h>
+
+#elif defined(__unix__)
+
+typedef void *dlptr;
+
+#endif
+
 namespace engine
 {
 namespace internals
 {
 	namespace Vulkan
-	{
+	{	
+		
+
 		int vkLoad();
 		int vkTerminate();
 	};
