@@ -44,8 +44,8 @@ int Vulkan::vkLoad()
 	}
 
 	// Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
-	Vulkan::vkGetInstanceProcAddr = dlsym(Vulkan::libvulkan, _STRINGIFY_(vkGetInstanceProcAddr));
-	Vulkan::vkGetDeviceProcAddr = dlsym(Vulkan::libvulkan, _STRINGIFY_(vkGetDeviceProcAddr));
+	Vulkan::vkGetInstanceProcAddr = (Vulkan::vkGIPA_t)dlsym(Vulkan::libvulkan, _STRINGIFY_(vkGetInstanceProcAddr));
+	Vulkan::vkGetDeviceProcAddr = (Vulkan::vkGIDA_t)dlsym(Vulkan::libvulkan, _STRINGIFY_(vkGetDeviceProcAddr));
 
 	if(Vulkan::vkGetInstanceProcAddr == NULL || Vulkan::vkGetInstanceProcAddr == NULL);
 	{
@@ -55,5 +55,33 @@ int Vulkan::vkLoad()
 	}
 
 	#elif defined(_WIN32)
+
+	Vulkan::libvulkan = LoadLibraryA("Vulkan-1.dll");
+	if(Vulkan::libvulkan == NULL)
+	{
+		// TODO: Add logging/stdio methods of some sort
+
+		exit(-1);
+	}
+
+	Vulkan::libvulkan = dlopen("libvulkan.so", RTLD_NOW);
+        if(Vulkan::libvulkan == NULL)
+        {
+                // TODO: Add logging/stdio methods of some sort
+
+                exit(-1);
+        }
+
+        // Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
+        Vulkan::vkGetInstanceProcAddr = (Vulkan::vkGIPA_t)GetProcAddress(Vulkan::libvulkan, _STRINGIFY_(vkGetInstanceProcAddr));
+	Vulkan::vkGetDeviceProcAddr = (Vulkan::vkGDPA_t)GetProcAddress(Vulkan::libvulkan, _STRINGIFY_(vkGetDeviceProcAddr));
+
+	if(vkGetInstanceProcAddr == NULL || vkGetDeviceProcAddr == NULL)
+	{
+		// TODO: Add logging/stdio methods of some sort
+
+		exit(-1);
+	}
+
 	#endif
 }
