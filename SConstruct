@@ -10,6 +10,8 @@ library_paths = []
 libraries = ["Vulkan", "OpenGL", "box2d", "bullet", "GLM"]
 file_types = [".cpp", ".cxx", ".c"]
 
+flags = default_flags
+
 print("Started building...")
 
 # Set up the environment
