@@ -1,7 +1,9 @@
 import os
 
 # Variables, meant for user customization, defaults designed for gcc
-flags = ["-O2", "-Wall", "-Wextra"]
+default_flags = ["-O2", "-m64", "-mtune=generic", "-mavx", "-march=sandybridge", "-Wall", "-Wpedantic"]
+debug_flags = ["-Og", "-g", "-mtune=generic", "-mavx", "-m64", "-Wall",  "-Wpedantic"]
+quick_flags = ["-Ofast", "-m64", "-Wpedantic"]
 include_paths = ["./"]
 target = "./bin/target"
 library_paths = []
@@ -44,6 +46,7 @@ for i in files_list:
     env.Object(target=o, source=[i])
     o = o + ".o" if os.name == "posix" else o + ".obj"
     objs.append()
+
 
 # Generate final binary
 Default(env.Program(target=target, source=files_list))
