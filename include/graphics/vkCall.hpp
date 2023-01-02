@@ -1,11 +1,9 @@
 /*
-*	This file is part of the Citrus Engine.
-*
-*	The Citrus Engine is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-*
-*	The Citrus Engine is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-*
-*	You should have received a copy of the GNU Lesser General Public License along with the Citrus Engine. If not, see <https://www.gnu.org/licenses/>	
+*   name: include/graphics/vkCall.hpp
+*   origin: Citrus Engine
+*   purpose: Provide preprocessor defines for Vulkan call wrappers
+*   author: https://github.com/ComradeYellowCitrusFruit
+*   license: LGPL-3.0-only
 */
 
 #ifndef CITRUS_ENGINE_VULKAN_CALLS_HPP__
