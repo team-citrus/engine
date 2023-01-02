@@ -12,13 +12,15 @@ This file is an attempt to serve as a high level list of these functions.
 - [] Compute shaders
 - [] Render pipeline modification
 - [] Gizmos a la Unity
-- [] A partical systems a la Unity
+- [] A powerful partical system
+- [] UI system a la Unity
 
 ## Ideal goals
 
-- [] Support for multiple programming languages (not including native C++)
+- [] Bindings for multiple programming languages (not including native C++)
 	- [] Rust
 	- [] C#
+	- [] C
 - [] Various different rendering methods
 	- [] Rasterization (default)
 	- [] Raytracing
