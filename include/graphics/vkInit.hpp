@@ -30,8 +30,6 @@ namespace internals
 {
 	namespace Vulkan
 	{	
-		
-
 		int vkLoad();
 		int vkTerminate();
 	};

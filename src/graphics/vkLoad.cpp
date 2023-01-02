@@ -34,6 +34,10 @@ dllptr_t Vulkan::libvulkan;
 
 Vulkan::vkGIPA_t Vulkan::vkGetInstanceProcAddr;
 Vulkan::vkGDPA_t Vulkan::vkGetDeviceProcAddr;
+VkAllocationCallbacks Vulkan::vkAllocCallbacks;
+
+VkInstance Vulkan::instance;
+VkDevice Vulkan::device;
 
 int Vulkan::vkLoad()
 {
@@ -80,4 +84,34 @@ int Vulkan::vkLoad()
 	}
 
 	#endif
+
+	// Initalize Vulkan
+
+	// Vulkan application info
+
+	VkApplicationInfo aInfo;
+	info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+	// _APPLICATION_NAME_ defined during compilation
+	info.pApplicationName = _APPLICATION_NAME_;
+	info.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+	info.pNext = NULL;
+	info.pEngineName = "Citrus Engine Builtin Vulkan Render Engine";
+	// _CITRUS_ENGINE_VERSION_ defined during compilation
+	info.engineVersion = _CITRUS_ENGINE_VERSION_;
+	info.apiVersion = VULKAN_VERSION;
+
+	// Vulkan instance creation info
+
+	VkInstanceCreateInfo iInfo;
+	iInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+	iInfo.pApplicationInfo = &aInfo;
+	// TODO: Add the layer information.
+	iInfo.enabledExtensionCount = 0;
+	iInfo.ppEnabledExtensionNames = NULL;
+
+	// TODO: Add allocation callback information
+	
+	// Initalize the instance
+	vkInstanceCall(vkCreateInstance, 0, &iInfo, &Vulkan::allocCallbacks, &Vulkan::instance);
+
 }

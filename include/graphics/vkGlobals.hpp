@@ -24,13 +24,18 @@ typedef void* dllptr_t;
 
 #endif
 
+#include "include/graphics/vkCall.hpp"
+
+#ifndef VULKAN_VERSION
+#define VULKAN_VERSION VK_VERSION_1_0
+#endif
+
 namespace engine
 {
 namespace internals
 {
 	namespace Vulkan
 	{
-
 		typedef PFN_vkVoidFunction (vkGIPA_t)(VkInstance, const char*);
 		typedef PFN_vkVoidFunction (vkGDPA_t)(VkDevice, const char*);
 
@@ -41,7 +46,8 @@ namespace internals
 		extern vkGIPA_t vkGetInstanceProcAddr;
 		// Good ol' vkGetDeviceProcAddr
 		extern vkGDPA_t vkGetDeviceProcAddr;
-
+		
+		extern VkAllocationCallbacks allocCallbacks;
 		extern VkInstance instance;
 		extern VkDevice device;
 	};
