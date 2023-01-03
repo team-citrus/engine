@@ -38,8 +38,11 @@ namespace engine
 		logger(const char *file);
 		~logger();
 
-		// Log a message, works like printf
-		void log(int code, const char *module, const char *format, ...);
+		/*	Log a message, works like printf
+		*	@param module The string of the module/function/component/class the message is being logged from
+		*	@param format The format string, in printf style
+		*/
+		void log(const char *module, const char *format, ...);
 	};
 };
 

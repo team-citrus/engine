@@ -16,7 +16,7 @@ logger::~logger()
     fclose(bfile);
 }
 
-void logger::log(int code, const char *module, const char *format, ...)
+void logger::log(const char *module, const char *format, ...)
 {
     time_t t = time(NULL);
     tm T = *localtime(&t);
