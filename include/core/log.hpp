@@ -39,7 +39,7 @@ namespace engine
 		~logger();
 
 		// Log a message, works like printf
-		void log(int code, const char *module, const char *str, ...);
+		void log(int code, const char *module, const char *format, ...);
 	};
 };
 
