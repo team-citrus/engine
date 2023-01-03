@@ -107,9 +107,7 @@ int Vulkan::vkLoad()
 	iInfo.enabledExtensionCount = 0;
 	iInfo.ppEnabledExtensionNames = NULL;
 
-	// TODO: Add allocation callback information
-
 	// Initalize the instance
-	vkInstanceCall(vkCreateInstance, 0, &iInfo, &Vulkan::allocCallbacks, &Vulkan::instance);
+	vkInstanceCall(vkCreateInstance, 0, &iInfo, NULL, &Vulkan::instance);
 
 }

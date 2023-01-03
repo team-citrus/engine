@@ -45,7 +45,6 @@ namespace internals
 		// Good ol' vkGetDeviceProcAddr
 		extern vkGDPA_t vkGetDeviceProcAddr;
 		
-		extern VkAllocationCallbacks allocCallbacks;
 		extern VkInstance instance;
 		extern VkDevice device;
 	};
