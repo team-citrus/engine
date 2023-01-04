@@ -47,6 +47,7 @@ namespace internals
 		
 		extern VkInstance instance;
 		extern VkDevice device;
+		extern VkPhysicalDevice pdevice;
 	};
 };
 };

@@ -19,9 +19,11 @@
 
 #include <stdlib.h>
 #include <vulkan.h>
-
+#include "include/core/crash.hpp"
+#include "include/core/log.hpp"
 #include "include/core/mem.hpp"
 #include "include/core/extensions.hpp"
+#include "include/core/vector.hpp"
 #include "include/graphics/vkGlobals.hpp"
 #include "include/graphics/vkInit.hpp"
 
@@ -37,51 +39,43 @@ VkAllocationCallbacks Vulkan::vkAllocCallbacks;
 VkInstance Vulkan::instance;
 VkDevice Vulkan::device;
 
+static inline bool deviceEligable(VkPhysicalDevice dev);
+
 int Vulkan::vkLoad()
 {
 	#ifdef __unix__
 
-	Vulkan::libvulkan = dlopen("libvulkan.so", RTLD_NOW);
+	Vulkan::libvulkan = dlopen("libvulkan.so.1", RTLD_NOW);
 	if(Vulkan::libvulkan == NULL)
 	{
-		// TODO: Add logging/stdio methods of some sort
-		
-		exit(-1);
+		engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "libvulkan.so.1 not found");
+		exit(VULKAN_NOT_FOUND);
 	}
 
 	// Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
 	Vulkan::vkGetInstanceProcAddr = (Vulkan::vkGIPA_t)dlsym(Vulkan::libvulkan, _STRINGIFY_(vkGetInstanceProcAddr));
 	Vulkan::vkGetDeviceProcAddr = (Vulkan::vkGIDA_t)dlsym(Vulkan::libvulkan, _STRINGIFY_(vkGetDeviceProcAddr));
 
-	if(Vulkan::vkGetInstanceProcAddr == NULL || Vulkan::vkGetInstanceProcAddr == NULL);
-	{
-		// TODO: Add logging/stdio methods of some sort
-
-		exit(-1);
-	}
-
 	#elif defined(_WIN32)
 
 	Vulkan::libvulkan = LoadLibraryA("Vulkan-1.dll");
 	if(Vulkan::libvulkan == NULL)
 	{
-		// TODO: Add logging/stdio methods of some sort
-
-		exit(-1);
+		engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Vulkan-1.dll not found");
+		exit(VULKAN_NOT_FOUND);
 	}
 
     // Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
     Vulkan::vkGetInstanceProcAddr = (Vulkan::vkGIPA_t)GetProcAddress(Vulkan::libvulkan, _STRINGIFY_(vkGetInstanceProcAddr));
 	Vulkan::vkGetDeviceProcAddr = (Vulkan::vkGDPA_t)GetProcAddress(Vulkan::libvulkan, _STRINGIFY_(vkGetDeviceProcAddr));
 
+	#endif
+
 	if(vkGetInstanceProcAddr == NULL || vkGetDeviceProcAddr == NULL)
 	{
-		// TODO: Add logging/stdio methods of some sort
-
-		exit(-1);
+		engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Failure to load critical Vulkan functions");
+		exit(VK_LOAD_FAILURE);
 	}
-
-	#endif
 
 	// Initalize Vulkan
 
@@ -109,5 +103,26 @@ int Vulkan::vkLoad()
 
 	// Initalize the instance
 	vkInstanceCall(vkCreateInstance, 0, &iInfo, NULL, &Vulkan::instance);
+
+	// TODO: Validation layers
+
+	// Select the physical device
+
+	// Get the count
+
+	int devCount;
+	vkInstanceCall(vkEnumeratePhysicalDevices, Vulkan::instance, &devCount, NULL);
+	if(devCount == 0) 
+	{
+		engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "No compatible GPUs found");
+		exit(COMPATIBLE_GPU_NOT_FOUND);
+	}
+
+	// Get the handles
+
+	VkPhysicalDevice *devices = memalloc(sizeof(VkPhysicalDevice) * devCount, 0);
+	vkInstanceCall(vkEnumeratePhysicalDevices, Vulkan::instance, &devCount, devices);
+
+	// TODO: Evaluate the best device to use
 
 }
