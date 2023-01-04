@@ -59,10 +59,6 @@ namespace engine
 
 				bool usesRigidbody;
 
-				bool simOwner;
-				physics::core::simulation *sim;
-				
-
 			public:
 				// Constructors
 				physobject();

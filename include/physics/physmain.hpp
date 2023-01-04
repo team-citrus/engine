@@ -23,9 +23,6 @@ namespace internals
 	{
         using namespace physics;
 
-        // The main physics simulation
-        extern core::simulation mainSim;
-
         // Initalize physics
         void Init();
 
@@ -37,22 +34,7 @@ namespace internals
         *   DO NOT CALL IT ANYWHERE ELSE UNLESS YOU WANT TO SERIOUSLY MESS THINGS UP.
         *   @return Any error codes that might arrise
         */
-        int Main();
-
-        /*  Queues a simulation
-        *   @param sim Simulation to queue
-        *   @return Any errors that may arise
-        */
-        int queue(physics::core::simulation *sim);
-
-        /*  Removes a simulation from the queue
-        *   @param sim Simulation to remove from the queue
-        *   @return Any errors that may arise
-        */
-        int dequeue(physics::core::simulation *sim);
-
-        // The queue
-        extern Vector<physics::core::simulation*> simQueue;
+        int step();
     };
 };
 };

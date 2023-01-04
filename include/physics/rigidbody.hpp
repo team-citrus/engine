@@ -154,7 +154,7 @@ namespace engine
 				// Advanced physics stuff
 				
 				//	Gets the owner
-				physobject &getOwner();
+				physobject &getPhysobject();
 		};
 	}
 }
