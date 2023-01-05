@@ -89,7 +89,7 @@ namespace engine
 
             ~Vector()
             {
-                free(data);
+                memfree(data);
             }
     };
 };

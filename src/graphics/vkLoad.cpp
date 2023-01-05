@@ -39,7 +39,42 @@ VkAllocationCallbacks Vulkan::vkAllocCallbacks;
 VkInstance Vulkan::instance;
 VkDevice Vulkan::device;
 
-static inline bool deviceEligable(VkPhysicalDevice dev);
+static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperties *devP, Vector<VkQueueFamilyProperties> &queueP)
+{
+	// Get the device properties
+	vkCall(vkGetPhysicalDeviceProperties, dev, &devP);
+
+	// Don't use a CPU
+	if(devP->deviceType == VK_PHYSICAL_DEVICE_TYPE_CPU)
+		return false;
+
+	// Get device queue properties
+
+	int qCount;
+	VkQueueFamilyProperties *qProperties;
+	vkCall(vkGetPhysicalDeviceQueueFamilyProperties, dev, &qCount, NULL);
+	qProperties = memalloc(sizeof(VkQueueFamilyProperties) * qCount, MEM_FLAG_UNIT_BYTE);
+	vkCall(vkGetPhysicalDeviceQueueFamilyProperties, dev, &qCount, qProperties);
+	for(int i = 0; i < qCount; i++)
+	{
+		queueP.push(qProperties[i]);
+	}
+	memfree(qProperties);
+
+	// Perform queue filtering
+
+	int gSupportCount = 0;
+	int cSupportCount = 0;
+	int tSupportCount = 0;
+	for(int i = 0; i < qCount; i++;)
+	{
+		if(queueP[i].queueFlags & VkQueueFlagBits.VK_QUEUE_GRAPHICS_BIT) gSupportCount++;
+		if(queueP[i].queueFlags & VkQueueFlagBits.VK_QUEUE_COMPUTE_BIT) cSupportCount++;
+		if(queueP[i].queueFlags & VkQueueFlagBits.VK_QUEUE_TRANSFER_BIT) tSupportCount++;
+	}
+
+	if(gSupportCount < 1 || cSupportCount < 1 || tSupportCount < 1) return false;
+}
 
 int Vulkan::vkLoad()
 {
@@ -85,7 +120,7 @@ int Vulkan::vkLoad()
 	info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	// _APPLICATION_NAME_ defined during compilation
 	info.pApplicationName = _APPLICATION_NAME_;
-	info.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+	info.applicationVersion = _GAME_VERSION_INT_;
 	info.pNext = NULL;
 	info.pEngineName = "Citrus Engine Builtin Vulkan Render Engine";
 	// _CITRUS_ENGINE_VERSION_ defined during compilation
@@ -123,6 +158,28 @@ int Vulkan::vkLoad()
 	VkPhysicalDevice *devices = memalloc(sizeof(VkPhysicalDevice) * devCount, 0);
 	vkInstanceCall(vkEnumeratePhysicalDevices, Vulkan::instance, &devCount, devices);
 
-	// TODO: Evaluate the best device to use
+	// Filter out all of the eligible devices
+
+	Vector<VkPhysicalDevice> eligibleDevices;
+	Vector<VkPhysicalDeviceProperties> deviceProperties;
+	Vector<Vector<VkQueueFamilyProperties>> deviceQueueProperties;
+	for(int i = 0; i < devCount; i++)
+	{
+		VkPhysicalDeviceProperties p;
+		Vector<VkQueueFamilyProperties> qp;
+		if(deviceEligable(devices[i], &p, qp))
+		{
+			eligibleDevices.push(devices[i]);
+			deviceProperties.push(p);
+		}
+	}
+	memfree(devices);
+
+	if(!eligibleDevices.getCount())
+	{
+		engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "No eligible GPUs found");
+		exit(COMPATIBLE_GPU_NOT_FOUND);
+	}
+
 
 }

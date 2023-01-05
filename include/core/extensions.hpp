@@ -35,4 +35,6 @@
 #define _STRINGIFY_(...) __STRINGIFY__(##__VA_ARGS__)
 #define __STRINGIFY__(...) #__VA_ARGS__
 
+#define __VA_ARGS_FIX__(...) __VA_ARGS__
+
 #endif
