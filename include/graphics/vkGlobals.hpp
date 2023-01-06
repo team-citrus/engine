@@ -45,9 +45,18 @@ namespace internals
 		// Good ol' vkGetDeviceProcAddr
 		extern vkGDPA_t vkGetDeviceProcAddr;
 		
+		// The Vulkan instance
 		extern VkInstance instance;
+
+		// The Vulkan device
 		extern VkDevice device;
-		extern VkPhysicalDevice pdevice;
+
+		// Physical device info
+
+		extern VkPhysicalDevice physicalDevice;
+		extern VkPhysicalDeviceProperties physicalDeviceProperties;
+		extern VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
+		extern size_t physicalDeviceVRAM;
 	};
 };
 };

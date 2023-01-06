@@ -39,7 +39,12 @@ VkAllocationCallbacks Vulkan::vkAllocCallbacks;
 VkInstance Vulkan::instance;
 VkDevice Vulkan::device;
 
-static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperties *devP, Vector<VkQueueFamilyProperties> &queueP)
+VkPhysicalDevice Vulkan::physicalDevice;
+VkPhysicalDeviceProperties Vulkan::physicalDeviceProperties;
+VkPhysicalDeviceMemoryProperties Vulkan::physicalDeviceMemoryProperties;
+size_t Vulkan::physicalDeviceVRAM;
+
+static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperties *devP, Vector<VkQueueFamilyProperties> &queueP, VkPhysicalDeviceMemoryProperties &deviceMemoryProperties, size_t &vram)
 {
 	// Get the device properties
 	vkCall(vkGetPhysicalDeviceProperties, dev, &devP);
@@ -74,6 +79,51 @@ static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperti
 	}
 
 	if(gSupportCount < 1 || cSupportCount < 1 || tSupportCount < 1) return false;
+
+	// Perform memory filtering
+
+	vram = 0;
+	vkCall(vkGetPhysicalDeviceMemoryProperties, dev, &deviceMemoryProperties);
+	for(int i = 0; i < deviceMemoryProperties.memoryHeapCount; i++)
+		vram += deviceMemoryProperties.memoryHeaps[i].size;
+	
+	// 3/4 GB as an arbitrary limit
+	if(vram < 1024 * 1024 * 768) return false;
+	
+	return true;
+}
+
+// Calculate a score for the device
+static inline int calcDeviceScore(VkPhysicalDeviceProperties devP, Vector<VkQueueFamilyProperties> queueP, VkPhysicalDeviceMemoryProperties deviceMemoryProperties, size_t vram)
+{
+	int score = 0;
+	score += vram/(1024 * 1024);
+	score += (devP.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ) 1 : 0;
+	
+	// Could be useful later
+	score += VK_API_VERSION_MAJOR(devP.apiVersion)
+	
+	// TODO: Add code that takes devP.limits into account
+	// TODO: Add code that takes queueP into account... somehow
+
+	return score;
+}
+
+static inline void countInferiors(Vector<int> &inferiors, Vector<int> deviceScore)
+{
+	for(int i = 0; i < deviceScore.getCount(); i++)
+	{
+		int count = 0;
+		for(int j = 0; j < deviceScore.getCount(); j++)
+		{
+			if(j != i)
+			{
+				count = (deviceScore[i] => deviceScore[j]) ? count + 1 : count;
+				count = (deviceScore[i] == deviceScore[j] && j < i) ? count - 1 : count;
+			}
+		}
+		deviceInferiorCount.push(count);
+	}
 }
 
 int Vulkan::vkLoad()
@@ -163,14 +213,23 @@ int Vulkan::vkLoad()
 	Vector<VkPhysicalDevice> eligibleDevices;
 	Vector<VkPhysicalDeviceProperties> deviceProperties;
 	Vector<Vector<VkQueueFamilyProperties>> deviceQueueProperties;
+	Vector<VkPhysicalDeviceMemoryProperties> deviceMemoryProperties;
+	Vector<size_t> deviceVram;
+	Vector<int> deviceScore;
 	for(int i = 0; i < devCount; i++)
 	{
 		VkPhysicalDeviceProperties p;
 		Vector<VkQueueFamilyProperties> qp;
-		if(deviceEligable(devices[i], &p, qp))
+		VkPhysicalDeviceMemoryProperties mp;
+		size_t tmpvram;
+		if(deviceEligable(devices[i], &p, qp, mp, tmpvram))
 		{
 			eligibleDevices.push(devices[i]);
 			deviceProperties.push(p);
+			deviceQueueProperties.push(qp);
+			deviceMemoryProperties.push(mp);
+			deviceVram.push(tmpvram);
+			deviceScore.push(calcDeviceScore(p, qp, mp, tmpvram));
 		}
 	}
 	memfree(devices);
@@ -181,5 +240,71 @@ int Vulkan::vkLoad()
 		exit(COMPATIBLE_GPU_NOT_FOUND);
 	}
 
+	// Evaluate the devices
 
+	// TODO: Optimize this code
+	while(eligibleDevices.getCount() != 1)
+	{
+		// Vector for counting each device and what it has a higher score than
+		Vector<int> deviceInferiorCount;
+		countInferiors(deviceInferiorCount, deviceScore);
+
+		// Set to true everytime something isn't removed
+		bool repeat = true;
+
+		for(int i = 0; i < deviceInferiorCount.getCount(); i++)
+		{
+			// Filter out everything that isn't better than something
+			if(deviceInferiorCount[i] == 0)
+			{
+				eligibleDevices.rm(i);
+				deviceProperties.rm(i);
+				deviceQueueProperties.rm(i);
+				deviceMemoryProperties.rm(i);
+				deviceVram.rm(i);
+				deviceScore.rm(i);
+				deviceInferiorCount.rm(i);
+				repeat = false;
+			}
+		}
+
+		// Break tie by selecting first GPU, then the first dedicated GPU (discrete or VGPU) if one is found
+		if(repeat)
+		{
+			VkPhysicalDevice dev = eligibleDevices[0];
+
+			for(int i = 0; i < deviceProperties.getCount(); i++)
+			{
+				if(deviceProperties[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU || deviceProperties[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU)
+				{
+					dev = eligibleDevices[i];
+					break;
+				}
+			}
+
+			for(int i = 0; i < eligibleDevices.getCount(); i++)
+			{
+				if(eligibleDevices[i] != dev)
+				{
+					eligibleDevices.rm(i);
+					deviceProperties.rm(i);
+					deviceQueueProperties.rm(i);
+					deviceMemoryProperties.rm(i);
+					deviceVram.rm(i);
+					deviceScore.rm(i);
+				}
+			}
+		}
+	}
+
+	// Load the globals for the physical device
+
+	Vulkan::physicalDevice = eligibleDevices[0];
+	Vulkan::physicalDeviceProperties = deviceProperties[0];
+	Vulkan::physicalDeviceMemoryProperties = deviceMemoryProperties[0];
+	Vulkan::physicalDeviceVRAM = deviceVram[0];
+
+	// Log the choice
+
+	engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Selected GPU: %s", deviceProperties[0].deviceName);
 }
