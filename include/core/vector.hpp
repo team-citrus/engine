@@ -19,7 +19,7 @@ namespace engine
     class Vector
     {
         private:
-            T *data;
+            T *ptr;
             int count;
         public:
             OPERATOR T &operator[](int index)
@@ -30,8 +30,8 @@ namespace engine
             OPERATOR void push(T obj)
             {
                 count++;
-                data = memrealloc(data, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
-                data[count-1] = obj;
+                ptr = memrealloc(ptr, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
+                ptr[count-1] = obj;
             }
 
             OPERATOR T pop()
@@ -39,8 +39,8 @@ namespace engine
                 if(!count)
                     return;
                 count--;
-                T obj = data[count];
-                data = memrealloc(data, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
+                T obj = ptr[count];
+                ptr = memrealloc(ptr, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
                 return obj;
             }
 
@@ -49,9 +49,9 @@ namespace engine
                 if(!count)
                     return;
                 for(int i = index; i < count - 1; i--)
-                    data[i] = data[i+1];
+                    ptr[i] = ptr[i+1];
                 count--;
-                data = memrealloc(data, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
+                ptr = memrealloc(ptr, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
             }
 
             OPERATOR void insert(int index, T obj)
@@ -59,7 +59,7 @@ namespace engine
                 if(!count)
                     return;
                 count++;
-                data = memrealloc(data, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
+                ptr = memrealloc(ptr, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
                 for(int i = count - 2; i > index; i--)
                     data[i+1] = data[i];
                 data[index] = obj;
@@ -81,15 +81,20 @@ namespace engine
                     return data[0];
             }
 
+            OPERATOR T *data()
+            {
+                return ptr;
+            }
+
             Vector()
             {
-                data = memalloc(sizeof(T), MEM_FLAG_UNIT_BYTE);
+                ptr = memalloc(sizeof(T), MEM_FLAG_UNIT_BYTE);
                 count = 0;
             }
 
             ~Vector()
             {
-                memfree(data);
+                memfree(ptr);
             }
     };
 };
