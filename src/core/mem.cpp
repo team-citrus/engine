@@ -133,7 +133,6 @@ OPERATOR void *alloc(int blocks)
 
 void *engine::internals::Pool::allocate(int blocks)
 {
-
 	// Wait for the pool to unlock
 	wait();
 	locked = true;
@@ -146,12 +145,17 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 {
 	engine::internals::poolBlock *bptr = (engine::internals::poolBlock*)((uintptr_t)ptr - sizeof(engine::internals::poolBlock));
 	if(bptr->amagic != POOL_ALLOC_BLOCK_MAGIC)
-		return allocate(blocks);
-	
+		return this->allocate(blocks);
+	else if(!blocks)
+	{
+		this->free(bptr);
+		return ptr;
+	}
+
 	wait();
 	locked = true;
 
-	if(bptr->asize == blocks)
+	else if(bptr->asize == blocks)
 		return ptr;
 	else if(bptr->asize > blocks)
 	{
