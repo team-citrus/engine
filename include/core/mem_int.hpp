@@ -9,11 +9,20 @@
 #ifndef CITRUS_ENGINE_MEMORY_MANAGEMENT_INTERNALS_HPP__
 #define CITRUS_ENGINE_MEMORY_MANAGEMENT_INTERNALS_HPP__
 
+#ifndef _WIN32
+#include <unistd.h>
+#else
+#include <Windows.h>
+#endif
+
 #include <cstdint>
 #include "include/core/extensions.hpp"
 
 #define POOL_FREE_BLOCK_MAGIC 0x46534545
 #define POOL_ALLOC_BLOCK_MAGIC 0x4E4F474F
+
+#ifndef _POOL_SIZE_
+#define _POOL_SIZE_ 1024 * 1024 * 1024 * 2
 
 namespace engine
 {
@@ -80,12 +89,27 @@ namespace engine
 					return;
 				}
 
-				Pool();
-				~Pool();
+				Pool()
+				{
+					#ifndef _WIN32
+					start = mmap(NULL, _POOL_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON, 0, 0);
+					#else
+					start = VirtualAlloc(NULL, _POOL_SIZE_, 0, 0);
+					#endif
+					size = _POOL_SIZE_/32;
+				}
+				~Pool()
+				{
+					#ifndef _WIN32
+					munmap(start, _POOL_SIZE_);
+					#else
+					VirtualFree(start, _POOL_SIZE_, 0);
+					#endif
+				}
 		};
 
 		// Main memory pool
-		Pool pool;
+		extern Pool pool;
 	};
 };
 

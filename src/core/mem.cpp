@@ -26,6 +26,8 @@
 #include "include/core/mem.hpp"
 #include "include/core/mem_int.hpp"
 
+engine::internals::Pool pool;
+
 // Used to make the code in free() and reallocate() clearer
 OPERATOR void mergeBlocks(engine::internals::poolBlock *nptr)
 {
