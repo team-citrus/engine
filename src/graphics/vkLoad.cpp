@@ -175,7 +175,7 @@ int Vulkan::vkLoad()
 	info.pEngineName = "Citrus Engine Builtin Vulkan Render Engine";
 	// _CITRUS_ENGINE_VERSION_ defined during compilation
 	info.engineVersion = _CITRUS_ENGINE_VERSION_;
-	info.apiVersion = VULKAN_VERSION;
+	info.apiVersion = VK_VERSION_1_0;
 
 	// Vulkan instance creation info
 
@@ -307,4 +307,27 @@ int Vulkan::vkLoad()
 	// Log the choice
 
 	engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Selected GPU: %s", deviceProperties[0].deviceName);
+
+	// TODO: Add code to update the version and select the Vulkan function
+
+	// Create the logical device
+	
+	VkDeviceCreateInfo devInfo;
+	VkDeviceQueueCreateInfo queueMkInfo;
+	VkPhysicalDeviceFeatures devFeatures;
+	devInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+	devInfo.pNext = NULL;
+	devInfo.flags = 0;
+
+	// TODO: create the queues
+	// TODO: handle extensions and layers
+	// TODO: select device features
+
+	VkResult code;
+	if(vkCall(vkCreateDevice, Vulkan::physicalDevice, &devInfo, &device) != VK_SUCCESS)
+	{
+		engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Failure to create the logical device");
+		exit(VK_LOAD_FAILURE);
+	}
+
 }

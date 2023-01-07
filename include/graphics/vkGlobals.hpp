@@ -24,10 +24,6 @@ typedef void* dllptr_t;
 
 #include "include/graphics/vkCall.hpp"
 
-#ifndef VULKAN_VERSION
-#define VULKAN_VERSION VK_VERSION_1_0
-#endif
-
 namespace engine
 {
 namespace internals
@@ -57,6 +53,8 @@ namespace internals
 		extern VkPhysicalDeviceProperties physicalDeviceProperties;
 		extern VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
 		extern size_t physicalDeviceVRAM;
+		
+		// TODO: Add different Vulkan render functions based on different Vulkan versions and extensions
 	};
 };
 };
