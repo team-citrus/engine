@@ -12,31 +12,43 @@
 #include <cstdint>
 #include "include/core/extensions.hpp"
 #include "include/core/component.hpp"
+#include "include/core/mem.hpp"
 
 namespace engine
 {
     class object
     {
         public:
+            object()
+            {
+                componentCount = 0;
+                components = memalloc(sizeof(component*), MEM_FLAG_UNIT_BYTE);
+            }
             // Functions like Unity's AddComponent<T>()
             template<typename T>
-            T &addComponent();
+            T &addComponent()
+            {
+                componentCount++;
+                components = memrealloc(components, sizeof(component*) * componentCount, MEM_FLAG_UNIT_BYTE);
+                components[componentCount - 1]->awake();
+                return *components[componentCount - 1];
+            }
 
             // Functions like Unity's GetComponent<T>()
             template<typename T>
             OPERATOR T &getComponent()
             {
-                component *cur = components;
                 for(int i = 0; i < componentCount; i++)
                 {
-                    if(cur->componentID == typeid(T))
-                        return *cur;
-                    cur = (component*)((uintptr_t)cur + cur->size);
+                    if(components[i]->componentID == typeid(T))
+                    {
+                        return *components[i];
+                    }
                 }
             }
         private:
             int componentCount;
-            component *components;  
+            component **components;  
     };
 };
 

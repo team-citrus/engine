@@ -20,35 +20,48 @@ namespace engine
 	{
 		public:
 			// Functions similar to Unity's awake()
-			virtual void awake();
+			virtual void awake()
+			{
+				return;
+			}
 			// Functions similar to Unity's start()
-			virtual void start();
+			virtual void start()
+			{
+				return;
+			}
 			// Functions similar to Unity's update()
-			virtual void update();
+			virtual void update()
+			{
+				return;
+			}
 			
 			// Functions similar to Unity's fixedUpdate()
-			virtual void fixedUpdate();
+			virtual void fixedUpdate()
+			{
+				return;
+			}
 			// Functions similar to Unity's onTriggerEnter()
-			virtual void onTriggerEnter();
+			virtual void onTriggerEnter()
+			{
+				return;
+			}
 			// Functions similar to Unity's onTriggerStay()
-			virtual void onTriggerStay();
+			virtual void onTriggerStay()
+			{
+				return;
+			}
 			// Functions similar to Unity's onTriggerExit()
-			virtual void onTriggerExit();
+			virtual void onTriggerExit()
+			{
+				return;
+			}
 
 			OPERATOR object &getObject()
 			{
-				return *owner;
-			}
-
-			// Functions like Unity's getComponent<T>()
-			template <typename T>
-			OPERATOR T &getComponent()
-			{
-				return owner->getComponet();
+				return owner;
 			}
 		private:
-			object *owner;
-			size_t size;
+			object &owner;
 
 			// Use this to validate component type
 			std::type_info componentID;
