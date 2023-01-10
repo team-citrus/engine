@@ -16,40 +16,46 @@
 
 namespace engine
 {
-    class object
-    {
-        public:
-            object()
-            {
-                componentCount = 0;
-                components = memalloc(sizeof(component*), MEM_FLAG_UNIT_BYTE);
-            }
-            // Functions like Unity's AddComponent<T>()
-            template<typename T>
-            T &addComponent()
-            {
-                componentCount++;
-                components = memrealloc(components, sizeof(component*) * componentCount, MEM_FLAG_UNIT_BYTE);
-                components[componentCount - 1]->awake();
-                return *components[componentCount - 1];
-            }
+	class object
+	{
+		public:
+			object()
+			{
+				componentCount = 0;
+				components = memalloc(sizeof(component*), MEM_FLAG_UNIT_BYTE);
+			}
+			// Functions like Unity's AddComponent<T>()
+			template<typename T>
+			T &addComponent()
+			{
+				componentCount++;
+				components = memrealloc(components, sizeof(component*) * componentCount, MEM_FLAG_UNIT_BYTE);
+				components[componentCount - 1]->awake();
+				return *components[componentCount - 1];
+			}
 
-            // Functions like Unity's GetComponent<T>()
-            template<typename T>
-            OPERATOR T &getComponent()
-            {
-                for(int i = 0; i < componentCount; i++)
-                {
-                    if(components[i]->componentID == typeid(T))
-                    {
-                        return *components[i];
-                    }
-                }
-            }
-        private:
-            int componentCount;
-            component **components;  
-    };
+			// Functions like Unity's GetComponent<T>()
+			template<typename T>
+			OPERATOR T &getComponent()
+			{
+				for(int i = 0; i < componentCount; i++)
+					if(components[i]->componentID == typeid(T))
+						return *components[i];
+			}
+
+			// Functions like Unity's hasComponent<T>()
+			template<typename T>
+			OPERATOR bool hasComponent()
+			{
+				for(int i = 0; i < componentCount; i++)
+					if(components[i]->componentID == typeid(T))
+						return true;
+				return false;
+			}
+		private:
+			int componentCount;
+			component **components;  
+	};
 };
 
 #endif
