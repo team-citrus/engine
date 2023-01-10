@@ -37,118 +37,145 @@
 
 namespace engine
 {
-    namespace physics
-    {
-        class collider : component
-        {
-            private:
-            	// Transform is some anonymous unions to save memory and make our lives easier
+	namespace physics
+	{
+		class collider : component
+		{
+			private:
+				// Transform is some anonymous unions to save memory and make our lives easier
 
 				// Cordinates, right handed X coordinate
-				union
-				{
-					vec3 coordinates3D;
-					vec2 coordinates2D;
-				};
+				vec2 coordinates;
 
-				// Rotation, pitch, yaw, and roll form, technically is only used for quaternion conversions in 3d mode
-				union
-				{
-					vec3 rotation3D;
-					vec2 rotation2D;
-				};
+				vec2 rotation;
 
 				// Scale, like lens magnification, negative values invert the object on the axis
-				union
-				{
-					vec3 scale3D;
-					vec2 scale2D;
-				};
+				vec2 scale;
 
-				// QUATERNIONS
-				quaternion Quaternion;
+				physobject2D *owner;
 
-				physobject *owner;
+				/*  TODO: add engine::shape;
+				*   shape bshape
+				*/
+			public:
+				// Constructors
+				collider();
+				collider(int type);
+				collider(bool trigger);
+				collider(int type, bool trigger);
+				/*  TODO: add engine::shape
+				*   collider(shape base);
+				*   collider(shape base, bool trigger);
+				*/
 
-                /*  TODO: add engine::mesh and engine::shape
-                *   union
-                *   {   
-                *       mesh bmesh;
-                *       shape bshape
-                *   };
-                *
-                *   bool shapeOrMesh;
-                */
-            public:
-                // Constructors
-                collider();
-                collider(int type);
-                collider(bool trigger);
-                collider(int type, bool trigger);
-                /*  TODO: add engine::mesh and engine::shape
-                *   collider(mesh base);
-                *   collider(shape base);
-                *   collider(mesh base, bool trigger);
-                *   collider(shape base, bool trigger);
-                */
-
-               // Transform stuff
+			   // Transform stuff
 
 				/*	Set the position, relative to the owner
 				*	@param x X position
 				*	@param y Y position
 				*/
 				void setPos(double x, double y);
-				/*	Set the position, relative to the owner
-				*	@param x X position
-				*	@param y Y position
-				*	@param z Z position
-				*/
-				void setPos(double x, double y, double z);
+				
 				/*	Set the position, relative to the owner
 				*	@param pos The position
 				*/
 				void setPos(vec2 pos);
-				/*	Set the position, relative to the owner
-				*	@param pos The position
-				*/
-				void setPos(vec3 pos);
 
 				/* Set the rotation, relative to the owner
 				*	@param x Pitch
 				*	@param y Yaw
 				*/
 				void setRot(double x, double y);
-				/* Set the rotation, relative to the owner 
-				*	@param x Pitch
-				*	@param y Yaw
-				*	@param z Roll
-				*/
-				void setRot(double x, double y, double z);
+				
 				/*	Set the rotation, relative to the owner
 				*	@param pos The rotation
 				*/
 				void setRot(vec2 rot);
-				/*	Set the rotation, relative to the owner
-				*	@param pos The rotation
-				*/
-				void setRot(vec3 rot);
 
 				/*  Set the scale, relative to the owner
 				*	@param x X scale
 				*	@param y Y scale
 				*/
 				void setScale(double x, double y);
+				
+				/*	Set the scale, relative to the owner
+				*	@param scale The scale
+				*/
+				void setScale(vec2 scale);
+
+				// Advanced physics stuff
+				
+				//	Gets the owner
+				physobject2D &getPhysobject();
+		};
+
+		class collider3D : component
+		{
+			private:
+				// Transform is some anonymous unions to save memory and make our lives easier
+
+				// Cordinates, right handed X coordinate
+				vec3 coordinates;
+
+				// Rotation, pitch, yaw, and roll form, technically is only used for quaternion conversions in 3d mode
+				vec3 rotation;
+
+				// Scale, like lens magnification, negative values invert the object on the axis
+				vec3 scale;
+
+				// QUATERNIONS
+				quaternion Quaternion;
+
+				physobject3D *owner;
+
+				/*  TODO: add engine::mesh
+				*	mesh bmesh;
+				*/
+			public:
+				// Constructors
+				collider3D();
+				collider3D(int type);
+				collider3D(bool trigger);
+				collider3D(int type, bool trigger);
+				/*  TODO: add engine::mesh
+				*   collider(mesh base);
+				*   collider(mesh base, bool trigger);
+				*/
+
+				// Transform stuff
+
+				
+				/*	Set the position, relative to the owner
+				*	@param x X position
+				*	@param y Y position
+				*	@param z Z position
+				*/
+				void setPos(double x, double y, double z);
+				
+				/*	Set the position, relative to the owner
+				*	@param pos The position
+				*/
+				void setPos(vec3 pos);
+
+				/* Set the rotation, relative to the owner 
+				*	@param x Pitch
+				*	@param y Yaw
+				*	@param z Roll
+				*/
+				void setRot(double x, double y, double z);
+				
+				/*	Set the rotation, relative to the owner
+				*	@param pos The rotation
+				*/
+				void setRot(vec3 rot);
+
 				/* Set the scale, relative to the owner
 				*	@param x X scale
 				*	@param y Y scale
 				*	@param z Z scale
 				*/
 				void setScale(double x, double y, double z);
-				/*	Set the scale, relative to the owner
-				*	@param scale The scale
-				*/
-				void setScale(vec2 scale);
+				
 				/*	Set the scale, relative to the owner
 				*	@param pos The scale
 				*/
@@ -157,9 +184,9 @@ namespace engine
 				// Advanced physics stuff
 				
 				//	Gets the owner
-				physobject &getPhysobject();
-        };
-    };
+				physobject3D &getPhysobject();
+		};
+	};
 };
 
 #endif

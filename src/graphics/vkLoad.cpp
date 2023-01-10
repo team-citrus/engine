@@ -187,7 +187,10 @@ int Vulkan::vkLoad()
 	iInfo.ppEnabledExtensionNames = NULL;
 
 	// Initalize the instance
-	vkInstanceCall(vkCreateInstance, 0, &iInfo, NULL, &Vulkan::instance);
+	if(vkInstanceCall(vkCreateInstance, 0, &iInfo, NULL, &Vulkan::instance) != VK_SUCCESS)
+	{
+		engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Failure to create Vulkan instance.");
+	}
 
 	// TODO: Validation layers
 
@@ -195,7 +198,7 @@ int Vulkan::vkLoad()
 
 	// Get the count
 
-	int devCount;
+	int devCount = 0;
 	vkInstanceCall(vkEnumeratePhysicalDevices, Vulkan::instance, &devCount, NULL);
 	if(devCount == 0) 
 	{
@@ -323,7 +326,6 @@ int Vulkan::vkLoad()
 	// TODO: handle extensions and layers
 	// TODO: select device features
 
-	VkResult code;
 	if(vkCall(vkCreateDevice, Vulkan::physicalDevice, &devInfo, &device) != VK_SUCCESS)
 	{
 		engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Failure to create the logical device");

@@ -27,25 +27,19 @@ namespace engine
 {
 	namespace physics
 	{
-		class rigidbody : component
+		class rigidbody2D : component
 		{
 			private:
-				// Save us some RAM using anonymous unions
-				union
-				{
-					// Box2d rigidbody representation
-					b2Body *body2D;
-					// Bullet rigidbody representation
-					btRigidBody *body3D;
-				};
+				// Box2d rigidbody representation
+				b2Body *body2D;
 
-				physobject *owner;
+				physobject2D *owner;
 
 				// See if we should keep calculating it, or not. Useful for optimization
 				bool awake;
 			public:
 				// Constructors
-				rigidbody();
+				rigidbody2D();
 
 				// Rigidbody stuff
 
@@ -63,6 +57,49 @@ namespace engine
 				*/
 				void applyForce(vec2 force, int mode);
 
+				// Velocity
+
+				// Gets the velocity in the form of a vec2
+				vec2 getVelocity();
+
+				/*	Sets the velocity
+				*	@param velocity The new velocity
+				*/
+				void setVelocity(vec2 velocity);
+
+				// Advanced physics stuff
+				
+				//	Gets the owner
+				OPERATOR physobject2D &getPhysobject()
+				{
+					return *owner;
+				}
+		};
+
+		class rigidbody2D : component
+		{
+			private:
+				// Box2d rigidbody representation
+				btRigidBody *body3D;
+
+				physobject3D *owner;
+
+				// See if we should keep calculating it, or not. Useful for optimization
+				bool awake;
+			public:
+				// Constructors
+				rigidbody3D();
+
+				// Rigidbody stuff
+
+				// Awakes the rigidbody if it's asleep
+				void awaken();
+
+				// Get sleep status
+				bool isAwake();
+
+				// Forces
+
 				/*	Practically identical to Unity's Rigidbody.AddForce()
 				*	@param force The force to apply, based on coordinates
 				*	@param mode The mode of the force
@@ -71,90 +108,21 @@ namespace engine
 
 				// Velocity
 
-				// Gets the velocity in the form of a vec2
-				vec2 getVelocity2();
-				
 				// Gets the velocity in the form of a vec3
-				vec3 getVelocity3();
+				vec3 getVelocity();
 
 				/*	Sets the velocity
 				*	@param velocity The new velocity
 				*/
 				void setVelocity(vec3 velocity);
 
-				/*	Sets the velocity
-				*	@param velocity The new velocity
-				*/
-				void setVelocity(vec2 velocity);
-
-				// Copied from engine::physobject
-
-				// Transform stuff
-
-				/*	Set the position
-				*	@param x X position
-				*	@param y Y position
-				*/
-				void setPos(double x, double y);
-				/*	Set the position
-				*	@param x X position
-				*	@param y Y position
-				*	@param z Z position
-				*/
-				void setPos(double x, double y, double z);
-				/*	Set the position
-				*	@param pos The position
-				*/
-				void setPos(vec2 pos);
-				/*	Set the position
-				*	@param pos The position
-				*/
-				void setPos(vec3 pos);
-
-				/* Set the rotation
-				*	@param x Pitch
-				*	@param y Yaw
-				*/
-				void setRot(double x, double y);
-				/* Set the rotation
-				*	@param x Pitch
-				*	@param y Yaw
-				*	@param z Roll
-				*/
-				void setRot(double x, double y, double z);
-				/*	Set the rotation
-				*	@param pos The rotation
-				*/
-				void setRot(vec2 rot);
-				/*	Set the rotation
-				*	@param pos The rotation
-				*/
-				void setRot(vec3 rot);
-
-				/* Set the scale
-				*	@param x X scale
-				*	@param y Y scale
-				*/
-				void setScale(double x, double y);
-				/* Set the scale
-				*	@param x X scale
-				*	@param y Y scale
-				*	@param z Z scale
-				*/
-				void setScale(double x, double y, double z);
-				/*	Set the scale
-				*	@param scale The scale
-				*/
-				void setScale(vec2 scale);
-				/*	Set the scale
-				*	@param pos The scale
-				*/
-				void setScale(vec3 scale);
-
 				// Advanced physics stuff
 				
 				//	Gets the owner
-				physobject &getPhysobject();
+				OPERATOR physobject3D &getPhysobject()
+				{
+					return *owner;
+				}
 		};
 	}
 }
