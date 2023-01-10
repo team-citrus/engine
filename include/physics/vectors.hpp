@@ -9,6 +9,7 @@
 #ifndef CITRUS_ENGINE_VECTORS_HPP__
 #define CITRUS_ENGINE_VECTORS_HPP__
 
+#define GLM_FORCE_SSE2 -1
 #include <glm/glm.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
