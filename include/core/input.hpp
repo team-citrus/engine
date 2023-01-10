@@ -31,7 +31,7 @@ namespace engine
 		// Returns true when a mouse button is released
 		bool getMouseButtonUp(int button);
 
-		// Returns true if any key is down this frame
+		// Returns true if any key is down
 		bool anyKey();
 		
 		// TODO: Add controller functions
