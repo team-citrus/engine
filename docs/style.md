@@ -4,7 +4,7 @@
 
 **DO NOT USE ANY INLINE ASSEMBLY WHATSOEVER. WE CANNOT STRESS THIS ENOUGH.**
 
-You should refrain from using any compiler extensions, anonymous structs and unions are exceptions, as msvc, gcc, and clang support them.
+You should refrain from using any compiler extensions, anonymous structs and unions, and `xmmintrin.h` are exceptions, as msvc, gcc, and clang support them.
 Use them only when necessary.
 Common compiler extensions as well as some additional defines can be found in include/core/extensions.hpp, anything defines in that file can be used freely.
 
