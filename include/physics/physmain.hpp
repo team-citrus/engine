@@ -9,8 +9,10 @@
 #ifndef CITRUS_ENGINE_PHYSICS_MAIN_HPP__
 #define CITRUS_ENGINE_PHYSICS_MAIN_HPP__
 
+#include <box2d/box2d.h>
+#include <btBulletDynamicsCommon.h>
 #include "include/core/vector.hpp"
-#include "include/physics/sim.hpp"
+#include "include/physics/physobject.hpp"
 
 #define INTERNALS_PHYSICS_DEQUEUE_ERR_NOT_FOUND -1
 #define INTERNALS_PHYSICS_QUEUE_ERR_ALREADY_QUEUED -1
@@ -24,9 +26,9 @@ namespace internals
         using namespace physics;
 
         // Initalize physics
-        void Init();
+        void Init(bool 2D);
 
-        // Deconstruct physics to prepare for shutdown
+        // Deconstruct physics
         void Fini();
 
         /*  Steps the main physics simulation
@@ -35,6 +37,27 @@ namespace internals
         *   @return Any error codes that might arrise
         */
         int step();
+
+        // State of physics
+        class PHYS_STATE
+        {
+            public:
+            bool is2D;
+            float stepTime;
+            union
+            {
+                b2World world2D;
+                btDiscreteDynamicsWorld world3D;
+            };
+            union
+            {
+                Vector<engine::physics::physobject2D> objs2D;
+                Vector<engine::physics::physobject3D> objs3D;
+            };
+        }
+
+        // The physics state
+        PHYS_STATE state;
     };
 };
 };

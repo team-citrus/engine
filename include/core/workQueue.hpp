@@ -20,6 +20,18 @@ namespace engine
 		typedef Vector<queuePtr> workQueue;
 		
 		#define EXECUTE_ITEM_IN_QUEUE(x, ...) (__VA_ARGS_FIX__((queuePtr)x(__VA_ARGS__)))
+
+		/*	Executes all items in a queue, applying all args passed to each of the items in the queue
+		*	@return Vector of each of the returns
+		*/
+		template <typename...A>
+		Vector<size_t> executeQueue(Vector<queuePtr> queue, A...args)
+		{
+			Vector<size_t> ret;
+			for(int i = 0; i < queue.getCount(); i++)
+				ret.push(EXECUTE_ITEM_IN_QUEUE(queue[i], args...));
+			return ret;
+		}
 	};
 };
 
