@@ -79,8 +79,8 @@ Until these versions are created, `std::vector` and `std::string` can be used.
 
 ## C++11 and later features
 
-C++11 should be the latest standard used for any engine code.
-Most new C++11 keywords like `auto` and lambdas should be avoided.
+C++17 should be the latest standard used for any engine code.
+Most new C++17 keywords like `auto` and lambdas should be avoided.
 `constexpr` should be avoided like `const`.
 `nullptr` should be avoided and instead the classical `NULL` found in `cstdlib` should be used.
 Newer redundant features should be avoided.
