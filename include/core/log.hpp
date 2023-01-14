@@ -10,45 +10,38 @@
 #define CITRUS_ENGINE_LOGGING_HPP__
 
 #include <cstdio>
+#include <ctime>
 
-#ifndef _ENGINE_LOG_FILE_
-#define _ENGINE_LOG_FILE_ "logs/engine.log"
-#endif
-
-#ifndef _GAME_LOG_FILE_
-#define _GAME_LOG_FILE_ "logs/game.log"
-#endif
-
-#ifndef _NETWORK_LOG_FILE_
-#define _NETWORK_LOG_FILE_ "log/network.log"
-#endif
-
-#ifndef _CRASH_LOG_FILE_
-#define _CRASH_LOG_FILE_ "log/crash.log"
+#ifndef _LOG_FILE_
+#define _LOG_FILE_ "log.log"
 #endif
 
 namespace engine
 {
-	class logger
+	namespace internals
 	{
-	private:
-		FILE *bfile;
+		FILE *logfile;
+		void initLogging()
+		{
+			file = fopen(_LOG_FILE_, "a+");
+		}
+		void finiLogging()
+		{
+			fclose(file);
+		}
+	}
 
-	public:
-		logger(const char *file);
-		~logger();
+	// Logs a message, works like printf, and appends a newline
+	template <typename...T>
+	void log(const char *module, const char *format, T...args)
+	{
+		time_t t = time(NULL);
+    	tm T = *localtime(&t);
 
-		/*	Log a message, works like printf, however the trailing newline is added
-		*	@param module The string of the module/function/component/class the message is being logged from
-		*	@param format The format string, in printf style
-		*/
-		void log(const char *module, const char *format, ...);
-	};
-
-	logger engineLog(_ENGINE_LOG_FILE_);
-	logger gameLog(_GAME_LOG_FILE_);
-	logger networkLog(_NETWORK_LOG_FILE_);
-	logger crashLog(_CRASH_LOG_FILE_);
+    	fprintf(internals::logfile, "[%d-%d-%d-%d-%d:%d] %s: ", T.tm_year + 1900, T.tm_mon + 1, T.tm_mday, T.tm_hour, T.tm_min, T.tm_sec, module);
+		fprintf(internals::logfile, format, args...);
+		putc('\n', internals::logfile);
+	}
 };
 
 #endif
