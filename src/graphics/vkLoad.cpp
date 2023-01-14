@@ -133,7 +133,7 @@ int Vulkan::vkLoad()
 	Vulkan::libvulkan = dlopen("libvulkan.so.1", RTLD_NOW);
 	if(Vulkan::libvulkan == NULL)
 	{
-		engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "libvulkan.so.1 not found");
+		log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "libvulkan.so.1 not found");
 		exit(VULKAN_NOT_FOUND);
 	}
 
@@ -146,7 +146,7 @@ int Vulkan::vkLoad()
 	Vulkan::libvulkan = LoadLibraryA("Vulkan-1.dll");
 	if(Vulkan::libvulkan == NULL)
 	{
-		engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Vulkan-1.dll not found");
+		log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Vulkan-1.dll not found");
 		exit(VULKAN_NOT_FOUND);
 	}
 
@@ -158,7 +158,7 @@ int Vulkan::vkLoad()
 
 	if(vkGetInstanceProcAddr == NULL || vkGetDeviceProcAddr == NULL)
 	{
-		engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Failure to load critical Vulkan functions");
+		log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Failure to load critical Vulkan functions");
 		exit(VK_LOAD_FAILURE);
 	}
 
@@ -202,7 +202,7 @@ int Vulkan::vkLoad()
 	vkInstanceCall(vkEnumeratePhysicalDevices, Vulkan::instance, &devCount, NULL);
 	if(devCount == 0) 
 	{
-		engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "No compatible GPUs found");
+		log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "No compatible GPUs found");
 		exit(COMPATIBLE_GPU_NOT_FOUND);
 	}
 
@@ -309,7 +309,7 @@ int Vulkan::vkLoad()
 
 	// Log the choice
 
-	engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Selected GPU: %s", deviceProperties[0].deviceName);
+	log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Selected GPU: %s", deviceProperties[0].deviceName);
 
 	// TODO: Add code to update the version and select the Vulkan function
 
@@ -328,7 +328,7 @@ int Vulkan::vkLoad()
 
 	if(vkCall(vkCreateDevice, Vulkan::physicalDevice, &devInfo, &device) != VK_SUCCESS)
 	{
-		engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Failure to create the logical device");
+		log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Failure to create the logical device");
 		exit(VK_LOAD_FAILURE);
 	}
 

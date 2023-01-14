@@ -23,11 +23,11 @@ namespace engine
 		FILE *logfile;
 		void initLogging()
 		{
-			file = fopen(_LOG_FILE_, "a+");
+			logfile = fopen(_LOG_FILE_, "a+");
 		}
 		void finiLogging()
 		{
-			fclose(file);
+			fclose(logfile);
 		}
 	}
 
