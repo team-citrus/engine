@@ -10,6 +10,7 @@
 #define CITRUS_ENGINE_OBJECTS_HPP__
 
 #include <cstdint>
+#include <cstring>
 #include "include/core/extensions.hpp"
 #include "include/core/component.hpp"
 #include "include/core/mem.hpp"
@@ -52,7 +53,25 @@ namespace engine
 						return true;
 				return false;
 			}
+
+			OPERATOR bool hasTag(const char *tag)
+			{
+				for(int i = 0; i < tags.getCount(); i++)
+				{
+					if(!strcmp(tags[i], tag))
+					{
+						return true;
+					}
+				}
+				return false;
+			}
+
+			OPERATOR void addTag(const char *tag)
+			{
+				tags.push(tag);
+			}
 		private:
+			Vector<const char*> tags;
 			int componentCount;
 			component **components;  
 	};
