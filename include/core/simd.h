@@ -94,6 +94,23 @@ typedef __m256i m256i_t;
 #define extract_i64(a, i) _mm_extract_epi64(a, i)
 #define extract_f32(a, i) _mm_extract_ps(a, i)
 
+#define sub_epi8(a, b) _mm_sub_epi8(a, b)
+#define sub_epi16(a, b) _mm_sub_epi16(a, b)
+#define sub_epi32(a, b) _mm_sub_epi32(a, b)
+#define sub_epi64(a, b) _mm_sub_epi64(a, b)
+#define sub_pd(a, b) _mm_sub_pd(a, b)
+#define sub_ps(a, b) _mm_sub_ps(a, b)
+#define sub_sd(a, b) _mm_sub_sd(a, b)
+
+#define mul_pd(a, b) _mm_mul_pd(a, b)
+#define mul_ps(a, b) _mm_mul_ps(a, b)
+#define mul_sd(a, b) _mm_mul_sd(a, b)
+
+#define div_pd(a, b) _mm_div_pd(a, b)
+#define div_ps(a, b) _mm_div_ps(a, b)
+#define div_sd(a, b) _mm_div_sd(a, b)
+
+
 // TODO: Add more stuff
 
 #endif
