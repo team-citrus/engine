@@ -83,6 +83,17 @@ typedef __m256i m256i_t;
 
 #define clflush(cvp) _mm_cflush(cvp)
 
+#define crc32_u8(crc, u8) _mm_crc32_u8(crc, u8)
+#define crc32_u16(crc, u16) _mm_crc32_u16(crc, u16)
+#define crc32_u32(crc, u32) _mm_crc32_u32(crc, u32)
+#define crc32_u64(crc, u64) _mm_crc32_u64(crc, u64)
+
+#define extract_i8(a, i) _mm_extract_epi8(a, i)
+#define extract_i16(a, i) _mm_extract_epi16(a, i)
+#define extract_i32(a, i) _mm_extract_epi32(a, i)
+#define extract_i64(a, i) _mm_extract_epi64(a, i)
+#define extract_f32(a, i) _mm_extract_ps(a, i)
+
 // TODO: Add more stuff
 
 #endif
