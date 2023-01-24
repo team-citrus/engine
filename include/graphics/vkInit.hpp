@@ -1,7 +1,7 @@
 /*
 *   name: include/graphics/vkInit.hpp
 *   origin: Citrus Engine
-*   purpose: {PURPOSE FOR THE FILE}
+*   purpose: Functions for initalizing and de-initalizing Vulkan
 *   author: https://github.com/ComradeYellowCitrusFruit
 *   license: LGPL-3.0-only
 */

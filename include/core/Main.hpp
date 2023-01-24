@@ -9,10 +9,23 @@
 #ifndef CITRUS_ENGINE_MAIN_FUNCTIONS_HPP__
 #define CITRUS_ENGINE_MAIN_FUNCTIONS_HPP__
 
+#include <thread>
+#include <ctime>
+#include <csetjmp>
+
 namespace engine
 {
     namespace internals
     {
+        bool usingVulkan;
+        int frameRate;
+        jmp_buf buf
+
+        std::thread render;
+        std::thread phys;
+        std::thread mix;
+        std::thread gameplay;
+
         // Render the scene, and draw the UI
         int draw();
         // Step the physics simulation, and call all physics triggered functions

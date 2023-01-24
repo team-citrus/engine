@@ -11,53 +11,31 @@
 
 #include "include/core/simd.h"
 
-class m128ps
+// TODO: Make this actually useful
+
+class m128_i8
 {
-    m128f_t pfs;
+    m128i_t Pi8;
     public:
-    m128ps(m128f_t f)
+
+    m128_i8(m128i_t i)
     {
-        pfs = f;
+        Pi8 = i;
     }
 
-    inline m128ps operator+(const m128f_t &b)
+    m128_i8 operator+(m128_i8 &i)
     {
-        return m128ps(add_ps(pfs, b));
+        return m128_i8(add_epi8(Pi8, i.Pi8));
     }
 
-    inline m128ps operator+(const m128ps &b)
+    m128_i8 operator+(m128i_t &i)
     {
-        return m128ps(add_ps(pfs, b.pfs));
+        return m128_i8(add_epi8(Pi8, i));
     }
 
-    inline m128ps operator-(const m128f_t &b)
+    m128_i8 operator+(i8 i)
     {
-        return m128ps(sub_ps(pfs, b));
-    }
-
-    inline m128ps operator-(const m128ps &b)
-    {
-        return m128ps(sub_ps(pfs, b.pfs));
-    }
-
-    inline m128ps operator*(const m128f_t &b)
-    {
-        return m128ps(mul_ps(pfs, b));
-    }
-
-    inline m128ps operator*(const m128ps &b)
-    {
-        return m128ps(mul_ps(pfs, b.pfs));
-    }
-
-    inline m128ps operator/(const m128f_t &b)
-    {
-        return m128ps(div_ps(pfs, b));
-    }
-
-    inline m128ps operator/(const m128ps &b)
-    {
-        return m128ps(div_ps(pfs, b.pfs));
+        return 
     }
 };
 
