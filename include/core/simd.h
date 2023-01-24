@@ -67,15 +67,6 @@ typedef __m256i m256i_t;
 #define bslli_si128(a, i) _mm_bslli_si128(a, i)
 #define bsrli_si128(a, i) _mm_bsrli_si128(a, i)
 
-#define castpd_ps(a) _mm_castpd_ps(a)
-#define castpd_si128(a) _mm_castpd_si128(a)
-
-#define castps_pd(a) _mm_castps_pd(a)
-#define castps_si128(a) _mm_castps_si128(a)
-
-#define castsi128_pd(a) _mm_castsi128_pd(a)
-#define castsi128_ps(a) _mm_castsi128_ps(a)
-
 #define ceil_pd(a) _mm_ceil_pd(a)
 #define ceil_ps(a) _mm_ceil_ps(a)
 #define ceil_sd(a, b) _mm_ceil_sd(a, b)
@@ -110,6 +101,43 @@ typedef __m256i m256i_t;
 #define div_ps(a, b) _mm_div_ps(a, b)
 #define div_sd(a, b) _mm_div_sd(a, b)
 
+#define or_pd(a, b) _mm_or_pd(a, b)
+#define or_ps(a, b) _mm_or_ps(a, b)
+#define or_si128(a, b) _mm_or_si128(a, b)
+
+#define xor_pd(a, b) _mm_xor_pd(a, b)
+#define xor_ps(a, b) _mm_xor_ps(a, b)
+#define xor_si128(a, b) _mm_xor_si128(a, b)
+
+#define epi8_i16(a) _mm_cvtepi8_epi16(a)
+#define epi8_i32(a) _mm_cvtepi8_epi32(a)
+#define epi8_i64(a) _mm_cvtepi8_epi64(a)
+
+#define epi16_i32(a) _mm_cvtepi16_epi32(a)
+#define epi16_i64(a) _mm_cvtepi16_epi64(a)
+
+#define epi32_i64(a) _mm_cvtepi32_epi64(a)
+
+#define epu8_i16(a) _mm_cvtepu8_epi16(a)
+#define epu8_i32(a) _mm_cvtepu8_epi32(a)
+#define epu8_i64(a) _mm_cvtepu8_epi64(a)
+
+#define epu16_i32(a) _mm_cvtepu16_epi32(a)
+#define epu16_i64(a) _mm_cvtepu16_epi64(a)
+
+#define epu32_i64(a) _mm_cvtepu32_epi64(a)
+
+#define get_f64(a) _mm_cvtsd_f64(a)
+#define get_i32(a) _mm_cvtsi128_si32(a)
+#define get_i64(a) _mm_cvtsi128_si64(a)
+
+#define mov_i32(i) _mm_cvtsi32_si128(i)
+#define mov_i64(i) _mm_cvtsi64_si128(i)
+#define mov_pd(ptr) _mm_load_pd(ptr)
+#define mov_ps(ptr) _mm_load_ps(ptr)
+#define mov_sd(ptr) _mm_load_sd(ptr)
+#define mov_ss(ptr) _mm_load_ss(ptr)
+#define mov_s128(ptr) _mm_load_si128(ptr)
 
 // TODO: Add more stuff
 
