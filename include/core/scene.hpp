@@ -1,5 +1,5 @@
 /*
-*   name: core/scene.hpp
+*   name: include/core/scene.hpp
 *   origin: Citrus Engine
 *   purpose: Provide public scene functions
 *   author: https://github.com/ComradeYellowCitrusFruit

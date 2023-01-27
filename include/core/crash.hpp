@@ -1,5 +1,5 @@
 /*
-*	name: core/crash.hpp
+*	name: include/core/crash.hpp
 *	origin: Citrus Engine
 *	purpose: Provide crash exit codes and error codes
 *	author: https://github.com/ComradeYellowCitrusFruit

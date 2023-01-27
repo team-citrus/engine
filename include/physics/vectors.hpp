@@ -1,5 +1,5 @@
 /*
-*   name: physics/vectors.hpp
+*   name: include/physics/vectors.hpp
 *   origin: Citrus Engine
 *   purpose: Provides typedefs for the glm vector types
 *   author: https://github.com/ComradeYellowCitrusFruit

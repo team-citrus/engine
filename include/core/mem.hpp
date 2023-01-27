@@ -1,5 +1,5 @@
 /*
-*   name: core/mem.hpp
+*   name: include/core/mem.hpp
 *   origin: Citrus Engine
 *   purpose: Provide memory allocation functions
 *   author: https://github.com/ComradeYellowCitrusFruit

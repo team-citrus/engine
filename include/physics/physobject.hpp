@@ -1,5 +1,5 @@
 /*
-*   name: physics/physobject.hpp
+*   name: include/physics/physobject.hpp
 *   origin: Citrus Engine
 *   purpose: Provides the engine::physics::physobject class
 *   author: https://github.com/ComradeYellowCitrusFruit

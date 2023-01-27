@@ -1,5 +1,5 @@
 /*
-*   name: core/scene_int.hpp
+*   name: include/core/scene_int.hpp
 *   origin: Citrus Engine
 *   purpose: Provide scene internals
 *   author: https://github.com/ComradeYellowCitrusFruit

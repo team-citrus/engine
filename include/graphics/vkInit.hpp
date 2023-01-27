@@ -1,5 +1,5 @@
 /*
-*   name: graphics/vkInit.hpp
+*   name: include/graphics/vkInit.hpp
 *   origin: Citrus Engine
 *   purpose: Functions for initalizing and de-initalizing Vulkan
 *   author: https://github.com/ComradeYellowCitrusFruit

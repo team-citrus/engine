@@ -1,5 +1,5 @@
 /*
-*   name: core/object.hpp
+*   name: include/core/object.hpp
 *   origin: Citrus Engine
 *   purpose: Provide the engine::object class
 *   author: https://github.com/ComradeYellowCitrusFruit

@@ -1,5 +1,5 @@
 /*
-*   name: physics/collider.hpp
+*   name: include/physics/collider.hpp
 *   origin: Citrus Engine
 *   purpose: Provides collider classes
 *   author: https://github.com/ComradeYellowCitrusFruit

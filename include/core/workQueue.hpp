@@ -1,5 +1,5 @@
 /*
-*   name: core/workQueue.hpp
+*   name: include/core/workQueue.hpp
 *   origin: Citrus Engine
 *   purpose: Provides work queues, pretty much just vectors of function pointers, meant to improve code readability of code in event loop functions
 *   author: https://github.com/ComradeYellowCitrusFruit

@@ -1,5 +1,5 @@
 /*
-*   name: physics/rigidbody.hpp
+*   name: include/physics/rigidbody.hpp
 *   origin: Citrus Engine
 *   purpose: Provides the engine::physics::rigidbody class
 *   author: https://github.com/ComradeYellowCitrusFruit

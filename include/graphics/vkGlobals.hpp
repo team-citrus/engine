@@ -1,5 +1,5 @@
 /*
-*   name: graphics/vkGlobals.hpp
+*   name: include/graphics/vkGlobals.hpp
 *   origin: Citrus Engine
 *   purpose: {PURPOSE FOR THE FILE}
 *   author: https://github.com/ComradeYellowCitrusFruit

@@ -1,5 +1,5 @@
 /*
-*   name: core/pair.hpp
+*   name: include/core/pair.hpp
 *   origin: Citrus Engine
 *   purpose: Provide pairs and maps
 *   author: https://github.com/ComradeYellowCitrusFruit

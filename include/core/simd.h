@@ -1,5 +1,5 @@
 /*
-*   name: core/simd.h
+*   name: include/core/simd.h
 *   origin: Citrus Engine
 *   purpose: Provide SIMD abstractions
 *   author: https://github.com/ComradeYellowCitrusFruit

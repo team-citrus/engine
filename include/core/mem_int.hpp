@@ -1,5 +1,5 @@
 /*
-*   name: core/mem_int.hpp
+*   name: include/core/mem_int.hpp
 *   origin: Citrus Engine
 *   purpose: Provide memory management internals
 *   author: https://github.com/ComradeYellowCitrusFruit
