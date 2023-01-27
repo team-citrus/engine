@@ -83,6 +83,8 @@ namespace engine
 
 			friend int internals::gameplayMain();
 	};
+
+	// TODO: Rust interop class
 };
 
 #endif

@@ -38,6 +38,8 @@ namespace engine
 	};
 
 	INPUT_SYSTEM input;
+
+	// TODO: Rust interop class
 };
 
 #endif

@@ -67,6 +67,8 @@ namespace engine
 			std::type_info componentID;
 			friend class object;
 	};
+
+	// TODO: Rust interop class
 };
 
 #endif
