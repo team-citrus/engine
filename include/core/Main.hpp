@@ -1,5 +1,5 @@
 /*
-*	name: core/Main.hpp
+*	name: include/core/Main.hpp
 *	origin: Citrus Engine
 *	purpose: Provide the main engine functions
 *	author: https://github.com/ComradeYellowCitrusFruit
@@ -17,14 +17,14 @@ namespace engine
 {
     namespace internals
     {
-        bool usingVulkan;
-        int frameRate;
-        jmp_buf buf
+        extern bool usingVulkan;
+        extern int frameRate;
+        extern jmp_buf buf
 
-        std::thread render;
-        std::thread phys;
-        std::thread mix;
-        std::thread gameplay;
+        extern std::thread render;
+        extern std::thread phys;
+        extern std::thread mix;
+        extern std::thread gameplay;
 
         // Render the scene, and draw the UI
         int draw();

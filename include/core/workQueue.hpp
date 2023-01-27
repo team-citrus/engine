@@ -29,7 +29,7 @@ namespace engine
 		*	@return Vector of each of the returns
 		*/
 		template <typename...A>
-		Vector<size_t> executeQueue(workQueue queue, A...args)
+		OPERATOR Vector<size_t> executeQueue(workQueue queue, A...args)
 		{
 			Vector<size_t> ret;
 			for(int i = 0; i < queue.getCount(); i++)

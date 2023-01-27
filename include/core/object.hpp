@@ -14,6 +14,7 @@
 #include "core/extensions.hpp"
 #include "core/component.hpp"
 #include "core/mem.hpp"
+#include "core/Main.hpp"
 
 namespace engine
 {
@@ -22,8 +23,8 @@ namespace engine
 		public:
 			object()
 			{
-				componentCount = 0;
-				components = memalloc(sizeof(component*), MEM_FLAG_UNIT_BYTE);
+				cCount = 0;
+				components = (component**)memalloc(sizeof(component*), MEM_FLAG_UNIT_BYTE);
 			}
 			// Functions like Unity's AddComponent<T>()
 			template<typename T>
@@ -70,10 +71,17 @@ namespace engine
 			{
 				tags.push(tag);
 			}
+
+			OPERATOR int componentCount()
+			{
+				return cCount;
+			}
 		private:
 			Vector<const char*> tags;
-			int componentCount;
-			component **components;  
+			int cCount;
+			component **components;
+
+			friend int internals::gameplayMain();
 	};
 };
 

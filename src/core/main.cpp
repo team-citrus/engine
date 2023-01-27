@@ -14,6 +14,15 @@
 using namespace engine;
 using namespace internals;
 
+bool internals::usingVulkan;
+int internals::frameRate;
+jmp_buf internals::buf
+
+std::thread internals::render;
+std::thread internals::phys;
+std::thread internals::mix;
+std::thread internals::gameplay;
+
 int main(int argc, char const **argv)
 {
     // TODO: Add crash handling stuff
