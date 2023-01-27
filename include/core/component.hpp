@@ -1,5 +1,5 @@
 /*
-*   name: include/core/component.hpp
+*   name: core/component.hpp
 *   origin: Citrus Engine
 *   purpose: Provide the base class for all components
 *   author: https://github.com/ComradeYellowCitrusFruit
@@ -10,8 +10,8 @@
 #define CITRUS_ENGINE_COMPONENTS_HPP__
 
 #include <typeinfo>
-#include "include/core/extensions.hpp"
-#include "include/core/object.hpp"
+#include "core/extensions.hpp"
+#include "core/object.hpp"
 
 namespace engine
 {

@@ -19,13 +19,13 @@
 
 #include <stdlib.h>
 #include <vulkan.h>
-#include "include/core/crash.hpp"
-#include "include/core/log.hpp"
-#include "include/core/mem.hpp"
-#include "include/core/extensions.hpp"
-#include "include/core/vector.hpp"
-#include "include/graphics/vkGlobals.hpp"
-#include "include/graphics/vkInit.hpp"
+#include "core/crash.hpp"
+#include "core/log.hpp"
+#include "core/mem.hpp"
+#include "core/extensions.hpp"
+#include "core/vector.hpp"
+#include "graphics/vkGlobals.hpp"
+#include "graphics/vkInit.hpp"
 
 using namespace engine;
 using namespace internals;

@@ -1,5 +1,5 @@
 /*
-*   name: include/core/object.hpp
+*   name: core/object.hpp
 *   origin: Citrus Engine
 *   purpose: Provide the engine::object class
 *   author: https://github.com/ComradeYellowCitrusFruit
@@ -11,9 +11,9 @@
 
 #include <cstdint>
 #include <cstring>
-#include "include/core/extensions.hpp"
-#include "include/core/component.hpp"
-#include "include/core/mem.hpp"
+#include "core/extensions.hpp"
+#include "core/component.hpp"
+#include "core/mem.hpp"
 
 namespace engine
 {

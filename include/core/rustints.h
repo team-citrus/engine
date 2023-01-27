@@ -1,5 +1,5 @@
 /*
-*   name: include/core/rustints.h
+*   name: core/rustints.h
 *   origin: Citrus Engine
 *   purpose: Provide Rust style int types
 *   author: https://github.com/ComradeYellowCitrusFruit

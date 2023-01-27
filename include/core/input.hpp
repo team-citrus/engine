@@ -1,5 +1,5 @@
 /*
-*   name: include/core/input.hpp
+*   name: core/input.hpp
 *   origin: Citrus Engine
 *   purpose: The header for the input system
 *   author: https://github.com/ComradeYellowCitrusFruit

@@ -1,5 +1,5 @@
 /*
-*   name: include/graphics/vkGlobals.hpp
+*   name: graphics/vkGlobals.hpp
 *   origin: Citrus Engine
 *   purpose: {PURPOSE FOR THE FILE}
 *   author: https://github.com/ComradeYellowCitrusFruit
@@ -22,7 +22,7 @@ typedef void* dllptr_t;
 
 #endif
 
-#include "include/graphics/vkCall.hpp"
+#include "graphics/vkCall.hpp"
 
 namespace engine
 {

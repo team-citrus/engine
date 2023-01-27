@@ -1,5 +1,5 @@
 /*
-*   name: include/core/simd.h
+*   name: core/simd.h
 *   origin: Citrus Engine
 *   purpose: Provide SIMD abstractions
 *   author: https://github.com/ComradeYellowCitrusFruit
@@ -9,7 +9,7 @@
 #ifndef CITRUS_ENGINE_SINGLE_INSRUCTION_MULTIPLE_DATA_HPP__
 #define CITRUS_ENGINE_SINGLE_INSRUCTION_MULTIPLE_DATA_HPP__
 
-#include "include/core/simd.h"
+#include "core/simd.h"
 
 // TODO: Make this actually useful
 

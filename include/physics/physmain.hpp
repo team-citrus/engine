@@ -1,5 +1,5 @@
 /*
-*   name: include/physics/physmain.hpp
+*   name: physics/physmain.hpp
 *   origin: Citrus Engine
 *   purpose: Provides the main function for physics
 *   author: https://github.com/ComradeYellowCitrusFruit
@@ -11,8 +11,8 @@
 
 #include <box2d/box2d.h>
 #include <btBulletDynamicsCommon.h>
-#include "include/core/vector.hpp"
-#include "include/physics/physobject.hpp"
+#include "core/vector.hpp"
+#include "physics/physobject.hpp"
 
 #define INTERNALS_PHYSICS_DEQUEUE_ERR_NOT_FOUND -1
 #define INTERNALS_PHYSICS_QUEUE_ERR_ALREADY_QUEUED -1

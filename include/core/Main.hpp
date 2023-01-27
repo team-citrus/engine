@@ -1,5 +1,5 @@
 /*
-*	name: include/core/Main.hpp
+*	name: core/Main.hpp
 *	origin: Citrus Engine
 *	purpose: Provide the main engine functions
 *	author: https://github.com/ComradeYellowCitrusFruit

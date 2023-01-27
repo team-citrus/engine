@@ -7,10 +7,10 @@
 */
 
 #include <cstdlib>
-#include "include/core/extensions.hpp"
-#include "include/physics/vectors.hpp"
-#include "include/physics/physobject.hpp"
-#include "include/physics/rigidbody.hpp"
+#include "core/extensions.hpp"
+#include "physics/vectors.hpp"
+#include "physics/physobject.hpp"
+#include "physics/rigidbody.hpp"
 
 using namespace engine;
 using namespace physics;

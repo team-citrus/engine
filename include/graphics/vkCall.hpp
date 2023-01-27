@@ -1,5 +1,5 @@
 /*
-*   name: include/graphics/vkCall.hpp
+*   name: graphics/vkCall.hpp
 *   origin: Citrus Engine
 *   purpose: Provide preprocessor defines for Vulkan call wrappers
 *   author: https://github.com/ComradeYellowCitrusFruit
@@ -11,7 +11,7 @@
 
 #include <vulkan.h>
 #include <cstdint>
-#include "include/graphics/vkGlobals.hpp"
+#include "graphics/vkGlobals.hpp"
 
 namespace engine
 {

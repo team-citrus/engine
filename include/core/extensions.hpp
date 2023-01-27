@@ -1,5 +1,5 @@
 /*
-*   name: include/core/extensions.hpp
+*   name: core/extensions.hpp
 *   origin: Citrus Engine
 *   purpose: Provide common compiler extensions in the form of preprocessor defines
 *   author: https://github.com/ComradeYellowCitrusFruit

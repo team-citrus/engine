@@ -1,5 +1,5 @@
 /*
-*	name: include/core/log.hpp
+*	name: core/log.hpp
 *	origin: Citrus Engine
 *	purpose: Provide logging facilities
 *	author: https://github.com/ComradeYellowCitrusFruit

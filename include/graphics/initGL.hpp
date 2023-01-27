@@ -1,5 +1,5 @@
 /*
-*   name: include/graphics/initGL.hpp
+*   name: graphics/initGL.hpp
 *   origin: Citrus Engine
 *   purpose: Functions for initalizing and de-initalizing OpenGL
 *   author: https://github.com/ComradeYellowCitrusFruit

@@ -2,14 +2,14 @@
 #include <mutex>
 #include <ctime>
 #include <csetjmp>
-#include "include/core/mem.hpp"
-#include "include/core/mem_int.hpp"
-#include "include/core/Main.hpp"
-#include "include/core/scene.hpp"
-#include "include/core/scene_int.hpp"
-#include "include/core/workQueue.hpp"
-#include "include/graphics/vkInit.hpp"
-#include "include/graphics/initGL.hpp"
+#include "core/mem.hpp"
+#include "core/mem_int.hpp"
+#include "core/Main.hpp"
+#include "core/scene.hpp"
+#include "core/scene_int.hpp"
+#include "core/workQueue.hpp"
+#include "graphics/vkInit.hpp"
+#include "graphics/initGL.hpp"
 
 using namespace engine;
 using namespace internals;

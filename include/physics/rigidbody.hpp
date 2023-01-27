@@ -1,5 +1,5 @@
 /*
-*   name: include/physics/rigidbody.hpp
+*   name: physics/rigidbody.hpp
 *   origin: Citrus Engine
 *   purpose: Provides the engine::physics::rigidbody class
 *   author: https://github.com/ComradeYellowCitrusFruit
@@ -11,9 +11,9 @@
 
 #include <btBulletDynamicsCommon.h>
 #include <box2d/box2d.h>
-#include "include/core/extensions.hpp"
-#include "include/physics/vectors.hpp"
-#include "include/physics/physobject.hpp"
+#include "core/extensions.hpp"
+#include "physics/vectors.hpp"
+#include "physics/physobject.hpp"
 
 #define RB_FORCEMODE_IMPULSE 0
 #define RB_FORCEMODE_FORCE 1

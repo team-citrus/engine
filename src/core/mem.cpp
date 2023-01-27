@@ -1,7 +1,7 @@
 /*
 *   name: src/core/mem.cpp
 *   origin: Citrus Engine
-*   purpose: Provides the code for include/core/mem.hpp
+*   purpose: Provides the code for core/mem.hpp
 *   author: https://github.com/ComradeYellowCitrusFruit
 *   license: LGPL-3.0-only
 */
@@ -23,8 +23,8 @@
 // We need to override b2Alloc_Default and b2Free_Default
 #include <box2d/b2_settings.h>
 
-#include "include/core/mem.hpp"
-#include "include/core/mem_int.hpp"
+#include "core/mem.hpp"
+#include "core/mem_int.hpp"
 
 engine::internals::Pool pool;
 

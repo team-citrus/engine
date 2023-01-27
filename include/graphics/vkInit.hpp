@@ -1,5 +1,5 @@
 /*
-*   name: include/graphics/vkInit.hpp
+*   name: graphics/vkInit.hpp
 *   origin: Citrus Engine
 *   purpose: Functions for initalizing and de-initalizing Vulkan
 *   author: https://github.com/ComradeYellowCitrusFruit
@@ -20,7 +20,7 @@
 #define ERR_VULKAN_INSTANCE_FAILURE -4
 
 #include <vulkan.h>
-#include "include/graphics/vkGlobals.hpp"
+#include "graphics/vkGlobals.hpp"
 
 namespace engine
 {

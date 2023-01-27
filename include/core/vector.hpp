@@ -1,5 +1,5 @@
 /*
-*   name: include/core/vector.hpp
+*   name: core/vector.hpp
 *   origin: Citrus Engine
 *   purpose: Provides a replacement for std::vector
 *   author: https://github.com/ComradeYellowCitrusFruit
@@ -10,8 +10,8 @@
 #define CITRUS_ENGINE_STD_VECTOR_REPLACEMENT_HPP__
 
 #include <cstdlib>
-#include "include/core/extensions.hpp"
-#include "include/core/mem.hpp"
+#include "core/extensions.hpp"
+#include "core/mem.hpp"
 
 namespace engine
 {

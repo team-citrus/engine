@@ -1,5 +1,5 @@
 /*
-*   name: include/physics/physobject.hpp
+*   name: physics/physobject.hpp
 *   origin: Citrus Engine
 *   purpose: Provides the engine::physics::physobject class
 *   author: https://github.com/ComradeYellowCitrusFruit
@@ -10,11 +10,11 @@
 #define CITRUS_ENGINE_PHYSICS_OBJECTS_HPP__
 
 #include <cstdint>
-#include "include/physics/rigidbody.hpp"
-#include "include/physics/vectors.hpp"
-#include "include/physics/collider.hpp"
-#include "include/core/extensions.hpp"
-#include "include/core/component.hpp"
+#include "physics/rigidbody.hpp"
+#include "physics/vectors.hpp"
+#include "physics/collider.hpp"
+#include "core/extensions.hpp"
+#include "core/component.hpp"
 
 namespace engine
 {

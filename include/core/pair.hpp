@@ -1,5 +1,5 @@
 /*
-*   name: include/core/pair.hpp
+*   name: core/pair.hpp
 *   origin: Citrus Engine
 *   purpose: Provide pairs and maps
 *   author: https://github.com/ComradeYellowCitrusFruit
@@ -9,7 +9,7 @@
 #ifndef CITRUS_ENGINE_PAIRS_HPP___
 #define CITRUS_ENGINE_PAIRS_HPP___
 
-#include "include/core/vector.hpp"
+#include "core/vector.hpp"
 
 namespace engine
 {

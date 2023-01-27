@@ -1,5 +1,5 @@
 /*
-*   name: include/core/mem_int.hpp
+*   name: core/mem_int.hpp
 *   origin: Citrus Engine
 *   purpose: Provide memory management internals
 *   author: https://github.com/ComradeYellowCitrusFruit
@@ -16,7 +16,7 @@
 #endif
 
 #include <cstdint>
-#include "include/core/extensions.hpp"
+#include "core/extensions.hpp"
 
 #define POOL_FREE_BLOCK_MAGIC 0x46534545
 #define POOL_ALLOC_BLOCK_MAGIC 0x4E4F474F

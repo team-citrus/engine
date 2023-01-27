@@ -1,5 +1,5 @@
 /*
-*   name: include/core/scene_int.hpp
+*   name: core/scene_int.hpp
 *   origin: Citrus Engine
 *   purpose: Provide scene internals
 *   author: https://github.com/ComradeYellowCitrusFruit
@@ -9,9 +9,9 @@
 #ifndef CITRUS_ENGINE_SCENE_INTERNALS_HPP__
 #define CITRUS_ENGINE_SCENE_INTERNALS_HPP__
 
-#include "include/core/vector.hpp"
-#include "include/core/object.hpp"
-#include "include/core/pair.hpp"
+#include "core/vector.hpp"
+#include "core/object.hpp"
+#include "core/pair.hpp"
 
 namespace engine
 {

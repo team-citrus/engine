@@ -1,5 +1,5 @@
 /*
-*   name: include/core/taggedptr.hpp
+*   name: core/taggedptr.hpp
 *   origin: Citrus Engine
 *   purpose: Provides defines for tagged pointers
 *   author: https://github.com/ComradeYellowCitrusFruit

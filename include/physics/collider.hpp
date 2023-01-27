@@ -1,5 +1,5 @@
 /*
-*   name: include/physics/collider.hpp
+*   name: physics/collider.hpp
 *   origin: Citrus Engine
 *   purpose: Provides collider classes
 *   author: https://github.com/ComradeYellowCitrusFruit
@@ -10,10 +10,10 @@
 #define CITRUS_ENGINE_COLLIDER_HPP__
 
 #include <cstdint>
-#include "include/physics/physobject.hpp"
-#include "include/physics/vectors.hpp"
-#include "include/core/extensions.hpp"
-#include "include/core/component.hpp"
+#include "physics/physobject.hpp"
+#include "physics/vectors.hpp"
+#include "core/extensions.hpp"
+#include "core/component.hpp"
 
 // 3D Collider types
 
