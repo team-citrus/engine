@@ -9,6 +9,11 @@
 #ifndef CITRUS_ENGINE_OPENGL_INITIALIZATION_HPP__
 #define CITRUS_ENGINE_OPENGL_INITIALIZATION_HPP__
 
+/*  THIS FILE IS A VERY IMPORTANT FILE, DONT TAMPER WITH IT UNLESS ABSOLUTELY NECESSARY
+*   Within this file the prototypes of our Vulkan initalization functions and #defines are contained
+*   It is important that they function as expected, or launching will fail
+*/
+
 #include <gl/gl.h>
 
 namespace engine
