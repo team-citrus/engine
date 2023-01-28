@@ -45,12 +45,12 @@ namespace engine
 	}
 
 	// Logs a message, and appends a newline, use this only in Rust code 
-	void rust_log(const char *module, const char *str)
+	void rust_log(const char *str)
 	{
 		time_t t = time(NULL);
 		tm T = *localtime(&t);
 
-		fprintf(internals::logfile, "[%d-%d-%d-%d-%d:%d] %s: %s\n", T.tm_year + 1900, T.tm_mon + 1, T.tm_mday, T.tm_hour, T.tm_min, T.tm_sec, module, str);
+		fprintf(internals::logfile, "[%d-%d-%d-%d-%d:%d] Rust: %s\n", T.tm_year + 1900, T.tm_mon + 1, T.tm_mday, T.tm_hour, T.tm_min, T.tm_sec, str);
 	}
 };
 
