@@ -12,6 +12,7 @@
 #include <cstdio>
 #include <ctime>
 #include <cstdarg>
+#include "core/extensions.hpp"
 
 #ifndef _LOG_FILE_
 #define _LOG_FILE_ "log.log"
@@ -34,7 +35,7 @@ namespace engine
 
 	// Logs a message, works like printf, and appends a newline
 	template <typename... T>
-	void log(const char *module, const char *format, T... args)
+	OPERATOR void log(const char *module, const char *format, T... args)
 	{
 		time_t t = time(NULL);
 		tm T = *localtime(&t);

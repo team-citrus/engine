@@ -8,6 +8,7 @@
 #include "core/scene.hpp"
 #include "core/scene_int.hpp"
 #include "core/workQueue.hpp"
+#include "core/log.hpp"
 #include "graphics/vkInit.hpp"
 #include "graphics/initGL.hpp"
 
@@ -29,6 +30,7 @@ int main(int argc, char const **argv)
 
     // Initalize everything
     
+    initLogging();
     pool = Pool();
 
     // TODO: Implement settings
