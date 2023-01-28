@@ -17,6 +17,7 @@
 #define _DEPRECATED_ __attribute__((deprecated))
 #define _NORETURN_ __attribute__((noreturn))
 #define _PACKED_(...) __attribute__((__packed__)) __VA_ARGS__
+#define _OPTIMIZE_(i) __attribute__ ((optimize(i)))
 
 #elif defined(_MSC_VER)
 
@@ -26,6 +27,7 @@
 #define _DEPRECATED_ __declspec(deprecated)
 #define _NORETURN_ __declspec(noreturn)
 #define _PACKED_(...) __pragma(pack(push, 1)) __VA_ARGS__ __pragma(pack(pop))
+#define _OPTIMIZE_(i) __pragma(_STRINGIFY_(i), on)
 
 #endif
 

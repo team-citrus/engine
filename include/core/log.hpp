@@ -23,18 +23,21 @@ namespace engine
 	namespace internals
 	{
 		FILE *logfile;
-		void initLogging()
+		char buff[1024];
+		_OPTIMIZE_(2) OPERATOR void initLogging()
 		{
 			logfile = fopen(_LOG_FILE_, "a+");
+			setvbuf(logfile, buff, _IOFBF, 1024);
 		}
-		void finiLogging()
+		_OPTIMIZE_(2) OPERATOR void finiLogging()
 		{
 			fclose(logfile);
 		}
 	}
 
 	// Logs a message, works like printf, and appends a newline
-	template <typename... T>
+
+	_OPTIMIZE_(2) template <typename... T>
 	OPERATOR void log(const char *module, const char *format, T... args)
 	{
 		time_t t = time(NULL);
@@ -45,8 +48,8 @@ namespace engine
 		putc('\n', internals::logfile);
 	}
 
-	// Logs a message, and appends a newline, use this only in Rust code 
-	void rust_log(const char *str)
+	// Logs a message, and appends a newline, use this only in Rust code
+	_OPTIMIZE_(2) extern "C" void rust_log(const char *str)
 	{
 		time_t t = time(NULL);
 		tm T = *localtime(&t);
