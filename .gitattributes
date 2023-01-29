@@ -1,1 +1,3 @@
 SConstruct linguist-vendored=false
+src/graphics/SConscript linguist-vendored=false
+src/core/SConscript linguist-vendored=false
