@@ -14,11 +14,12 @@ This file is an attempt to serve as a high level list of these functions.
 - [] Gizmos a la Unity
 - [] A powerful partical system
 - [] UI system a la Unity
+- [] Bindings for multiple programming languages (not including native C++)
+	- [] Rust
 
 ## Ideal goals
 
 - [] Bindings for multiple programming languages (not including native C++)
-	- [] Rust
 	- [] C#
 	- [] C
 - [] Various different rendering methods

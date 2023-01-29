@@ -15,7 +15,7 @@
 #include "core/extensions.hpp"
 
 #ifndef _LOG_FILE_
-#define _LOG_FILE_ "log.log"
+#define _LOG_FILE_ "game.log"
 #endif
 
 namespace engine

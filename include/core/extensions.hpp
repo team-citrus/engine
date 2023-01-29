@@ -39,4 +39,6 @@
 
 #define __VA_ARGS_FIX__(...) __VA_ARGS__
 
+#define NOMANGLE extern "C"
+
 #endif
