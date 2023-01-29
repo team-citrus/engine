@@ -1,5 +1,16 @@
-gcc_flags = ["-O2", "-m64", "-mtune=generic", "-mavx", "-Wall", "-Wpedantic"]
-gcc_debug_flags = ["-Og", "-g", "-mtune=generic", "-mavx", "-m64", "-Wall",  "-Wpedantic"]
-gcc_quick_flags = ["-Osize", "-m64", "-Wpedantic"]
+# TODO: Parse args
 
-# TODO: Add actual code
+Export('ARCH')
+Export('BUILD_TYPE')
+Export('TUNE')
+Export('VULKAN')
+Export('OPENGL')
+Export('RUST')
+Export('CC')
+
+# TODO: Invoke Cargo
+
+SConscript('src/graphics/SConscript')
+
+# TODO: Invoke stuff
+# TODO: Link Rust and C++
