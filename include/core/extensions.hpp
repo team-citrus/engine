@@ -41,4 +41,6 @@
 
 #define NOMANGLE extern "C"
 
+#define COMPILE_ASSERT(cond, msg) static_assert(cond, msg)
+
 #endif

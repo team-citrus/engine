@@ -21,3 +21,4 @@ if VULKAN == 'TRUE':
     Object('vkLoad.cpp')
 if OPENGL == 'TRUE':
     Object('initGL.cpp')
+    # TODO: Add target GL.dll/liblegacyrender.so

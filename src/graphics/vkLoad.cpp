@@ -130,7 +130,7 @@ int Vulkan::vkLoad()
 {
 	#ifdef __unix__
 
-	Vulkan::libvulkan = dlopen("libvulkan.so.1", RTLD_NOW);
+	Vulkan::libvulkan = dlopen("libvulkan.so.1", RTLD_NOW | RTLD_GLOBAL);
 	if(Vulkan::libvulkan == NULL)
 	{
 		log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "libvulkan.so.1 not found");
