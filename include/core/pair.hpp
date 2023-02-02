@@ -76,6 +76,16 @@ namespace engine
             }
         }
 
+        OPERATOR A &lookup(B b)
+        {
+            return this->getA(b);
+        }
+
+        OPERATOR B &lookup(A a)
+        {
+            return this->getB(a);
+        }
+
         private:
         Vector<pair<A, B>> vec;
     };
