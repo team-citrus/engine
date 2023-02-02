@@ -9,6 +9,7 @@
 #ifndef CITRUS_ENGINE_PAIRS_HPP___
 #define CITRUS_ENGINE_PAIRS_HPP___
 
+#include "core/option.hpp"
 #include "core/vector.hpp"
 
 namespace engine
@@ -40,48 +41,51 @@ namespace engine
             vec.push(p);
         }
 
-        OPERATOR pair<A, B> &getPair(A a)
+        OPERATOR option<pair<A, B>> &lookupPair(A a)
         {
             for(int i = 0; i < vec.getCount(); i++)
             {
                 if(vec[i].a == a)
-                    return vec[i];
+                    return some(vec[i]);
             }
         }
 
-        OPERATOR pair<A, B> &getPair(B b)
+        OPERATOR option<pair<A, B>> &lookupPair(B b)
         {
             for(int i = 0; i < vec.getCount(); i++)
             {
                 if(vec[i].b == b)
-                    return vec[i];
+                    return some(vec[i]);
             }
+            return none<pair<A, B>>();
         }
 
-        OPERATOR B &getB(A a)
+        OPERATOR option<B&> getB(A a)
         {
             for(int i = 0; i < vec.getCount(); i++)
             {
                 if(vec[i].a == a)
-                    return vec[i].b;
+                    return some<B&>(vec[i].b);
             }
+            return none<B&>();
         }
 
-        OPERATOR A &getA(B b)
+        OPERATOR option<A&> getA(B b)
         {
             for(int i = 0; i < vec.getCount(); i++)
             {
                 if(vec[i].b == b)
-                    return vec[i].a;
+                    return some<A&>(vec[i].a);
             }
+            return none<A&>();
         }
 
-        OPERATOR A &lookup(B b)
+        OPERATOR option<A&> lookup(B b)
         {
             return this->getA(b);
         }
 
-        OPERATOR B &lookup(A a)
+        OPERATOR option<B&> &lookup(A a)
         {
             return this->getB(a);
         }
