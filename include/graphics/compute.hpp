@@ -9,6 +9,7 @@
 #ifndef CITRUS_ENGINE_COMPUTE_SHADERS_HPP__
 #define CITRUS_ENGINE_COMPUTE_SHADERS_HPP__
 
+#include <vulkan.h>
 #include "core/extensions.hpp"
 
 namespace engine
