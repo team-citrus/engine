@@ -10,6 +10,7 @@
 #define CITRUS_ENGINE_COMPUTE_SHADERS_HPP__
 
 #include <vulkan.h>
+#include <gl/gl.h>
 #include "core/extensions.hpp"
 
 namespace engine
