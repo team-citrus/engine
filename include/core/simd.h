@@ -9,7 +9,7 @@
 #ifndef CITRUS_ENGINE_SINGLE_INSRUCTION_MULTIPLE_DATA_H__
 #define CITRUS_ENGINE_SINGLE_INSRUCTION_MULTIPLE_DATA_H__
 
-#include <immintrin.h>
+#include <x86intrin.h>
 
 typedef __m128 m128f_t;
 typedef __m128d m128d_t;

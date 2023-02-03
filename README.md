@@ -17,7 +17,7 @@ As well, by making the engine free software, we hope to set a precident in the g
 - GLM
 - box2d
 - Bullet
-- G++, MSVC, or compatible C++ compiler
+- G++, or compatible C++ compiler (ie. clang, icc)
 
 ## TODOs
 
