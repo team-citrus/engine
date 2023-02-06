@@ -18,16 +18,11 @@
 #define _NORETURN_ __attribute__((noreturn))
 #define _PACKED_(...) __attribute__((__packed__)) __VA_ARGS__
 #define _OPTIMIZE_(i) __attribute__ ((optimize(i)))
+#define _ATTRIBUTE_(...) __VA_ARGS_FIX__(__attribute__(( __VA_ARGS__ )))
 
-#elif defined(_MSC_VER)
+#else
 
-#define _MSVC_ _MSC_VER
-
-#define _ALWAYS_INLINE_ __forceinline
-#define _DEPRECATED_ __declspec(deprecated)
-#define _NORETURN_ __declspec(noreturn)
-#define _PACKED_(...) __pragma(pack(push, 1)) __VA_ARGS__ __pragma(pack(pop))
-#define _OPTIMIZE_(i) __pragma(_STRINGIFY_(i), on)
+#error The Citrus Engine requires a G++ compatible compiler
 
 #endif
 

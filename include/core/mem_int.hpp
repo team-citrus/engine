@@ -20,11 +20,12 @@
 #include "core/extensions.hpp"
 #include "core/simd.h"
 
-#define POOL_FREE_BLOCK_MAGIC 0x46534545
-#define POOL_ALLOC_BLOCK_MAGIC 0x4E4F474F
+#define POOL_FREE_BLOCK_MAGIC 0x465245454E554D00ull
+#define POOL_ALLOC_BLOCK_MAGIC 0x414C4C4F43454400ull
 
 #ifndef _POOL_SIZE_
 #define _POOL_SIZE_ 1024 * 1024 * 1024 * 2
+#endif
 
 namespace engine
 {
@@ -43,9 +44,9 @@ namespace engine
 						struct
 						{
 							// Small magic number for a free section
-							uint32_t fmagic;
+							uint64_t fmagic;
 							// Size of section, in blocks
-							int fsize;
+							uint32_t fsize;
 							// Next contigous section, NULL if last
 							poolBlock *next;
 							poolBlock *last;
@@ -54,9 +55,9 @@ namespace engine
 						struct
 						{
 							// Small magic number for an allocated section
-							uint32_t amagic;
+							uint64_t amagic;
 							// Size of section, in blocks
-							int asize;
+							uint32_t asize;
 						};
 					};
 					// Expand the size to 32 bytes
@@ -75,7 +76,7 @@ namespace engine
 				// The first free section header block
 				poolBlock *head;
 				// Size, allocated immediately so as to stay contigous, in blocks
-				size_t size;
+				static const size_t size;
 
 				// Allocate some blocks
 				void *allocate(int blocks);

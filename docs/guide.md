@@ -10,7 +10,8 @@ You should also read the namespace documentation (found at docs/namespaces.md) a
 **For the majority of styling information, you should refer to the style guide (found at docs/style.md).**
 Your code should be easy to read, it shouldn't be rocket science to figure out what a function does.
 Your code should also be well commented, to save all of us time figuring out what each line of code does later.
-Remember, ***DO NOT USE ANY INLINE ASSEMBLY WHATSOEVER.***
+Inline assembly is discouraged, but not illegal.
+If you ever use inline assembly, make sure it is well commented to make any future translations easier, and use gcc inline assembly with constraints for clarity and to prevent the use of black magic.
 
 This project is meant to use [RAII](https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization) for managing data.
 Keep that in mind with your code.

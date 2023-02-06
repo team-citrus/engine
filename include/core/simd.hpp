@@ -9,6 +9,7 @@
 #ifndef CITRUS_ENGINE_SINGLE_INSRUCTION_MULTIPLE_DATA_HPP__
 #define CITRUS_ENGINE_SINGLE_INSRUCTION_MULTIPLE_DATA_HPP__
 
+#include "core/rustints.h"
 #include "core/simd.h"
 
 // TODO: Make this actually useful
@@ -33,10 +34,7 @@ class m128_i8
         return m128_i8(add_epi8(Pi8, i));
     }
 
-    m128_i8 operator+(i8 i)
-    {
-        return 
-    }
+    m128_i8 operator+(i8 i);
 };
 
 #endif

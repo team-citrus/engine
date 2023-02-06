@@ -2,9 +2,6 @@
 gcc_flags = ["-O3", "-m64", "-mavx", "-Wall", "-Wpedantic"]
 gcc_debug_flags = ["-Og", "-g", "-mavx", "-m64", "-Wall",  "-Wpedantic"]
 gcc_quick_flags = ["-Osize", "-m64", "-Wpedantic"]
-msvc_flags = ["/O3", "/arch:AVX", "/Wall"]
-msvc_debug_flags = ["/O1", "/Z7", "/arch:AVX", "/Wall"]
-msvc_quick_flags = ["/Os", "/W4"]
 
 Import('ARCH')
 Import('BUILD_TYPE')
