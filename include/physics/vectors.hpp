@@ -23,11 +23,11 @@ namespace engine
     {
         // Good ol' typedefs
         
-        typedef vec2 glm::vec2;
-        typedef vec3 glm::vec3;
-        typedef vec4 glm::vec4;
-        typedef quat glm::quat;
-        typedef quaternion quat;
+        typedef glm::vec2 vec2;
+        typedef glm::vec3 vec3;
+        typedef glm::vec4 vec4;
+        typedef glm::quat quat;
+        typedef quat quaternion;
     };
 };
 
