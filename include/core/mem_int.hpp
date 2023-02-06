@@ -16,7 +16,9 @@
 #endif
 
 #include <cstdint>
+#include <stdatomic.h>
 #include "core/extensions.hpp"
+#include "core/simd.h"
 
 #define POOL_FREE_BLOCK_MAGIC 0x46534545
 #define POOL_ALLOC_BLOCK_MAGIC 0x4E4F474F
@@ -67,7 +69,7 @@ namespace engine
 		{
 			public:
 				// Is the pool locked?
-				bool locked;
+				atomic_flag locked;
 				// The start of the pool
 				poolBlock *start;
 				// The first free section header block
@@ -85,7 +87,8 @@ namespace engine
 				// Wait
 				OPERATOR void wait()
 				{
-					while(locked);
+					while(atomic_flag_test_and_set(&locked))
+						spinlock_pause();
 					return;
 				}
 
