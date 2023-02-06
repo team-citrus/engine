@@ -11,6 +11,7 @@
 
 #ifndef _WIN32
 #include <unistd.h>
+#include <sys/mman.h>
 #else
 #include <Windows.h>
 #endif
@@ -76,7 +77,7 @@ namespace engine
 				// The first free section header block
 				poolBlock *head;
 				// Size, allocated immediately so as to stay contigous, in blocks
-				static const size_t size;
+				static const size_t size = _POOL_SIZE_/32;
 
 				// Allocate some blocks
 				void *allocate(int blocks);
@@ -96,11 +97,10 @@ namespace engine
 				Pool()
 				{
 					#ifndef _WIN32
-					start = mmap(NULL, _POOL_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON, 0, 0);
+					start = (engine::internals::poolBlock*)mmap(NULL, _POOL_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON, 0, 0);
 					#else
 					start = VirtualAlloc(NULL, _POOL_SIZE_, 0, 0);
 					#endif
-					size = _POOL_SIZE_/32;
 				}
 				~Pool()
 				{

@@ -21,7 +21,7 @@ This file is an attempt to serve as a high level list of these functions.
 
 - [] Bindings for multiple programming languages (not including native C++)
 	- [] C#
-	- [] C
+- [] Visual code
 - [] Various different rendering methods
 	- [] Rasterization (default)
 	- [] Raytracing
