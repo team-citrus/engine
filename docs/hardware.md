@@ -6,8 +6,8 @@ We should also use Vulkan to improve rendering performance as well.
 
 ## Target minimums
 
-The current target minimum CPU is an Intel i3-8100, however, support for 4-threaded systems will be difficult to implement.
-The current target minimum GPU is an GeForce GTX 1050, however, this may be updated at any time.
+The current target minimum CPU is an Intel Core i3-6100.
+The current target minimum GPU is an GeForce GTX 960, however, this may be updated at any time.
 The current target minimum RAM is 1gb.
 
 ## Target ideals

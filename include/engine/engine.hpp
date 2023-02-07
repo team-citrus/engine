@@ -20,6 +20,7 @@
 #include "core/log.hpp"
 #include "core/extensions.hpp"
 #include "core/option.hpp"
+#include "core/transform.hpp"
 #include "physics/vectors.hpp"
 
 #endif

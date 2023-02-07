@@ -11,12 +11,15 @@
 
 #ifndef _WIN32
 #include <unistd.h>
+#include <sys/mman.h>
 #else
 #include <Windows.h>
 #endif
 
 #include <cstdint>
+#include <stdatomic.h>
 #include "core/extensions.hpp"
+#include "core/simd.h"
 
 #define POOL_FREE_BLOCK_MAGIC 0x465245454E554D00ull
 #define POOL_ALLOC_BLOCK_MAGIC 0x414C4C4F43454400ull
@@ -68,13 +71,13 @@ namespace engine
 		{
 			public:
 				// Is the pool locked?
-				bool locked;
+				atomic_flag locked;
 				// The start of the pool
 				poolBlock *start;
 				// The first free section header block
 				poolBlock *head;
 				// Size, allocated immediately so as to stay contigous, in blocks
-				static const size_t size;
+				static const size_t size = _POOL_SIZE_/32;
 
 				// Allocate some blocks
 				void *allocate(int blocks);
@@ -86,18 +89,18 @@ namespace engine
 				// Wait
 				OPERATOR void wait()
 				{
-					while(locked);
+					while(atomic_flag_test_and_set(&locked))
+						spinlock_pause();
 					return;
 				}
 
 				Pool()
 				{
 					#ifndef _WIN32
-					start = mmap(NULL, _POOL_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON, 0, 0);
+					start = (engine::internals::poolBlock*)mmap(NULL, _POOL_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON, 0, 0);
 					#else
 					start = VirtualAlloc(NULL, _POOL_SIZE_, 0, 0);
 					#endif
-					size = _POOL_SIZE_/32;
 				}
 				~Pool()
 				{

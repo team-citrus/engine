@@ -9,7 +9,7 @@
 #ifdef __unix__
 
 #include <unistd.h>
-#include <sys/mmap.h>
+#include <sys/mman.h>
 
 #elif defined(_WIN32)
 
