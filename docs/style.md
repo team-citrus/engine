@@ -70,7 +70,7 @@ libc functions don't have any restrictions, they can be used anywhere.
 STL functions and classes should not be used, as they frequently abuse templates creating overly complicated symbols.
 If you need proof of this, just read any of your STL header files and see for yourself.
 
-STL restrictions have some exceptions, namely, we can use `thread`, `mutex`, and `typeinfo`.
+STL restrictions have some exceptions, namely, we can use `typeinfo`.
 
 For replacing `std::vector`, `std::map`,  `std::string`, and possibly `std::stringstream`, and `std::fstream` we will create our own solution following a similar interface to the STL version.
 

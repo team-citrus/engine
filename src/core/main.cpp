@@ -1,5 +1,12 @@
-#include <thread>
 #include <mutex>
+
+#ifdef __STDC_NO_THREADS__
+
+#error The Citrus Engine requires threads.h
+
+#endif
+
+#include <threads.h>
 #include <ctime>
 #include <csetjmp>
 #include "core/mem.hpp"
@@ -19,10 +26,10 @@ bool internals::usingVulkan;
 int internals::frameRate;
 jmp_buf internals::buf
 
-std::thread internals::render;
-std::thread internals::phys;
-std::thread internals::mix;
-std::thread internals::gameplay;
+thrd_t internals::render;
+thrd_t internals::phys;
+thrd_t internals::mix;
+thrd_t internals::gameplay;
 
 int main(int argc, char const **argv)
 {

@@ -9,7 +9,13 @@
 #ifndef CITRUS_ENGINE_MAIN_FUNCTIONS_HPP__
 #define CITRUS_ENGINE_MAIN_FUNCTIONS_HPP__
 
-#include <thread>
+#ifdef __STDC_NO_THREADS__
+
+#error The Citrus Engine requires threads.h
+
+#endif
+
+#include <threads.h>
 #include <ctime>
 #include <csetjmp>
 
@@ -21,10 +27,10 @@ namespace engine
         extern int frameRate;
         extern jmp_buf buf
 
-        extern std::thread render;
-        extern std::thread phys;
-        extern std::thread mix;
-        extern std::thread gameplay;
+        extern thrd_t render;
+        extern thrd_t phys;
+        extern thrd_t mix;
+        extern thrd_t gameplay;
 
         // Render the scene, and draw the UI
         int draw();

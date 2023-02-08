@@ -17,6 +17,13 @@
 #endif
 
 #include <cstdint>
+
+#ifdef __STDC_NO_ATOMICS__
+
+#error The Citrus Engine Requires stdatomic.h
+
+#endif
+
 #include <stdatomic.h>
 #include "core/extensions.hpp"
 #include "core/simd.h"
@@ -62,7 +69,7 @@ namespace engine
 						};
 					};
 					// Expand the size to 32 bytes
-					uint8_t b[32];
+/					uint8_t b[32];
 				};
 		};
 
@@ -97,9 +104,9 @@ namespace engine
 				Pool()
 				{
 					#ifndef _WIN32
-					start = (engine::internals::poolBlock*)mmap(NULL, _POOL_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON, 0, 0);
+					start = (engine::internals::poolBlock*)mmap(NULL, _POOL_SIZE_, PROT_WRITE | PROT_READ, MAP_AN ON, 0, 0);
 					#else
-					start = VirtualAlloc(NULL, _POOL_SIZE_, 0, 0);
+					start = (engine::internals::poolBlock*)VirtualAlloc(NULL, _POOL_SIZE_, 0, 0);
 					#endif
 				}
 				~Pool()
