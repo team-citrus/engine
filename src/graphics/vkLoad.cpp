@@ -22,7 +22,7 @@
 #include "core/crash.hpp"
 #include "core/log.hpp"
 #include "core/mem.hpp"
-#include "core/extensions.hpp"
+#include "core/extensions.h"
 #include "core/vector.hpp"
 #include "graphics/vkGlobals.hpp"
 #include "graphics/vkInit.hpp"

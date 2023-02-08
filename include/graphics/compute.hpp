@@ -11,7 +11,7 @@
 
 #include <vulkan.h>
 #include <gl/gl.h>
-#include "core/extensions.hpp"
+#include "core/extensions.h"
 
 namespace engine
 {

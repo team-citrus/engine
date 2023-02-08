@@ -13,7 +13,7 @@
 #include "physics/rigidbody.hpp"
 #include "physics/vectors.hpp"
 #include "physics/collider.hpp"
-#include "core/extensions.hpp"
+#include "core/extensions.h"
 #include "core/component.hpp"
 
 namespace engine

@@ -18,7 +18,7 @@
 #include "core/input.hpp"
 #include "core/scene.hpp"
 #include "core/log.hpp"
-#include "core/extensions.hpp"
+#include "core/extensions.h"
 #include "core/option.hpp"
 #include "core/transform.hpp"
 #include "physics/vectors.hpp"

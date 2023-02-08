@@ -10,7 +10,7 @@
 #define CITRUS_ENGINE_STD_VECTOR_REPLACEMENT_HPP__
 
 #include <cstdlib>
-#include "core/extensions.hpp"
+#include "core/extensions.h"
 #include "core/mem.hpp"
 
 namespace engine

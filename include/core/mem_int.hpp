@@ -25,7 +25,7 @@
 #endif
 
 #include <stdatomic.h>
-#include "core/extensions.hpp"
+#include "core/extensions.h"
 #include "core/simd.h"
 
 #define POOL_FREE_BLOCK_MAGIC 0x465245454E554D00ull

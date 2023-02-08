@@ -11,7 +11,7 @@
 
 #include <btBulletDynamicsCommon.h>
 #include <box2d/box2d.h>
-#include "core/extensions.hpp"
+#include "core/extensions.h"
 #include "physics/vectors.hpp"
 #include "physics/physobject.hpp"
 

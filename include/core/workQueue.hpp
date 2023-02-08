@@ -9,7 +9,7 @@
 #ifndef CITRUS_ENGINE_CORE_WORK_QUEUES_HPP__
 #define CITRUS_ENGINE_CORE_WORK_QUEUES_HPP__
 
-#include "core/extensions.hpp"
+#include "core/extensions.h"
 #include "core/vector.hpp"
 
 namespace engine

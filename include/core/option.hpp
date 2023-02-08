@@ -9,7 +9,7 @@
 #ifndef CITRUS_ENGINE_OPTION_HPP___
 #define CITRUS_ENGINE_OPTION_HPP___
 
-#include "core/extensions.hpp"
+#include "core/extensions.h"
 
 namespace engine
 {

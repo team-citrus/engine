@@ -12,7 +12,7 @@
 #include <cstdint>
 #include "physics/physobject.hpp"
 #include "physics/vectors.hpp"
-#include "core/extensions.hpp"
+#include "core/extensions.h"
 #include "core/component.hpp"
 
 // 3D Collider types

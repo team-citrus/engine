@@ -7,7 +7,7 @@
 */
 
 #include <cstdlib>
-#include "core/extensions.hpp"
+#include "core/extensions.h"
 #include "physics/vectors.hpp"
 #include "physics/physobject.hpp"
 #include "physics/rigidbody.hpp"

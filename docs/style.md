@@ -3,7 +3,7 @@
 ## Compiler extensions
 
 You should avoid using compiler extensions too often, however there is nothing wrong with using them.
-Common compiler extensions as well as some additional defines can be found in include/core/extensions.hpp, anything defines in that file can be used freely.
+Common compiler extensions as well as some additional defines can be found in include/core/extensions.h, anything defines in that file can be used freely.
 Inline assembly is discouraged, but not illegal.
 If you ever use inline assembly, make sure it is well commented to make any future translations easier, and use gcc inline assembly with constraints for clarity and to prevent the use of black magic.
 
@@ -31,7 +31,7 @@ Heavily used but small static functions should always be inlined.
 Large, but rarely used static functions should always be inlined.
 Extern inline functions should not be used, except for class methods.
 
-Operators should be defined with `OPERATOR`, which is a macro defined in include/core/extensions.hpp that will set it to always inline.
+Operators should be defined with `OPERATOR`, which is a macro defined in include/core/extensions.h that will set it to always inline.
 Although this is not manditory, it is prefered.
 Simple method and functions should follow that same rule.
 

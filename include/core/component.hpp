@@ -10,7 +10,7 @@
 #define CITRUS_ENGINE_COMPONENTS_HPP__
 
 #include <typeinfo>
-#include "core/extensions.hpp"
+#include "core/extensions.h"
 #include "core/object.hpp"
 
 namespace engine
