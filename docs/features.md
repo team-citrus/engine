@@ -5,26 +5,26 @@ This file is an attempt to serve as a high level list of these functions.
 
 ## Critical, large scale goals
 
-- [] Visual shaders
-- [] Different editors
-- [] Cross platform support
-- [] 2D and 3D support
-- [] Compute shaders
-- [] Render pipeline modification
-- [] Gizmos a la Unity
-- [] A powerful partical system
-- [] UI system a la Unity
-- [] Bindings for multiple programming languages (not including native C++)
-	- [] Rust
+- [ ] Visual shaders
+- [ ] Different editors
+- [ ] Cross platform support
+- [ ] 2D and 3D support
+- [ ] Compute shaders
+- [ ] Render pipeline modification
+- [ ] Gizmos a la Unity
+- [ ] A powerful partical system
+- [ ] UI system a la Unity
+- [ ] Bindings for multiple programming languages (not including native C++)
+	- [ ] Rust
 
 ## Ideal goals
 
-- [] Bindings for multiple programming languages (not including native C++)
-	- [] C#
-- [] Visual code
-- [] Various different rendering methods
-	- [] Rasterization (default)
-	- [] Raytracing
-	- [] Ray marching
-- [] Native modding API of some sort
-- [] VR support
+- [ ] Bindings for multiple programming languages (not including native C++)
+	- [ ] C#
+- [ ] Visual code
+- [ ] Various different rendering methods
+	- [ ] Rasterization (default)
+	- [ ] Raytracing
+	- [ ] Ray marching
+- [ ] Native modding API of some sort
+- [ ] VR support

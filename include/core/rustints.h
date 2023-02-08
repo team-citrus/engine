@@ -10,6 +10,7 @@
 #define CITRUS_ENGINE_RUST_INTEGER_TYPES_H__
 
 #include <cstdint>
+#include <cstdlib>
 
 typedef int8_t i8;
 typedef int16_t i16;
@@ -20,6 +21,10 @@ typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
+
+typedef size_t usize;
+// TODO: include the header for ssize_t
+// typedef ssize_t isize;
 
 typedef float f32;
 typedef double f64;

@@ -280,7 +280,7 @@ void engine::memfree(void *ptr)
 }
 
 // b2Alloc_Default and b2Free_Default overrides
-B2_API void* b2Alloc_Default(int32 size)
+B2_API void* b2Alloc_Default(int32_t size)
 {
 	return engine::memalloc(size, MEM_FLAG_UNIT_BYTE);
 }
