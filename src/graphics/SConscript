@@ -1,5 +1,5 @@
 # Default flags for most of the files, some my differ as aggresive optimizatiaons are used
-flags = ["-O3", "-m64", "-mavx", "-Wall", "-Wpedantic"]
+flags = ["-O3", "-m64", "-mavx", "-Wall", "-Wpedantic", "-flto"]
 debug_flags = ["-Og", "-g", "-mavx", "-m64", "-Wall",  "-Wpedantic"]
 quick_flags = ["-Osize", "-m64", "-Wpedantic"]
 
