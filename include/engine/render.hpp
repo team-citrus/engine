@@ -9,6 +9,7 @@
 #ifndef CITRUS_ENGINE_RENDER_API_HPP__
 #define CITRUS_ENGINE_RENDER_API_HPP__
 
+#include "core/extensions.h"
 #include "graphics/shader.hpp"
 #include "graphics/compute.hpp"
 

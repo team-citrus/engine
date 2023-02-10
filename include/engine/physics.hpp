@@ -6,9 +6,11 @@
 *   license: LGPL-3.0-only
 */
 
-#ifndef CITRUS_ENGINE_MAIN_API_HPP__
-#define CITRUS_ENGINE_MAIN_API_HPP__
+#ifndef CITRUS_ENGINE_PHYSICS_API_HPP__
+#define CITRUS_ENGINE_PHYSICS_API_HPP__
 
+
+#include "core/extensions.h"
 #include "physics/collider.hpp"
 #include "physics/physobject.hpp"
 #include "physics/rigidbody.hpp"

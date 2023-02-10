@@ -24,7 +24,7 @@
 #define POOL_ALLOC_BLOCK_MAGIC 0x414C4C4F43454400ull
 
 #ifndef _POOL_SIZE_
-#define _POOL_SIZE_ 1024 * 1024 * 1024 * 2
+#define _POOL_SIZE_ 0x80000000ull
 #endif
 
 namespace engine
@@ -70,7 +70,7 @@ namespace engine
 		{
 			public:
 				// Is the pool locked?
-				int locked;
+				MUTEX int locked;
 				// The start of the pool
 				poolBlock *start;
 				// The first free section header block
@@ -112,7 +112,7 @@ namespace engine
 		};
 
 		// Main memory pool
-		extern Pool pool;
+		extern volatile Pool pool;
 	};
 };
 
