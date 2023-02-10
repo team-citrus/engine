@@ -23,10 +23,10 @@ typedef uint32_t u32;
 typedef uint64_t u64;
 
 typedef size_t usize;
-// TODO: include the header for ssize_t
-// typedef ssize_t isize;
+typedef long long isize; // ssize_t is only defined in *nix, however we can assume long long will be the signed size_t integer, as we are definitly in 64 bits
 
 typedef float f32;
 typedef double f64;
+
 
 #endif
