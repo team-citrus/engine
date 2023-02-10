@@ -135,11 +135,11 @@ OPERATOR void *alloc(int blocks)
 
 void *engine::internals::Pool::allocate(int blocks)
 {
-	// Wait for the pool to unlock
-	wait();
-	locked = true;
+	// Wait for the pool to unlock and lock it.
+	lock();
 	void *ret = alloc(blocks);
 	locked = false;
+	unlock()
 	return ret;
 }
 
@@ -154,8 +154,7 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 		return ptr;
 	}
 
-	wait();
-	locked = true;
+	lock();
 
 	else if(bptr->asize == blocks)
 		return ptr;
@@ -167,6 +166,7 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 
 		mergeBlocks(nptr);
 
+		unlock();
 		return (void*)(bptr+1);
 	}
 	else if(bptr->asize < blocks)
@@ -203,20 +203,20 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 		}
 		else
 		{
-			locked = false;
 			nptr = (engine::internals::poolBlock*)alloc(blocks);
 			memcpy(nptr+1, bptr+1, bptr->asize * 32);
 			free(bptr+1);
 			bptr = nptr;
 		}
 
-		locked = false;
+		unlock()
 		return (void*)(bptr+1);
 	}
 }
 
 void engine::internals::Pool::free(engine::internals::poolBlock *bptr)
 {
+	lock();
 	bptr->fsize = bptr->asize;
 	bptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 
@@ -231,6 +231,8 @@ void engine::internals::Pool::free(engine::internals::poolBlock *bptr)
 		mergeBlocks(tptr);
 		tptr = tptr->next;
 	}
+
+	unlock();
 	return;
 }
 

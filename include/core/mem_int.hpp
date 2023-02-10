@@ -88,8 +88,23 @@ namespace engine
 				// Wait
 				OPERATOR void wait()
 				{
+					while(this->locked)
+						spinlock_pause();
+					return;
+				}
+
+				// Lock it
+				OPERATOR void lock()
+				{
 					while(__sync_bool_compare_and_swap(&this->locked, 0, 1))
 						spinlock_pause();
+					return;
+				}
+
+				// Unlock it
+				OPERATOR void unlock()
+				{
+					this->locked = 0;
 					return;
 				}
 
