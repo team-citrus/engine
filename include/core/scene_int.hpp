@@ -30,8 +30,13 @@ namespace engine
 			bool is2D;
 		};
 		
-		extern scene *mainScene;
+		extern scene *curScene;
 		extern map<scene, int> scenes;
+		extern bool loadNecesary;
+		extern int currentScene; // Used with loadNecessary to load the next scene when timing lines up.
+
+		extern size_t frameDelta;
+		extern size_t frameDur;
 	};
 };
 

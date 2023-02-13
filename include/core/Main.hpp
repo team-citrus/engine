@@ -29,7 +29,7 @@ namespace engine
 
         extern thrd_t render;
         extern thrd_t phys;
-        extern thrd_t mix;
+        extern thrd_t audio;
         extern thrd_t gameplay;
 
         // Render the scene, and draw the UI

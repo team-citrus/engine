@@ -10,17 +10,17 @@ namespace engine
     namespace internals
     {
         workQueue rQueue;
-        scene *mainScene;
+        scene *curScene;
         map<scene, int> scenes;
 
         // Run the gameplay code
         int gameplayMain()
         {
-            for(int i = 0; i < mainScene->objects.getCount(); i++)
+            for(int i = 0; i < curScene->objects.getCount(); i++)
             {
-                for(int j = 0; j < mainScene->objects[i].cCount; j++)
+                for(int j = 0; j < curScene->objects[i].cCount; j++)
                 {
-                    mainScene->objects[i].components[j]->update();
+                    curScene->objects[i].components[j]->update();
                 }
             }
 
