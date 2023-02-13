@@ -11,6 +11,7 @@
 
 
 #include "core/extensions.h"
+#include "core/time.hpp"
 #include "physics/collider.hpp"
 #include "physics/physobject.hpp"
 #include "physics/rigidbody.hpp"

@@ -43,6 +43,9 @@ jmp_buf internals::buf
 size_t internals::frameDelta;
 size_t internals::frameDur;
 
+size_t internals::physics::physicsDelta;
+size_t internals::physics::physicsDur;
+
 thrd_t internals::render;
 thrd_t internals::phys;
 thrd_t internals::mix;
@@ -52,7 +55,7 @@ static inline void waitms(size_t mils)
 {
     #ifndef _WIN32
 
-    timespec t = { 0, (mils * 1000000ull) };
+    timespec t = { 0, (long)(mils * 1000000ull) };
     nanosleep(&t, NULL); // Doesn't matter if we don't sleep long enough, waitms() is only to make sure we yield to the OS
 
     #else 
@@ -85,7 +88,6 @@ int main(int argc, char const **argv)
 
     while(true) // Outer loop is run each scene
     {
-        // Physics will autoexit when the time comes
         // Physics runs on it's own internal timings, and executes some gameplay code
         thrd_create(&internals::phys, internals::physmain, NULL);
         thrd_detach(internals::phys);

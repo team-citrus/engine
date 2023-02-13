@@ -37,6 +37,12 @@ namespace engine
 
 		extern size_t frameDelta;
 		extern size_t frameDur;
+
+		namespace physics
+    	{	
+        	extern size_t physicsDelta;
+        	extern size_t phyiscsDur;
+		}
 	};
 };
 

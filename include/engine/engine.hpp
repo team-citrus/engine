@@ -21,6 +21,7 @@
 #include "core/log.hpp"
 #include "core/option.hpp"
 #include "core/transform.hpp"
+#include "core/time.hpp"
 #include "physics/vectors.hpp"
 
 #endif
