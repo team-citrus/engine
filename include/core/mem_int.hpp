@@ -24,7 +24,7 @@
 #define POOL_ALLOC_BLOCK_MAGIC 0x414C4C4F43454400ull
 
 #ifndef _POOL_SIZE_
-#define _POOL_SIZE_ 0x80000000ull
+#define _POOL_SIZE_ 0x80000000ull // 1024 * 1024 * 2 
 #endif
 
 namespace engine
