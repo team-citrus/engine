@@ -75,7 +75,6 @@ int main(int argc, char const **argv)
     pool = Pool();
 
     // TODO: Implement settings
-    // TODO: Estimate framerate
 
     if(usingVulkan)
         Vulkan::vkLoad();
