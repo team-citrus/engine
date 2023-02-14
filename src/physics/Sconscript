@@ -1,0 +1,16 @@
+flags = ["-O2", "-m64", "-mavx", "-Wall", "-Wpedantic", "-flto"]
+debug_flags = ["-Og", "-g", "-mavx", "-m64", "-Wall",  "-Wpedantic"]
+quick_flags = ["-Osize", "-m64", "-Wpedantic"]
+
+Import('ARCH')
+Import('BUILD_TYPE')
+Import('TUNE')
+Import('CC')
+
+env = Environment()
+
+# TODO: Environment initalization
+
+Object('physmain.cpp')
+Object('rb_constructors.cpp')
+Object('setTransform.cpp')
