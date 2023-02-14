@@ -32,7 +32,7 @@ namespace internals
         void Fini();
 
         /*  Steps the main physics simulation
-        *   @warning THIS SHOULD ONLY BE CALLED WITHIN THE MAIN EVENT LOOP.
+        *   @warning THIS SHOULD ONLY BE CALLED WITHIN physmain()
         *   DO NOT CALL IT ANYWHERE ELSE UNLESS YOU WANT TO SERIOUSLY MESS THINGS UP.
         *   @return Any error codes that might arrise
         */
@@ -43,7 +43,7 @@ namespace internals
         {
             public:
             bool is2D;
-            float stepTime;
+            int stepRate;
             union
             {
                 b2World world2D;

@@ -9,13 +9,15 @@
 #ifndef CITRUS_ENGINE_SYNCHRONIZATION_HPP__
 #define CITRUS_ENGINE_SYNCHRONIZATION_HPP__
 
+#include "core/extensions.h"
+
 namespace engine
 {
     namespace internals
     {
-        extern bool isPhysicsExecuting;
-        extern bool isRenderExecuting;
-        extern bool isGameplayExecuting;
+        extern MUTEX bool isPhysicsExecuting;
+        extern MUTEX bool isRenderExecuting;
+        extern MUTEX bool isGameplayExecuting;
     }
 }
 

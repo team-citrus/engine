@@ -41,7 +41,7 @@ namespace engine
 		namespace physics
     	{	
         	extern size_t physicsDelta;
-        	extern size_t phyiscsDur;
+        	extern size_t physicsDur;
 		}
 	};
 };

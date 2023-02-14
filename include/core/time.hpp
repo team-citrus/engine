@@ -18,9 +18,6 @@ namespace engine
     {
         float getPhysicsDelta();
         float getPhysicsDeltaD();
-
-        extern size_t physicsDelta;
-        extern size_t phyiscsDur;
     }
 }
 

@@ -1,9 +1,19 @@
+/*
+*   name: src/core/gameplayMain.cpp
+*   origin: Citrus Engine
+*   purpose: Provides the code for gameplayMain()
+*   author: https://github.com/ComradeYellowCitrusFruit
+*   license: LGPL-3.0-only
+*/
+
 #include "core/scene.hpp"
 #include "core/scene_int.hpp"
 #include "core/component.hpp"
 #include "core/Main.hpp"
 #include "core/workQueue.hpp"
 #include "core/object.hpp"
+#include "core/sync.hpp"
+#include "core/simd.h"
 
 namespace engine
 {
@@ -16,6 +26,14 @@ namespace engine
         // Run the gameplay code
         int gameplayMain()
         {
+            // Physics and render lock gameplay
+            while(isRenderExecuting) spinlock_pause();
+            while(isPhysicsExecuting) spinlock_pause();
+
+            isGameplayExecuting = true;
+
+            // TODO: There is probably something we are missing here.
+
             for(int i = 0; i < curScene->objects.getCount(); i++)
             {
                 for(int j = 0; j < curScene->objects[i].cCount; j++)
@@ -25,6 +43,7 @@ namespace engine
             }
 
             executeQueue(rQueue);
+            isGameplayExecuting = false;
         }
     };
 };

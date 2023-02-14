@@ -51,7 +51,7 @@ thrd_t internals::phys;
 thrd_t internals::mix;
 thrd_t internals::gameplay;
 
-static inline void waitms(size_t mils)
+void waitms(size_t mils)
 {
     #ifndef _WIN32
 
@@ -100,9 +100,11 @@ int main(int argc, char const **argv)
             // Physics  ->        -> Physics
             // Gameplay -> Render
             //          -> Mix
-            // Physics locks Gameplay and render
+            // Physics locks Gameplay and render and mix
             // Gameplay locks render and mix and physics
             // If gameplay executes at the same time as render and mix bad things will happen
+
+            // TODO: Optimize this
 
             thrd_create(&internals::gameplay, internals::gameplayMain, NULL);
             thrd_create(&internals::render, internals::draw, NULL);
