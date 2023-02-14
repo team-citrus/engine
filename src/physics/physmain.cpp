@@ -29,17 +29,17 @@ namespace engine
             while(!loadNecesary)
             {
                 while(!internals::physics::state.stepRate) spinlock_pause();
-                while(isRenderExecuting) spinlock_pause();
-                while(isGameplayExecuting) spinlock_pause();
+                while(isRenderExecuting.load()) spinlock_pause();
+                while(isGameplayExecuting.load()) spinlock_pause();
 
-                isPhysicsExecuting = true;
+                isPhysicsExecuting.store(true);
                 size_t phystart = getTimeInMils();
                 
                 internals::physics::step();
                 
                 // TODO: Trigger stuff
 
-                isPhysicsExecuting = false;
+                isPhysicsExecuting.store(false);
                 internals::physics::physicsDur = getTimeInMils() - phystart;
                 waitms(
                     (internals::physics::physicsDelta = (1000 - (internals::physics::physicsDur * internals::physics::state.stepRate))/internals::physics::state.stepRate)

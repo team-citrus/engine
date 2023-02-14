@@ -27,10 +27,10 @@ namespace engine
         int gameplayMain()
         {
             // Physics and render lock gameplay
-            while(isRenderExecuting) spinlock_pause();
-            while(isPhysicsExecuting) spinlock_pause();
+            while(isRenderExecuting.load()) spinlock_pause();
+            while(isPhysicsExecuting.load()) spinlock_pause();
 
-            isGameplayExecuting = true;
+            isGameplayExecuting.store(true);
 
             // TODO: There is probably something we are missing here.
 
@@ -43,7 +43,7 @@ namespace engine
             }
 
             executeQueue(rQueue);
-            isGameplayExecuting = false;
+            isGameplayExecuting.store(false);
         }
     };
 };

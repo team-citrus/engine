@@ -17,6 +17,7 @@
 #endif
 
 #include <cstdint>
+#include <atomic>
 #include "core/extensions.h"
 #include "core/simd.h"
 
@@ -70,7 +71,7 @@ namespace engine
 		{
 			public:
 				// Is the pool locked?
-				MUTEX int locked;
+				MUTEX std::atomic_bool locked;
 				// The start of the pool
 				poolBlock *start;
 				// The first free section header block
@@ -88,7 +89,7 @@ namespace engine
 				// Wait
 				OPERATOR void wait()
 				{
-					while(this->locked)
+					while(locked.load())
 						spinlock_pause();
 					return;
 				}
@@ -96,7 +97,7 @@ namespace engine
 				// Lock it
 				OPERATOR void lock()
 				{
-					while(__sync_bool_compare_and_swap(&this->locked, 0, 1))
+					while(!locked.compare_exchange_strong(false, true))
 						spinlock_pause();
 					return;
 				}
@@ -104,7 +105,7 @@ namespace engine
 				// Unlock it
 				OPERATOR void unlock()
 				{
-					this->locked = 0;
+					locked.store(false);
 					return;
 				}
 
