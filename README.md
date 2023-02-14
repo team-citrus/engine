@@ -25,7 +25,7 @@ As well, by making the engine free software, we hope to set a precident in the g
 
 - [x] Get a name for the engine
 - [ ] Write a proper readme
-- [ ] Create build system
+- [x] Create build system
 - [x] Create code structure
 - [x] Create formating guide
 - [ ] Write headers for the graphics API
