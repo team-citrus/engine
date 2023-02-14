@@ -34,3 +34,8 @@ As well, by making the engine free software, we hope to set a precident in the g
 - [ ] Write replacement functions and classes for some standard library functions and classes
 - [ ] Create the rendering pipeline
 - [ ] Create the main loop
+  - [x] main()
+  - [ ] gameplayMain()
+  - [ ] physmain()
+  - [ ] draw()
+  - [ ] mix()
