@@ -23,9 +23,14 @@
 
 #define POOL_FREE_BLOCK_MAGIC 0x465245454E554D00ull
 #define POOL_ALLOC_BLOCK_MAGIC 0x414C4C4F43454400ull
+#define POOL_END -1
 
 #ifndef _POOL_SIZE_
 #define _POOL_SIZE_ 0x80000000ull // 1024 * 1024 * 2 
+#endif
+
+#ifndef _POOL_LIMIT_IS_HARD_
+#define _POOL_LIMIT_IS_HARD_ true
 #endif
 
 namespace engine
@@ -77,7 +82,11 @@ namespace engine
 				// The first free section header block
 				poolBlock *head;
 				// Size, allocated immediately so as to stay contigous, in blocks
-				static const size_t size = _POOL_SIZE_/32;
+				size_t size = _POOL_SIZE_/32;
+				// Limit of the pool, if an address goes above this, bad things happen.
+				uintptr_t limit;
+				// For a soft limit
+				bool limitExceeded;
 
 				// Allocate some blocks
 				void *allocate(int blocks);
@@ -114,8 +123,17 @@ namespace engine
 					#ifndef _WIN32
 					start = (engine::internals::poolBlock*)mmap(NULL, _POOL_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON, 0, 0);
 					#else
-					start = (engine::internals::poolBlock*)VirtualAlloc(NULL, _POOL_SIZE_, 0, 0);
+					start = (engine::internals::poolBlock*)VirtualAlloc(NULL, _POOL_SIZE_, MEM_COMMIT | MEM_RESERVE, 0);
 					#endif
+
+					limit = ((uintptr_t)start) + _POOL_SIZE_;
+					limitExceeded = false;
+
+					start->fmagic = POOL_FREE_BLOCK_MAGIC;
+					start->next = POOL_END;
+					start->fsize = size;
+					start->last = NULL;
+					head = start;
 				}
 				~Pool()
 				{

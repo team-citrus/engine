@@ -23,6 +23,7 @@
 // We need to override b2Alloc_Default and b2Free_Default
 #include <box2d/b2_settings.h>
 
+#include "core/errno.hpp"
 #include "core/mem.hpp"
 #include "core/mem_int.hpp"
 
@@ -32,34 +33,48 @@ engine::internals::Pool pool;
 OPERATOR void mergeBlocks(engine::internals::poolBlock *nptr)
 {
 	engine::internals::poolBlock *tptr = nptr + 1;
-	if(!nptr->next) return;
+	if(nptr->next == ENGINE_POOL_END) return;
 
-	while(tptr->fmagic != POOL_FREE_BLOCK_MAGIC || tptr->fmagic != POOL_ALLOC_BLOCK_MAGIC) tptr++;
+	while(true) // An infinite loop is fine, when the time is right it will return
+	{
+		while(tptr->fmagic != POOL_FREE_BLOCK_MAGIC || tptr->amagic != POOL_ALLOC_BLOCK_MAGIC) tptr++;
 
-	if(tptr->amagic == POOL_ALLOC_BLOCK_MAGIC) return;
-	else if(tptr->next != NULL)
-		nptr->next = NULL;
-	else
+		if(tptr->amagic == POOL_ALLOC_BLOCK_MAGIC) return;
+
 		nptr->fsize += tptr->fsize;
+		nptr->next = tptr->next;
 
-	tptr->next->last = nptr;
-	tptr->last->next = (tptr->last != nptr) ? nptr : tptr->last->next;
-	nptr->next = tptr->next;
-	nptr->last = (tptr->last != nptr) ? tptr->last : nptr->last;
-	tptr->fmagic = 0;
+		if(nptr->next != ENGINE_POOL_END)	tptr->next->last = nptr;
+		else return;
+		tptr->fmagic = 0;
+	}
 }
 
 // Used to make reallocate() fully atomic
 OPERATOR void *alloc(int blocks)
 {
 	engine::internals::poolBlock *bptr = engine::internals::pool.head;
-	if(bptr->next == NULL)
+
+alloc_goto:
+	if(bptr->next == POOL_END)
 	{
 		engine::internals::poolBlock *nptr = bptr + blocks;
-		engine::internals::pool.head = nptr;
-		nptr->next = NULL;
-		nptr->last = bptr->last;
+		if((uintptr_t)nptr > engine::internals::pool.limit)
+		{
+			if(_POOL_LIMIT_IS_HARD_)
+			{
+				engine::errno = ENGINE_NO_MEM;
+			}
+			else
+			{
+				// TODO: Expand past limit
+			}
+		}
+
+		nptr->next = POOL_END;
+		nptr->last = bptr;
 		nptr->last->next = nptr;
+		nptr->fsize = bptr->fsize - blocks - 1;
 		nptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 		bptr->amagic = POOL_ALLOC_BLOCK_MAGIC;
 		bptr->asize = blocks;
@@ -67,69 +82,51 @@ OPERATOR void *alloc(int blocks)
 	}
 	else if(bptr->fsize == blocks)
 	{
-		engine::internals::pool.head = bptr->next;
-		bptr->last->next = bptr->next;
-		bptr->next->last = bptr->last;
 		bptr->amagic = POOL_ALLOC_BLOCK_MAGIC;
 		bptr->asize = blocks;
 		return (void*)(bptr+1);
 	}
 	else if(bptr->fsize > blocks + 4)
 	{
-		engine::internals::poolBlock *nptr = bptr;
-		nptr += blocks + 1;
+		engine::internals::poolBlock *nptr = bptr + blocks + 1;
 		nptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 		nptr->fsize = bptr->fsize - blocks - 1;
-		nptr->last = bptr->last;
-		bptr->last->next = nptr;
-		bptr->next->last = nptr;
+		nptr->last = bptr;
 		nptr->next = bptr->next;
+		bptr->next = nptr;
+		nptr->next->last = nptr;
 		bptr->amagic = POOL_ALLOC_BLOCK_MAGIC;
 		bptr->asize = blocks;
-		engine::internals::pool.head = nptr;
 		return (void*)(bptr+1);
 	}
-	else if(bptr->fsize < blocks)
+	else if(bptr->fsize + bptr->next->fsize + 1 > blocks + 4 && bptr->next->fmagic == POOL_FREE_BLOCK_MAGIC)
+	{
+		engine::internals::poolBlock *nptr = bptr + blocks + 1;
+		size_t totalSize = bptr->fsize + bptr->next->fsize + 1;
+		bptr->next = bptr->next->next;
+		bptr->next->last = nptr;
+		bptr->asize = blocks;
+		bptr->amagic = POOL_ALLOC_BLOCK_MAGIC;
+		nptr->fsize = totalSize - 1 - blocks;
+		nptr->fmagic = POOL_FREE_BLOCK_MAGIC;
+		nptr->next = bptr->next;
+		bptr->next = nptr;
+		return (void*)(bptr+1);
+	}
+	else if(bptr->fsize + bptr->next->fsize + 1 => blocks && bptr->next->fmagic == POOL_FREE_BLOCK_MAGIC)
+	{
+		size_t size = bptr->fsize + bptr->next->fsize + 1;
+		bptr->next = bptr->next->next;
+		bptr->next->last = bptr;
+		bptr->asize = size;
+		bptr->amagic POOL_ALLOC_BLOCK_MAGIC;
+		return (void*)(bptr+1);
+	}
+	else
 	{
 		bptr = bptr->next;
-		while(true)
-		{
-			if(bptr->next == NULL)
-			{
-				engine::internals::poolBlock *nptr = bptr + blocks;
-				nptr->next = NULL;
-				nptr->last = bptr->last;
-				nptr->last->next = nptr;
-				nptr->fmagic = POOL_FREE_BLOCK_MAGIC;
-				bptr->amagic = POOL_ALLOC_BLOCK_MAGIC;
-				bptr->asize = blocks;
-				return (void*)(bptr+1);
-			}
-			else if(bptr->fsize == blocks)
-			{
-				bptr->last->next = bptr->next;
-				bptr->next->last = bptr->last;
-				bptr->amagic = POOL_ALLOC_BLOCK_MAGIC;
-				bptr->asize = blocks;
-				return (void*)(bptr+1);
-			}
-			else if(bptr->fsize > blocks + 4)
-			{
-				engine::internals::poolBlock *nptr = bptr;
-				nptr += blocks + 1;
-				nptr->fmagic = POOL_FREE_BLOCK_MAGIC;
-				nptr->fsize = bptr->fsize - blocks - 1;
-				nptr->last = bptr->last;
-				bptr->last->next = nptr;
-				bptr->next->last = nptr;
-				nptr->next = bptr->next;
-				bptr->amagic = POOL_ALLOC_BLOCK_MAGIC;
-				bptr->asize = blocks;
-				bptr->last->next = nptr;
-				return (void*)(bptr+1);
-			}
-			bptr = bptr->next;
-		}
+		while(bptr->fmagic != POOL_FREE_BLOCK_MAGIC) bptr = bptr->next;
+		goto alloc_goto;
 	}
 }
 
@@ -137,9 +134,12 @@ void *engine::internals::Pool::allocate(int blocks)
 {
 	// Wait for the pool to unlock and lock it.
 	lock();
+
 	void *ret = alloc(blocks);
-	locked = false;
-	unlock()
+	head = start;
+	while(head->fmagic != POOL_FREE_BLOCK_MAGIC) head = head->next;
+
+	unlock();
 	return ret;
 }
 
