@@ -16,7 +16,7 @@ As well, by making the engine free software, we hope to set a precident in the g
 - OpenGL SDK
 - GLM
 - box2d
-- Bullet
+- Bullet3
 - G++, or compatible C++ compiler (ie. clang, icc)
 
 ## TODOs
@@ -28,10 +28,19 @@ As well, by making the engine free software, we hope to set a precident in the g
 - [x] Create build system
 - [x] Create code structure
 - [x] Create formating guide
+- [ ] Integrate the Soloud sources into the engine
+  - [ ] Necessary restructuring
+  - [ ] Copyright information
+  - [ ] Sconscript files
 - [ ] Write headers for the graphics API
 - [ ] Write headers for the phyics API
 - [ ] Write headers for general engine information
 - [ ] Write replacement functions and classes for some standard library functions and classes
+  - [x] `engine::Vector<T>`
+  - [x] `engine::pair<A, B>`
+  - [x] `engine::map<A, B>`
+  - [ ] `engine::hash()`
+  - [ ] `engine::hashMap<T>`
 - [ ] Create the rendering pipeline
 - [ ] Create the main loop
   - [x] main()
