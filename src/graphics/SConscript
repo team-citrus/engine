@@ -1,7 +1,7 @@
 # Default flags for most of the files, some my differ as aggresive optimizatiaons are used
-flags = ["-O3", "-m64", "-mavx", "-flto"]
-debug_flags = ["-Og", "-g", "-mavx", "-m64", "-Wpedantic"]
-quick_flags = ["-O", "-m64"]
+flags = ["-O3", "-m64", "-mavx", "-flto", "-idirafter ./include/sys"]
+debug_flags = ["-Og", "-g", "-mavx", "-m64", "-Wpedantic", "-idirafter ./include/sys"]
+quick_flags = ["-O", "-m64", "-idirafter ./include/sys"]
 
 Import('ARCH')
 Import('BUILD_TYPE')
@@ -17,7 +17,7 @@ flags.append("-mtune=" + TUNE)
 debug_flags.append("-mtune=" + TUNE)
 quick_flags.append("-mtune=" + TUNE)
 
-env = Environment()
+env = Environment( CPPPATH = "./include" )
 
 if BUILD_TYPE == "FINAL":
     env.Append( CPPFLAGS = flags )
