@@ -1,18 +1,30 @@
 # Default flags for most of the files, some my differ as aggresive optimizatiaons are used
-flags = ["-O3", "-m64", "-mavx", "-Wall", "-Wpedantic", "-flto"]
-debug_flags = ["-Og", "-g", "-mavx", "-m64", "-Wall",  "-Wpedantic"]
-quick_flags = ["-Osize", "-m64", "-Wpedantic"]
+flags = ["-O3", "-m64", "-mavx", "-flto"]
+debug_flags = ["-Og", "-g", "-mavx", "-m64", "-Wpedantic"]
+quick_flags = ["-O", "-m64"]
 
 Import('ARCH')
 Import('BUILD_TYPE')
 Import('TUNE')
 Import('VULKAN')
 Import('OPENGL')
-Import('CC')
+
+flags.append("-march=" + ARCH)
+debug_flags.append("-march=" + ARCH)
+quick_flags.append("-march=" + ARCH)
+
+flags.append("-mtune=" + TUNE)
+debug_flags.append("-mtune=" + TUNE)
+quick_flags.append("-mtune=" + TUNE)
 
 env = Environment()
 
-# TODO: Environment initalization
+if BUILD_TYPE == "FINAL":
+    env.Append( CXXFLAGS = flags )
+elif BUILD_TYPE == "DEBUG":
+    env.Append( CXXFLAGS = debug_flags )
+elif BUILD_TYPE == "QUICK":
+    env.Append( CXXFLAGS = quick_flags )
 
 if VULKAN == 'TRUE':
     Object('vkLoad.cpp')

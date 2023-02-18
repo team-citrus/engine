@@ -1,15 +1,27 @@
-flags = ["-O2", "-m64", "-mavx", "-Wall", "-Wpedantic", "-flto"]
-debug_flags = ["-Og", "-g", "-mavx", "-m64", "-Wall",  "-Wpedantic"]
-quick_flags = ["-Osize", "-m64", "-Wpedantic"]
+flags = ["-O2", "-m64", "-mavx" "-flto"]
+debug_flags = ["-Og", "-g", "-mavx", "-m64",  "-Wpedantic"]
+quick_flags = ["-O", "-m64"]
 
 Import('ARCH')
 Import('BUILD_TYPE')
 Import('TUNE')
-Import('CC')
 
 env = Environment()
 
-# TODO: Environment initalization
+flags.append("-march=" + ARCH)
+debug_flags.append("-march=" + ARCH)
+quick_flags.append("-march=" + ARCH)
+
+flags.append("-mtune=" + TUNE)
+debug_flags.append("-mtune=" + TUNE)
+quick_flags.append("-mtune=" + TUNE)
+
+if BUILD_TYPE == "FINAL":
+    env.Append( CXXFLAGS = flags, LIBS = ['bullet3', 'box2d'] ) # TODO: Proper library names
+elif BUILD_TYPE == "DEBUG":
+    env.Append( CXXFLAGS = debug_flags, LIBS = ['bullet3', 'box2d'] )
+elif BUILD_TYPE == "QUICK":
+    env.Append( CXXFLAGS = quick_flags, LIBS = ['bullet3', 'box2d'] )
 
 Object('physmain.cpp')
 Object('rb_constructors.cpp')
