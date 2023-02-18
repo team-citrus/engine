@@ -20,14 +20,21 @@ quick_flags.append("-mtune=" + TUNE)
 env = Environment()
 
 if BUILD_TYPE == "FINAL":
-    env.Append( CXXFLAGS = flags )
+    env.Append( CPPFLAGS = flags )
+    env["CPPDEFINES"] = { "_PRODUCTION_" : None }
 elif BUILD_TYPE == "DEBUG":
-    env.Append( CXXFLAGS = debug_flags )
+    env.Append( CPPFLAGS = debug_flags )
+    env["CPPDEFINES"] = { "_DEBUG_" : None }
 elif BUILD_TYPE == "QUICK":
-    env.Append( CXXFLAGS = quick_flags )
+    env.Append( CPPFLAGS = quick_flags )
+    env["CPPDEFINES"] = { "_QUICK_" : None }
+
+# TODO: Vulkan version
 
 if VULKAN == 'TRUE':
+    env.Append( CPPDEFINES = { "_VULKAN_" : None } )
     Object('vkLoad.cpp')
 if OPENGL == 'TRUE':
+    env.Append( CPPDEFINES = { "_OPENGL_" : None } )
     Object('initGL.cpp')
     # TODO: Add target GL.dll/liblegacyrender.so

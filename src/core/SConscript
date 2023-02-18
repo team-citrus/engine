@@ -18,11 +18,14 @@ debug_flags.append("-mtune=" + TUNE)
 quick_flags.append("-mtune=" + TUNE)
 
 if BUILD_TYPE == "FINAL":
-    env.Append( CXXFLAGS = flags )
+    env.Append( CPPFLAGS = flags )
+    env["CPPDEFINES"] = { "_PRODUCTION_" : None }
 elif BUILD_TYPE == "DEBUG":
-    env.Append( CXXFLAGS = debug_flags )
+    env.Append( CPPFLAGS = debug_flags )
+    env["CPPDEFINES"] = { "_DEBUG_" : None }
 elif BUILD_TYPE == "QUICK":
-    env.Append( CXXFLAGS = quick_flags )
+    env.Append( CPPFLAGS = quick_flags )
+    env["CPPDEFINES"] = { "_QUICK_" : None }
 
 Object('main.cpp')
 Object('mem.cpp')

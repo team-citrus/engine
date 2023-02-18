@@ -17,11 +17,14 @@ debug_flags.append("-mtune=" + TUNE)
 quick_flags.append("-mtune=" + TUNE)
 
 if BUILD_TYPE == "FINAL":
-    env.Append( CXXFLAGS = flags, LIBS = ['bullet3', 'box2d'] ) # TODO: Proper library names
+    env.Append( CPPFLAGS = flags, LIBS = ['bullet3', 'box2d'] ) # TODO: Proper library names
+    env["CPPDEFINES"] = { "_PRODUCTION_" : None }
 elif BUILD_TYPE == "DEBUG":
-    env.Append( CXXFLAGS = debug_flags, LIBS = ['bullet3', 'box2d'] )
+    env.Append( CPPFLAGS = debug_flags, LIBS = ['bullet3', 'box2d'] )
+    env["CPPDEFINES"] = { "_DEBUG_" : None }
 elif BUILD_TYPE == "QUICK":
-    env.Append( CXXFLAGS = quick_flags, LIBS = ['bullet3', 'box2d'] )
+    env.Append( CPPFLAGS = quick_flags, LIBS = ['bullet3', 'box2d'] )
+    env["CPPDEFINES"] = { "_QUICK_" : None }
 
 Object('physmain.cpp')
 Object('rb_constructors.cpp')
