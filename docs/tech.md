@@ -10,4 +10,4 @@ For 3D physics, bullet.
 
 Rendering will be handled in house.
 
-Sound is currently TBD.
+SoLoud for sound.
