@@ -38,10 +38,9 @@ As well, by making the engine free software, we hope to set a precident in the g
 - [ ] Write replacement functions and classes for some standard library functions and classes
   - [x] `engine::Vector<T>`
   - [x] `engine::pair<A, B>`
-  - [ ] `engine::map<A, B>`
-  - [x] `engine::set<A, B>`
-  - [ ] `engine::hash()`
-  - [ ] `engine::hashMap<T>`
+  - [x] `engine::map<A, B>`
+  - [x] `engine::hash()`
+  - [x] `engine::hashMap<K, T>`
 - [ ] Create the rendering pipeline
 - [ ] Create the main loop
   - [x] main()
