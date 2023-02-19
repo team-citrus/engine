@@ -27,7 +27,7 @@ namespace engine
         B b;
     };
 
-    template <typename A, typename B>
+    template <typename K, typename B>
     class map
     {
         public:
@@ -88,6 +88,16 @@ namespace engine
         OPERATOR option<B&> &lookup(A a)
         {
             return this->getB(a);
+        }
+
+        OPERATOR option<A&> operator[](A a)
+        {
+            return lookup(a);
+        }
+
+        OPERATOR option<B&> operator[](B b)
+        {
+            return lookup(b);
         }
 
         private:
