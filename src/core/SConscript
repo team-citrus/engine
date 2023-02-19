@@ -1,13 +1,13 @@
 # Default flags for most of the files, some my differ as aggresive optimizatiaons are used
-flags = ["-O3", "-m64", "-mavx", "-flto", "-idirafter ./include/sys"]
-debug_flags = ["-Og", "-g", "-mavx", "-m64", "-Wall",  "-Wpedantic", "-idirafter ./include/sys"]
+flags = ["-O3", "-m64", "-mavx", "-flto", "-idirafter ../../include/sys"]
+debug_flags = ["-Og", "-g", "-mavx", "-m64", "-Wall",  "-Wpedantic", "-idirafter ../../include/sys"]
 quick_flags = ["-O", "-m64", "-idirafter ./include/sys"]
 
 Import('ARCH')
 Import('BUILD_TYPE')
 Import('TUNE')
 
-env = Environment( CPPPATH = "./include" )
+env = Environment( CPPPATH = "../../include" )
 
 flags.append("-march=" + ARCH)
 debug_flags.append("-march=" + ARCH)
@@ -32,3 +32,4 @@ Object('mem.cpp')
 Object('gameplayMain.cpp')
 Object('ldScene.cpp')
 Object('time.cpp')
+Object('hash.cpp')
