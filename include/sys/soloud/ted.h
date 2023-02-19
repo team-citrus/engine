@@ -1,4 +1,3 @@
-
 class TED 
 {
 public: 
