@@ -78,6 +78,8 @@ namespace engine
             return ptr[hash(&k, sizeof(KEY)) % s];
         }
     };
+    
+    uint32_t crc32(void *data, size_t s);
 }
 
 #endif
