@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include "core/extensions.h"
 #include "core/mem.hpp"
+#include "core/option.hpp"
 
 namespace engine
 {
@@ -20,54 +21,63 @@ namespace engine
     {
         private:
             T *ptr;
-            int count;
+            size_t count;
+            size_t capacity;
         public:
-            OPERATOR T &operator[](int index)
+            OPERATOR T &operator[](size_t index)
             {
                 return (index < count) ? data[index] : getLast();
             }
 
-            OPERATOR void push(T obj)
+            OPERATOR T &push(T obj)
             {
                 count++;
-                ptr = memrealloc(ptr, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
+                ptr = (count >= capacity) ? memrealloc(ptr, (capcity += 8) * sizeof(T), MEM_FLAG_UNIT_BYTE) : ptr;
                 ptr[count-1] = obj;
             }
 
-            OPERATOR T pop()
+            OPERATOR option<T> pop()
             {
                 if(!count)
-                    return;
+                    none<T>();
                 count--;
                 T obj = ptr[count];
                 ptr = memrealloc(ptr, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
                 return obj;
             }
 
-            OPERATOR void rm(int index)
+            OPERATOR void rm(size_t index)
             {
                 if(!count)
                     return;
-                for(int i = index; i < count - 1; i--)
+                for(size_t i = index; i < count - 1; i--)
                     ptr[i] = ptr[i+1];
                 count--;
-                ptr = memrealloc(ptr, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
+                ptr = (count >= capcity - 8) ? memrealloc(ptr, (capacity -= 8) * sizeof(T), MEM_FLAG_UNIT_BYTE) : ptr;
             }
 
-            OPERATOR void insert(int index, T obj)
+            OPERATOR T &insert(size_t index, T obj)
             {
-                if(!count)
-                    return;
                 count++;
-                ptr = memrealloc(ptr, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
-                for(int i = count - 2; i > index; i--)
+                ptr = (count >= capcity) ? memrealloc(ptr, (capacity += 8) * sizeof(T), MEM_FLAG_UNIT_BYTE) : ptr;
+                for(size_t i = count - 2; i > index; i--)
                     data[i+1] = data[i];
                 data[index] = obj;
             }
 
-            OPERATOR int getCount()
+            OPERATOR size_t getCount()
             {
                 return count;
+            }
+        
+            OPERATOR size_t getCapacity()
+            {
+                return capacity;
+            }
+        
+            OPERATOR void shrinkToCapacity
+            {
+                ptr = memrealloc(ptr, (count = capacity) * sizeof(T), MEM_FLAG_UNIT_BYTE);
             }
 
             OPERATOR T &getLast()
@@ -88,7 +98,7 @@ namespace engine
 
             Vector()
             {
-                ptr = memalloc(sizeof(T), MEM_FLAG_UNIT_BYTE);
+                ptr = memalloc((capacity = 8) * sizeof(T), MEM_FLAG_UNIT_BYTE);
                 count = 0;
             }
 
