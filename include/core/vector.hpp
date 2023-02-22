@@ -34,16 +34,17 @@ namespace engine
                 count++;
                 ptr = (count >= capacity) ? memrealloc(ptr, (capcity += 8) * sizeof(T), MEM_FLAG_UNIT_BYTE) : ptr;
                 ptr[count-1] = obj;
+                return ptr[count-1];
             }
 
             OPERATOR option<T> pop()
             {
                 if(!count)
-                    none<T>();
+                    return none<T>();
                 count--;
                 T obj = ptr[count];
                 ptr = memrealloc(ptr, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
-                return obj;
+                return some(obj);
             }
 
             OPERATOR void rm(size_t index)
@@ -63,6 +64,7 @@ namespace engine
                 for(size_t i = count - 2; i > index; i--)
                     data[i+1] = data[i];
                 data[index] = obj;
+                return data[index];
             }
 
             OPERATOR size_t getCount()
@@ -100,6 +102,20 @@ namespace engine
             {
                 ptr = memalloc((capacity = 8) * sizeof(T), MEM_FLAG_UNIT_BYTE);
                 count = 0;
+            }
+        
+            Vector(T arr[], size_t c)
+            {
+                ptr = memalloc((capacity = (c % 8) ? c + c % 8 : c) * sizeof(T), MEM_FLAG_UNIT_BYTE);
+                memcpy(ptr, arr, c * sizeof(T));
+            }
+        
+            Vector(const Vector &v)
+            {
+                count = v.count;
+                capacity = v.capacity;
+                ptr = memalloc(capacity * sizeof(T), MEM_FLAG_UNIT_BYTE);
+                memcpy(ptr, v.ptr, count);
             }
 
             ~Vector()
