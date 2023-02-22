@@ -123,6 +123,15 @@ namespace engine
                 memfree(ptr);
             }
     };
+    
+    template<class T>
+    using vec = Vector<T>;
+    
+    template<class T>
+    using vector = Vector<T>;
+    
+    template<class T>
+    using darray = Vector<T>;
 };
 
 #endif
