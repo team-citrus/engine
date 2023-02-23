@@ -22,6 +22,7 @@
 #include "core/option.hpp"
 #include "core/transform.hpp"
 #include "core/time.hpp"
+#include "core/hash.hpp"
 #include "physics/vectors.hpp"
 
 #endif
