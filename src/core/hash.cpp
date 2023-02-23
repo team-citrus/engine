@@ -11,7 +11,7 @@
 #include "core/hash.hpp"
 #include "core/vector.hpp"
 #include "core/mem.hpp"
-#include "core/simd.n"
+#include "core/simd.h"
 
 #define ROTATE(x, b) (uint64_t)( ((x) << (b)) | ( (x) >> (64 - (b))) )
 
@@ -77,7 +77,7 @@ uint32_t engine::crc32(void *data, size_t s)
 	uint8_t *ddata = (uint8_t*)data;
 	
 	for(size_t i = 0; i < s; i++)
-		ret = crc32_u32(ret, (uint32_t*)&(ddata[i])); // I love amd64 assembly instructions and intrinsics
+		ret = crc32_u32(ret, *(uint32_t*)&(ddata[i])); // I love amd64 assembly instructions and intrinsics
 	
 	return ret;
 }

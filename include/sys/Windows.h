@@ -1,1 +1,1 @@
-#include <windows.h> // Compatibility thing
+#include <windows.h> // Compatibility thing, MinGW has windows.h instead of Windows.h

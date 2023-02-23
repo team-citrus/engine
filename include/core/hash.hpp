@@ -11,6 +11,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include "core/vector.hpp"
 #include "core/pair.hpp"
 #include "core/mem.hpp"
@@ -27,33 +28,105 @@ namespace engine
     class hashMap
     {
         size_t s;
+        size_t c;
         pair<hash_t, T> *ptr;
         public:
         hashMap(pair<KEY, T> p[], size_t ss)
         {
-            ptr = memalloc(sizeof(pair<hash_t, T>) * ss, 0);
+            *this = hashMap(ss);
             s = ss;
             for(size_t i = 0; i < s; i++)
                 ptr[hash(&p[i].a, sizeof(KEY)) % s] = pair(hash(&p[i].a, sizeof(KEY)), p[i].b);
+
+            // TODO: Hash collisions and index collisions
         }
 
         hashMap(Vector<pair<KEY, T>> p)
         {
-            ptr = memalloc(sizeof(pair<hash_t, T>) * p.count(), 0);
-            s = p.count();
+            *this = hashMap(p.getCount());
+            this.s = p.getCount();
             for(size_t i = 0; i < s; i++)
                 ptr[hash(&p[i].a, sizeof(KEY)) % s] = pair(hash(&p[i].a, sizeof(KEY)), p[i].b);
+
+            // TODO: Hash collisions and index collisions
         }
 
-        OPERATOR void add(KEY k, T t) // Probably won't work with maps with few members
+        hashMap(size_t cc)
         {
-            pair<hash_t, T> *nptr = memalloc(sizeof(pair<hash_t, T>) * (s + 1), 0);
-            for(size_t i = 0; i < s; i++)
-                nptr[ptr[i].a % (s + 1)] = ptr[i];
+            s = 0;
+            ptr = memalloc(sizeof(pair<hash_t,T>) * (c = cc), MEM_FLAG_UNIT_BYTE);
 
+            memset(ptr, 0, sizeof(pair<hash_t, T>) * c);
+        }
+
+        hashMap(hashMap<KEY, T> &cc)
+        {
+            c = cc.c;
+            s = cc.s;
+            ptr = memalloc(sizeof(pair<hash_t,T>) * c, MEM_FLAG_UNIT_BYTE);
+            memcpy(ptr, cc.ptr, c);
+        }
+
+        ~hashMap()
+        {
             memfree(ptr);
-            nptr[hash(&k, sizeof(KEY)) % (s + 1)] = pair(hash(&k, sizeof(KEY)), t);
-            ptr = nptr;
+        }
+
+        option<T> add(KEY k, T t)
+        {
+            hash_t h = hash(&k, sizeof(KEY));
+            if(s + 1 >= c)
+            {
+                iCollision:
+                size_t cc = c + 8;
+
+                while(true)
+                {
+                    pair<hash_t, T> *nptr = memalloc(sizeof(pair<hash_t,T>) * cc, MEM_FLAG_UNIT_BYTE);
+                    memset(nptr, 0, sizeof(pair<hash_t,T>) * cc);
+
+                    for(size_t i = 0; i < c; i++)
+                    {
+                        hash_t in = ptr[i].a;
+                        if(nptr[in % cc].a != 0)
+                        {
+                            memfree(nptr);
+                            cc += 8;
+                            continue;
+                        }
+                        else
+                            nptr[in % cc] = ptr[i];
+                    }
+
+                    if(nptr[h % cc].a != 0)
+                    {
+                        memfree(nptr);
+                        cc += 8;
+                        continue;
+                    }
+                    else
+                        nptr[h % cc] = pair<hash_t,T>(h, t);
+
+                    memfree(ptr);
+                    ptr = nptr;
+                    c = cc;
+                    s++;
+                }
+            }
+            else
+            {
+                if(ptr[h % c].a == h) // Ahhhhh hash collision
+                    return none<T>();
+                else if(ptr[h % c].a != 0)
+                    goto iCollision;
+                else
+                {
+                    ptr[h % c].a = h;
+                    ptr[h % c].b = t;
+                    s++;
+                    return ptr[h % c].b;
+                }
+            }
         }
 
         OPERATOR size_t getCount()
@@ -61,21 +134,17 @@ namespace engine
             return s;
         }
 
-        OPERATOR void rm(KEY k)
+        void rm(KEY k)
         {
-            pair<hash_t, T> *nptr = memalloc(sizeof(pair<hash_t, T>) * (s - 1), 0);
-            hash_t h = hash(&k, sizeof(KEY));
-            for(size_t i = 0; i < s; i++)
-                if(ptr[i].a != h)
-                    nptr[ptr[i].a % (s - 1)] = ptr[i];
+            memset(&this[k], 0, sizeof(pair<hash_t, T>));
+            s--;
 
-            memfree(ptr);
-            ptr = nptr;
+            // TODO: Add proper shrinkage for this
         }
 
-        OPERATOR T operator[](KEY k)
+        OPERATOR T &operator[](KEY k)
         {
-            return ptr[hash(&k, sizeof(KEY)) % s];
+            return ptr[hash(&k, sizeof(KEY)) % c];
         }
     };
     
