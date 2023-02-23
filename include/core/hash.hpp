@@ -33,22 +33,54 @@ namespace engine
         public:
         hashMap(pair<KEY, T> p[], size_t ss)
         {
-            *this = hashMap(ss);
-            s = ss;
-            for(size_t i = 0; i < s; i++)
-                ptr[hash(&p[i].a, sizeof(KEY)) % s] = pair(hash(&p[i].a, sizeof(KEY)), p[i].b);
-
-            // TODO: Hash collisions and index collisions
+            *this = hashMap<KEY, T>(ss);
+            for(size_t i = 0; i < ss; i++)
+            {
+                hash_t h = hash(&p[i].a, sizeof(KEY));
+                if(ptr[h % c].a == h) // Ahhhh hash collision
+                {
+                    // TODO: errno
+                    *this = hashMap<KEY, T>(ss);
+                    break;
+                }
+                else if(ptr[h % c].a != 0)
+                {
+                    size_t sc = ss;
+                    
+                    while(true)
+                    {
+                        *this = hashMap<KEY, T>((sc += 8));
+                        s = ss;
+                        
+                        for(size_t i = 0; i < s; i++);
+                        {
+                            hash_t hh = hash(&p[i].a, sizeof(KEY));
+                            if(ptr[hh % c].a == hh)
+                            {
+                                // TODO: errno
+                                *this = hashMap(ss);
+                                break;
+                            }
+                            else if(ptr[hh % c].a != 0)
+                            {
+                                memfree(ptr);
+                                break;
+                            }
+                            else
+                                ptr[hh % c] = p [i];
+                        }
+                    }
+                }
+                else
+                {
+                    ptr[h % c] = p[i]
+                }
+            }
         }
 
         hashMap(Vector<pair<KEY, T>> p)
         {
-            *this = hashMap(p.getCount());
-            this.s = p.getCount();
-            for(size_t i = 0; i < s; i++)
-                ptr[hash(&p[i].a, sizeof(KEY)) % s] = pair(hash(&p[i].a, sizeof(KEY)), p[i].b);
-
-            // TODO: Hash collisions and index collisions
+            *this = hashMap<KEY, T>(p.data(), p.getCount());
         }
 
         hashMap(size_t cc)
@@ -139,7 +171,21 @@ namespace engine
             memset(&this[k], 0, sizeof(pair<hash_t, T>));
             s--;
 
-            // TODO: Add proper shrinkage for this
+            if(s <= c - 8)
+            {
+                Vector<pair<KEY, T>> v;
+                for(size_t i = 0; i < c; i++)
+                {
+                    if(ptr[i].a != 0)
+                        v.push(ptr[i]);
+                }
+                
+                hashMap<KEY, T> tmp(v);
+                
+                // TODO: errno checks
+                
+                *this = tmp;
+            }
         }
 
         OPERATOR T &operator[](KEY k)
