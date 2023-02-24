@@ -34,7 +34,9 @@ elif BUILD_TYPE == "QUICK":
 if VULKAN == 'TRUE':
     env.Append( CPPDEFINES = { "_VULKAN_" : None } )
     Object('vkLoad.cpp')
+    # TODO: If both Vulkan and OpenGL are being compiled, make them both DLLs
 if OPENGL == 'TRUE':
     env.Append( CPPDEFINES = { "_OPENGL_" : None } )
     Object('initGL.cpp')
-    # TODO: Add target GL.dll/liblegacyrender.so
+    # TODO: Add target cenginegl.dll/libcenginegl.so
+    # TODO: If just OpenGL is being compiled, embed it into the main arhive
