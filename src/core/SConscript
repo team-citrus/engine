@@ -27,7 +27,7 @@ elif BUILD_TYPE == "QUICK":
     env.Append( CPPFLAGS = quick_flags )
     env["CPPDEFINES"] = { "_QUICK_" : None }
 
-Object('main.cpp')
+Object(target = 'cengine0.o', source = 'main.cpp') # crt0.o reference, now laugh
 Object('mem.cpp')
 Object('gameplayMain.cpp')
 Object('ldScene.cpp')
