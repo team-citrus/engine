@@ -15,6 +15,7 @@
 #include "core/component.hpp"
 #include "core/mem.hpp"
 #include "core/Main.hpp"
+#include "core/hash.hpp"
 
 namespace engine
 {
@@ -58,19 +59,16 @@ namespace engine
 
 			_OPTIMIZE_(3) OPERATOR bool hasTag(const char *tag)
 			{
+				hash_t h = hash(tag, strlen(tag));
 				for(int i = 0; i < tags.getCount(); i++)
-				{
-					if(!strcmp(tags[i], tag))
-					{
+					if(tags[i] == tag)
 						return true;
-					}
-				}
 				return false;
 			}
 
 			_OPTIMIZE_(3) OPERATOR void addTag(const char *tag)
 			{
-				tags.push(tag);
+				tags.push(hash(tag, strlen(tag)));
 			}
 
 			_OPTIMIZE_(3) OPERATOR int componentCount()
@@ -78,7 +76,7 @@ namespace engine
 				return cCount;
 			}
 		private:
-			Vector<const char*> tags;
+			Vector<hash_t> tags;
 			int cCount;
 			component **components;
 
