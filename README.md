@@ -27,7 +27,7 @@ As well, by making the engine free software, we hope to set a precident in the g
 - [ ] Write a proper readme
 - [x] Create build system
 - [x] Create code structure
-- [x] Create formating guide
+- [x] Create formatting guide
 - [ ] Integrate the Soloud sources into the engine
   - [x] Necessary restructuring
   - [ ] Copyright information
