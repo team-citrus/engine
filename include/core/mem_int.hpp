@@ -141,11 +141,12 @@ namespace engine
 				}
 				~Pool()
 				{
-					// TODO: Soft limit stuff
 					#ifndef _WIN32
-					munmap(start, _POOL_SIZE_);
+					munmap(start, size * 32); // Should work because Linux merges continguous mappings with the same permisions
 					#else
 					VirtualFree(start, _POOL_SIZE_, 0);
+					if(limitExceeded)
+						VirtualFree((void*)((uintptr_t)start + _POOL_SIZE_), _POOL_EXPANSION_SIZE, 0);
 					#endif
 				}
 		};
