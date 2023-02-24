@@ -17,7 +17,7 @@ namespace engine
 	namespace internals
 	{
 		typedef size_t (*queuePtr)(...);
-		typedef Vector<queuePtr> workQueue;
+		using workQueue = Vector<queuePtr>;
 		
 		template <typename...A>
 		OPERATOR size_t executeItemInQueue(queuePtr ptr, A...args)
