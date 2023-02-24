@@ -1,10 +1,12 @@
 #ifndef _WIN32
 
 #include <unistd.h>
+#define MAIN int main(int argc, char const **argv)
 
 #else 
 
 #include <windows.h>
+#define MAIN APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow) // We have to use the WinMain bullshit for GUI init in windows.
 
 #endif
 
@@ -21,6 +23,7 @@
 #include <threads.h>
 #include <ctime>
 #include <csetjmp>
+#include <cstdlib>
 #include "core/mem.hpp"
 #include "core/mem_int.hpp"
 #include "core/Main.hpp"
@@ -65,9 +68,24 @@ void waitms(size_t mils)
     #endif
 }
 
-int main(int argc, char const **argv)
+MAIN
 {
-    // TODO: Add crash handling stuff
+    #ifndef _WIN32
+    
+    pid_t id;
+    if((id = fork()) != 0)
+    {
+        // TODO: hide console
+        int ret;
+        waitpid(id, &ret, 0);
+        // TODO: bring up minimal error code display
+    }
+    
+    #else
+    
+    // TODO: Windows
+    
+    #endif
 
     // Initalize everything
     
@@ -81,7 +99,7 @@ int main(int argc, char const **argv)
     else
         OpenGL::loadGL();
 
-    // TODO: Add GUI init, and splash screen stuff
+    // TODO: Add GUI init, and splash screen stuff, splash screen should probably be on a different thread.
 
     // TODO: Load main scene
 
