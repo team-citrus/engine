@@ -131,13 +131,12 @@ typedef __m256i m256i_t;
 #define get_i32(a) _mm_cvtsi128_si32(a)
 #define get_i64(a) _mm_cvtsi128_si64(a)
 
-#define mov_i32(i) _mm_cvtsi32_si128(i)
-#define mov_i64(i) _mm_cvtsi64_si128(i)
-#define mov_pd(ptr) _mm_load_pd(ptr)
-#define mov_ps(ptr) _mm_load_ps(ptr)
-#define mov_sd(ptr) _mm_load_sd(ptr)
-#define mov_ss(ptr) _mm_load_ss(ptr)
-#define mov_s128(ptr) _mm_load_si128(ptr)
+#define mova_pd(ptr) _mm_load_pd(ptr)
+#define mova_ps(ptr) _mm_load_ps(ptr)
+#define mova_sd(ptr) _mm_load_sd(ptr)
+#define mova_ss(ptr) _mm_load_ss(ptr)
+#define mova_s128(ptr) _mm_load_si128(ptr)
+#define movu_s128(ptr) _mm_lddqu_si128(ptr)
 
 #define spinlock_pause() _mm_pause()
 
