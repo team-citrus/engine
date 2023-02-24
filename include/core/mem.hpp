@@ -29,7 +29,7 @@ namespace engine
 	*	@param size Size in bytes
 	*	@param flags Flags
 	*	@return Pointer to the allocation, NULL if an error occurs
-	*	Errno will be set
+	*	errorcode will be set
 	*/
 	void *memalloc(size_t size, uint16_t flags);
 
@@ -38,7 +38,7 @@ namespace engine
 	*	@param size Size in bytes
 	*	@param flags Flags, 0 to use previous flags
 	*	@return Pointer to the new allocation, NULL if an error occurs
-	*	Errno will be set
+	*	errorcode will be set
 	*/
 	void *memrealloc(void *ptr, size_t size, uint16_t flags);
 

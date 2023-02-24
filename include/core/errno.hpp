@@ -1,7 +1,7 @@
 /*
-*	name: include/core/errno.hpp
+*	name: include/core/errorcode.hpp
 *	origin: Citrus Engine
-*	purpose: Provide engine::errno
+*	purpose: Provide engine::errorcode
 *	author: https://github.com/ComradeYellowCitrusFruit
 *	license: LGPL-3.0-only
 */
@@ -29,7 +29,7 @@
 
 namespace engine
 {
-    extern unsigned int errno;
+    extern unsigned int errorcode;
 }
 
 #endif

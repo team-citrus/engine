@@ -15,6 +15,8 @@
 #include "core/vector.hpp"
 #include "core/pair.hpp"
 #include "core/mem.hpp"
+#include "core/simd.h"
+#include "core/errno.hpp"
 
 namespace engine
 {
@@ -39,7 +41,7 @@ namespace engine
                 hash_t h = hash(&p[i].a, sizeof(KEY));
                 if(ptr[h % c].a == h) // Ahhhh hash collision
                 {
-                    // TODO: errno
+                    engine::errorcode = ENGINE_HASH_COLLISION;
                     *this = hashMap<KEY, T>(ss);
                     break;
                 }
@@ -57,7 +59,7 @@ namespace engine
                             hash_t hh = hash(&p[i].a, sizeof(KEY));
                             if(ptr[hh % c].a == hh)
                             {
-                                // TODO: errno
+                                engine::errorcode = ENGINE_HASH_COLLISION;
                                 *this = hashMap(ss);
                                 break;
                             }
@@ -130,7 +132,13 @@ namespace engine
                             nptr[in % cc] = ptr[i];
                     }
 
-                    if(nptr[h % cc].a != 0)
+                    if(nptr[h % cc].a == h)
+                    {
+                        memfree(nptr);
+                        engine::errorcode = ENGINE_HASH_COLLISION;
+                        return none<T>(); 
+                    }
+                    else if(nptr[h % cc].a != 0)
                     {
                         memfree(nptr);
                         cc += 8;
@@ -148,7 +156,10 @@ namespace engine
             else
             {
                 if(ptr[h % c].a == h) // Ahhhhh hash collision
+                {
+                    engine::errorcode = ENGINE_HASH_COLLISION;
                     return none<T>();
+                }
                 else if(ptr[h % c].a != 0)
                     goto iCollision;
                 else
@@ -182,8 +193,6 @@ namespace engine
                 
                 hashMap<KEY, T> tmp(v);
                 
-                // TODO: errno checks
-                
                 *this = tmp;
             }
         }
@@ -194,7 +203,16 @@ namespace engine
         }
     };
     
-    uint32_t crc32(void *data, size_t s);
+    OPERATOR uint32_t crc32(void *data, size_t s)
+    {
+	    uint32_t ret = 0xFFFFFFFF;
+	    uint8_t *ddata = (uint8_t*)data;
+	
+	    for(size_t i = 0; i < s; i++)
+		    ret = crc32_u32(ret, *(uint32_t*)&(ddata[i])); // I love amd64 assembly instructions and intrinsics
+	
+	    return ret;
+    }
 }
 
 #endif

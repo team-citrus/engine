@@ -23,7 +23,7 @@
 // We need to override b2Alloc_Default and b2Free_Default
 #include <box2d/b2_settings.h>
 
-#include "core/errno.hpp"
+#include "core/errorcode.hpp"
 #include "core/mem.hpp"
 #include "core/mem_int.hpp"
 
@@ -62,7 +62,7 @@ alloc_goto:
 		{
 			if(_POOL_LIMIT_IS_HARD_)
 			{
-				engine::errno = ENGINE_NO_MEM;
+				engine::errorcode = ENGINE_NO_MEM;
 				return -1;
 			}
 			else
@@ -149,18 +149,18 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 	
 	if(ptr == NULL)
 	{
-		engine::errno = ENGINE_MEMREALLOC_INVALID_PTR;
+		engine::errorcode = ENGINE_MEMREALLOC_INVALID_PTR;
 		return this->return this->allocate(blocks);
 	}
 	else if(bptr->amagic != POOL_ALLOC_BLOCK_MAGIC)
 	{
-		engine::errno = ENGINE_MEMREALLOC_INVALID_PTR;
+		engine::errorcode = ENGINE_MEMREALLOC_INVALID_PTR;
 		return this->allocate(blocks);
 	}
 	else if(!blocks)
 	{
 		this->free(bptr);
-		engine::errno = ENGINE_MEMREALLOC_INVALID_PTR;
+		engine::errorcode = ENGINE_MEMREALLOC_INVALID_PTR;
 		return ptr;
 	}
 
@@ -201,7 +201,7 @@ void engine::internals::Pool::free(engine::internals::poolBlock *bptr)
 	lock();
 	if(bptr + 1 == NULL)
 	{
-		engine::errno = ENGINE_MEMREALLOC_INVALID_PTR;
+		engine::errorcode = ENGINE_MEMREALLOC_INVALID_PTR;
 		return;
 	}
 	bptr->fsize = bptr->asize;
