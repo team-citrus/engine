@@ -57,7 +57,7 @@ namespace engine
 							uint64_t fmagic;
 							// Size of section, in blocks
 							uint32_t fsize;
-							// Next contigous section, NULL if last
+							// Next contigous section, POOL_END if last
 							poolBlock *next;
 							poolBlock *last;
 						};
@@ -68,6 +68,8 @@ namespace engine
 							uint64_t amagic;
 							// Size of section, in blocks
 							uint32_t asize;
+							poolBlock *__next;
+							poolBlock *__last;
 						};
 					};
 					// Expand the size to 32 bytes
