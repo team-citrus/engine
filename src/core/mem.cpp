@@ -58,12 +58,12 @@ OPERATOR void *alloc(int blocks)
 alloc_goto:
 	if(bptr->next == POOL_END)
 	{
-		engine::internals::poolBlock *nptr = bptr + blocks;
-		if((uintptr_t)nptr > engine::internals::pool.limit)
+		if(bptr.fsize + blocks + 1 > engine::internals::pool.limit)
 		{
 			if(_POOL_LIMIT_IS_HARD_)
 			{
 				engine::errno = ENGINE_NO_MEM;
+				return -1;
 			}
 			else
 			{
@@ -137,7 +137,7 @@ void *engine::internals::Pool::allocate(int blocks)
 
 	void *ret = alloc(blocks);
 	head = start;
-	while(head->fmagic != POOL_FREE_BLOCK_MAGIC) head = head->next;
+	while(head->fmagic != POOL_FREE_BLOCK_MAGIC && head->next != ) head = head->next;
 
 	unlock();
 	return (void*)ret;
@@ -146,11 +146,21 @@ void *engine::internals::Pool::allocate(int blocks)
 void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 {
 	engine::internals::poolBlock *bptr = (engine::internals::poolBlock*)ptr - 1;
-	if(bptr->amagic != POOL_ALLOC_BLOCK_MAGIC)
+	
+	if(ptr == NULL)
+	{
+		engine::errno = ENGINE_MEMREALLOC_INVALID_PTR;
+		return this->return this->allocate(blocks);
+	}
+	else if(bptr->amagic != POOL_ALLOC_BLOCK_MAGIC)
+	{
+		engine::errno = ENGINE_MEMREALLOC_INVALID_PTR;
 		return this->allocate(blocks);
+	}
 	else if(!blocks)
 	{
 		this->free(bptr);
+		engine::errno = ENGINE_MEMREALLOC_INVALID_PTR;
 		return ptr;
 	}
 
@@ -189,6 +199,11 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 void engine::internals::Pool::free(engine::internals::poolBlock *bptr)
 {
 	lock();
+	if(bptr + 1 == NULL)
+	{
+		engine::errno = ENGINE_MEMREALLOC_INVALID_PTR;
+		return;
+	}
 	bptr->fsize = bptr->asize;
 	bptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 
