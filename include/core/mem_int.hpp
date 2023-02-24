@@ -23,10 +23,14 @@
 
 #define POOL_FREE_BLOCK_MAGIC 0x465245454E554D00ull
 #define POOL_ALLOC_BLOCK_MAGIC 0x414C4C4F43454400ull
-#define POOL_END -1
+#define POOL_END -1ull
 
 #ifndef _POOL_SIZE_
 #define _POOL_SIZE_ 0x80000000ull // 1024 * 1024 * 2 
+#endif
+
+#ifndef _POOL_EXPANSION_SIZE_
+#define _POOL_EXPANSION_SIZE_ _POOL_SIZE_
 #endif
 
 #ifndef _POOL_LIMIT_IS_HARD_
@@ -137,6 +141,7 @@ namespace engine
 				}
 				~Pool()
 				{
+					// TODO: Soft limit stuff
 					#ifndef _WIN32
 					munmap(start, _POOL_SIZE_);
 					#else

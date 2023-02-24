@@ -23,7 +23,7 @@
 // We need to override b2Alloc_Default and b2Free_Default
 #include <box2d/b2_settings.h>
 
-#include "core/errorcode.hpp"
+#include "core/errno.hpp"
 #include "core/mem.hpp"
 #include "core/mem_int.hpp"
 
@@ -33,7 +33,7 @@ engine::internals::Pool pool;
 OPERATOR void mergeBlocks(engine::internals::poolBlock *nptr)
 {
 	engine::internals::poolBlock *tptr = nptr + 1;
-	if(nptr->next == ENGINE_POOL_END) return;
+	if(nptr->next == POOL_END) return;
 
 	while(true) // An infinite loop is fine, when the time is right it will return
 	{
@@ -44,7 +44,7 @@ OPERATOR void mergeBlocks(engine::internals::poolBlock *nptr)
 		nptr->fsize += tptr->fsize;
 		nptr->next = tptr->next;
 
-		if(nptr->next != ENGINE_POOL_END)	tptr->next->last = nptr;
+		if(nptr->next != POOL_END)	tptr->next->last = nptr;
 		else return;
 		tptr->fmagic = 0;
 	}
@@ -60,14 +60,37 @@ alloc_goto:
 	{
 		if(bptr.fsize + blocks + 1 > engine::internals::pool.limit)
 		{
-			if(_POOL_LIMIT_IS_HARD_)
+			if(_POOL_LIMIT_IS_HARD_ || limitExceeded)
 			{
 				engine::errorcode = ENGINE_NO_MEM;
 				return -1;
 			}
 			else
 			{
-				// TODO: Expand past limit
+				engine::errorcode = ENGINE_SOFT_MEM_LIMIT_REACHED;
+				limitExceeded = true;
+				#ifndef _WIN32
+				void *ptr = mmap((void*)((uintptr_t)engine::internals::pool.start + _POOL_SIZE_), 
+					_POOL_EXPANSION_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON | MAP_FIXED_NOREPLACE, 0, 0);
+				#else
+				void *ptr = VirtualAlloc((void*)((uintptr_t)engine::internals::pool.start + _POOL_SIZE_)
+					_POOL_EXPANSION_SIZE_, MEM_COMMIT, PAGE_READWRITE);
+				#endif
+
+				if((uintptr_t)ptr != ((uintptr_t)pool.start + _POOL_SIZE_))
+				{
+					engine::errorcode = ENGINE_NO_MEM;
+					
+					#ifndef _WIN32
+					munmap(ptr, _POOL_EXPANSION_SIZE_);
+					#else
+					VirtualFree(ptr, _POOL_EXPANSION_SIZE_, 0);
+					#endif
+
+					return -1;
+				}
+
+				engine::internals::pool.size += _POOL_EXPANSION_SIZE_/32;
 			}
 		}
 
