@@ -84,7 +84,6 @@ int MAIN
     #else
     
     int argc;
-
     char **argv = CommandLineToArgvW(GetCommandLineA(), &junk);
     if(!strcmp(argv[1], "--not-crash-handler"))
     {
@@ -95,7 +94,6 @@ int MAIN
 
         if(CreateProcessA(NULL, cmdline, NULL, NULL, FALSE, CREATE_NO_WINDOW | DETACHED_PROCESS, NULL, NULL, &sinfo, &pinfo))
         {
-            ERRORCODE_LOOP:
             int wsocode;
             if((wsocode = WaitForSingleObject(pinfo.hProcess, INFINITE)) == WAIT_OBJECT_0)
             {
@@ -103,8 +101,8 @@ int MAIN
                 GetExitCodeProcess(pinfo.hProcess, &code);
                 // TODO: bring up minimal error code display
             }
-            else if(wsocode == WAIT_FAILED)
-                goto ERRORCODE_LOOP;
+            else
+                exit(-1);
         }
         else
         {
