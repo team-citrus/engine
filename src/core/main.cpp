@@ -1,7 +1,7 @@
 #ifndef _WIN32
 
 #include <unistd.h>
-#define MAIN int main(int argc, char const **argv)
+#define MAIN main(int argc, char const **argv)
 
 #else 
 
@@ -68,7 +68,7 @@ void waitms(size_t mils)
     #endif
 }
 
-MAIN
+int MAIN
 {
     #ifndef _WIN32
     
@@ -83,7 +83,35 @@ MAIN
     
     #else
     
-    // TODO: Windows
+    int argc;
+
+    char **argv = CommandLineToArgvW(GetCommandLineA(), &junk);
+    if(!strcmp(argv[1], "--not-crash-handler"))
+    {
+        char cmdline[1024];
+        STARTUPINFOA sinfo;
+        PROCESS_INFORMATION pinfo;
+        sprintf(cmdline, "%s --not-crash-handler", arg[0]);
+
+        if(CreateProcessA(NULL, cmdline, NULL, NULL, FALSE, CREATE_NO_WINDOW | DETACHED_PROCESS, NULL, NULL, &sinfo, &pinfo))
+        {
+            ERRORCODE_LOOP:
+            int wsocode;
+            if((wsocode = WaitForSingleObject(pinfo.hProcess, INFINITE)) == WAIT_OBJECT_0)
+            {
+                int code;
+                GetExitCodeProcess(pinfo.hProcess, &code);
+                // TODO: bring up minimal error code display
+            }
+            else if(wsocode == WAIT_FAILED)
+                goto ERRORCODE_LOOP;
+        }
+        else
+        {
+            // TODO: Display failure message
+            exit(-1);
+        }
+    }
     
     #endif
 
