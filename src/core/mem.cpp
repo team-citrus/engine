@@ -217,7 +217,7 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 		// Since we are certain that we will be copying 32 byte aligned 32 byte blocks we can use ymm instructions to speed things up instead of memcpy
 		// Although memcpy probably uses the same basic solution under the hood, it needs to perform comparisions that we don't need to use.
 		for(size_t i = 0; i < bptr->fsize; i++)
-			_mm256_store_epi64(rptr + i, _mm256_load_epi64(bptr + i + 1)); // TODO: Defines in simd.h
+			store_si256(rptr + i, load_si256(bptr + i + 1));
 		
 		unlock();
 		return rptr;

@@ -138,6 +138,9 @@ typedef __m256i m256i_t;
 #define mova_s128(ptr) _mm_load_si128(ptr)
 #define movu_s128(ptr) _mm_lddqu_si128(ptr)
 
+#define load_si256(src) _mm256_load_si256(src)
+#define store_si256(dest, src) _mm256_store_si256(dest, src)
+
 #define spinlock_pause() _mm_pause()
 
 // TODO: Add more stuff
