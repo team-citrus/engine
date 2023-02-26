@@ -14,9 +14,16 @@
 typedef __m128 m128f_t;
 typedef __m128d m128d_t;
 typedef __m128i m128i_t;
+
+#ifdef __MAVX__
+
 typedef __m256 m256f_t;
 typedef __m256d m256d_t;
 typedef __m256i m256i_t;
+
+#endif
+
+// xmm/SSE intrinsics
 
 #define abs_i16(a) _mm_abs_epi16(a)
 #define abs_i32(a) _mm_abs_epi32(a)
@@ -131,7 +138,9 @@ typedef __m256i m256i_t;
 #define ustore_f32(dest, src) store_ss(dest, src)
 #define ustore_i128(dest, src) _mm_storeu_si128(dest, src)
 
-// ymm intrinsics
+// ymm/AVX intrinsics
+
+#ifdef _MAVX_
 
 #define load256_f64(ptr) _mm256_load_pd(ptr)
 #define load256_f32(ptr) _mm256_load_ps(ptr)
@@ -148,6 +157,8 @@ typedef __m256i m256i_t;
 #define ustore256_f64(dest, src) _mm256_storeu_pd(dest, src)
 #define ustore256_f32(dest, src) _mm256_storeu_ps(dest, src)
 #define ustore_i256(dest, src) _mm256_storeu_si256(dest, src)
+
+#endif
 
 // Non-SIMD intrinsics
 
