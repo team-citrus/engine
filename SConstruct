@@ -20,6 +20,8 @@ if "OPENGL" in ARGUMENTS:
 if "config-file" in ARGUMENTS:
     configFileName = ARGUMENTS["config-file"]
 
+# TODO: Rust and AVX
+
 configFile = open(configFileName, "rt")
 CONFIG = json.loads(configFile.read())
 DEFINES = CONFIG["define"]
