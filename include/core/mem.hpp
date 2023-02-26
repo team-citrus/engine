@@ -24,6 +24,8 @@
 
 namespace engine
 {
+	// TODO: Remove flags
+
 	/*	The main memory allocation function
 	*	Really just a wrapper around a couple different functions
 	*	@param size Size in bytes

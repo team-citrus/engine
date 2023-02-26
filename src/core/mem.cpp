@@ -209,11 +209,16 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 	}
 	else
 	{
-		void *rptr = alloc(blocks);
+		engine::internals::poolBlock *rptr = alloc(blocks);
 		bptr->fsize = bptr->asize;
 		bptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 
-		memcpy(rptr, (void*)(bptr + 1), bptr->fsize);
+		// memcpy(rptr, (void*)(bptr + 1), bptr->fsize * 32);
+		// Since we are certain that we will be copying 32 byte aligned 32 byte blocks we can use ymm instructions to speed things up instead of memcpy
+		// Although memcpy probably uses the same basic solution under the hood, it needs to perform comparisions that we don't need to use.
+		for(size_t i = 0; i < bptr->fsize; i++)
+			_mm256_store_epi64(rptr + i, _mm256_load_epi64(bptr + i + 1)); // TODO: Defines in simd.h
+		
 		unlock();
 		return rptr;
 	}
@@ -248,40 +253,12 @@ void engine::internals::Pool::free(engine::internals::poolBlock *bptr)
 
 void *engine::memalloc(size_t size, uint16_t flags)
 {
-	// Apply the flags
-	if(flags & MEM_FLAG_UNIT_DWORD)
-		size *= 4;
-	else if(flags & MEM_FLAG_UNIT_QWORD)
-		size *= 8;
-	else if(flags & MEM_FLAG_UNIT_WORD)
-		size *= 2;
-	else if(flags & MEM_FLAG_UNIT_PAGE)
-		size *= 0x1000;
-	else if(flags & MEM_FLAG_UNIT_KB)
-		size *= 1024;
-	else if(flags & MEM_FLAG_UNIT_MB)
-		size *= 1024 * 1024;
-
 	// Make a pool allocation with suitable rounding
 	return engine::internals::pool.allocate((size % 32) ? size/32 + 1 : size/32);
 }
 
 void *engine::memrealloc(void *ptr, size_t size, uint16_t flags)
 {
-	// Apply the flags
-	if(flags & MEM_FLAG_UNIT_DWORD)
-		size *= 4;
-	else if(flags & MEM_FLAG_UNIT_QWORD)
-		size *= 8;
-	else if(flags & MEM_FLAG_UNIT_WORD)
-		size *= 2;
-	else if(flags & MEM_FLAG_UNIT_PAGE)
-		size *= 0x1000;
-	else if(flags & MEM_FLAG_UNIT_KB)
-		size *= 1024;
-	else if(flags & MEM_FLAG_UNIT_MB)
-		size *= 1024 * 1024;
-
 	// Perform the actual reallocation with proper rounding
 	return engine::internals::pool.reallocate(ptr, (size % 32) ? size/32 + 1 : size/32);
 }

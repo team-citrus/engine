@@ -94,8 +94,7 @@ int MAIN
 
         if(CreateProcessA(NULL, cmdline, NULL, NULL, FALSE, CREATE_NO_WINDOW | DETACHED_PROCESS, NULL, NULL, &sinfo, &pinfo))
         {
-            int wsocode;
-            if((wsocode = WaitForSingleObject(pinfo.hProcess, INFINITE)) == WAIT_OBJECT_0)
+            if(WaitForSingleObject(pinfo.hProcess, INFINITE) == WAIT_OBJECT_0)
             {
                 int code;
                 GetExitCodeProcess(pinfo.hProcess, &code);
