@@ -70,9 +70,12 @@ alloc_goto:
 				engine::errorcode = ENGINE_SOFT_MEM_LIMIT_REACHED;
 				limitExceeded = true;
 				#ifndef _WIN32
+
 				void *ptr = mmap((void*)((uintptr_t)engine::internals::pool.start + _POOL_SIZE_), 
 					_POOL_EXPANSION_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON | MAP_FIXED_NOREPLACE, 0, 0);
+
 				#else
+
 				void *ptr = VirtualAlloc((void*)((uintptr_t)engine::internals::pool.start + _POOL_SIZE_)
 					_POOL_EXPANSION_SIZE_, MEM_COMMIT, PAGE_READWRITE);
 				#endif
@@ -217,7 +220,7 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 		// Since we are certain that we will be copying 32 byte aligned 32 byte blocks we can use ymm instructions to speed things up instead of memcpy
 		// Although memcpy probably uses the same basic solution under the hood, it needs to perform comparisions that we don't need to use.
 		for(size_t i = 0; i < bptr->fsize; i++)
-			store_si256(rptr + i, load_si256(bptr + i + 1));
+			store_i256(rptr + i, load_i256(bptr + i + 1));
 		
 		unlock();
 		return rptr;
@@ -229,9 +232,10 @@ void engine::internals::Pool::free(engine::internals::poolBlock *bptr)
 	lock();
 	if(bptr + 1 == NULL)
 	{
-		engine::errorcode = ENGINE_MEMREALLOC_INVALID_PTR;
+		engine::errorcode = ENGINE_MEMFREE_INVALID_PTR;
 		return;
 	}
+	engine::errorcode = bptr->fmagic == POOL_FREE_BLOCK_MAGIC ? ENGINE_MEMFREE_INVALID_PTR : engine::errorcode ;
 	bptr->fsize = bptr->asize;
 	bptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 
