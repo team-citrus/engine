@@ -11,13 +11,6 @@ Import('TUNE')
 
 env = Environment( CPPPATH = "../../include/sys/soloud", CPPDEFINES = { "SOLOUD_SSE_INTRINSICS" : None } )
 
-if BUILD_TYPE == "FINAL":
-    env.Append( CPPFLAGS = flags, CPPDEFINES = { "_PRODUCTION_" : None } ) # SoLoud does not need the _MAVX_ define
-elif BUILD_TYPE == "DEBUG":
-    env.Append( CPPFLAGS = debug_flags, CPPDEFINES = { "_DEBUG_" : None } )
-elif BUILD_TYPE == "QUICK":
-    env.Append( CPPFLAGS = quick_flags, CPPDEFINES = { "_QUICK_" : None } )
-
 flags.append("-march=" + ARCH)
 debug_flags.append("-march=" + ARCH)
 quick_flags.append("-march=" + ARCH)
@@ -25,6 +18,13 @@ quick_flags.append("-march=" + ARCH)
 flags.append("-mtune=" + TUNE)
 debug_flags.append("-mtune=" + TUNE)
 quick_flags.append("-mtune=" + TUNE)
+
+if BUILD_TYPE == "FINAL":
+    env.Append( CPPFLAGS = flags, CPPDEFINES = { "_PRODUCTION_" : None } ) # SoLoud does not need the _MAVX_ define
+elif BUILD_TYPE == "DEBUG":
+    env.Append( CPPFLAGS = debug_flags, CPPDEFINES = { "_DEBUG_" : None } )
+elif BUILD_TYPE == "QUICK":
+    env.Append( CPPFLAGS = quick_flags, CPPDEFINES = { "_QUICK_" : None } )
 
 files = ['backend/soloud_miniaudio.cpp'] # TODO: Load the relative path of each source file into this file
 
