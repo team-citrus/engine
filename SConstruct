@@ -34,6 +34,11 @@ Export('AVX')
 Export('CONFIG')
 Export('DEFINES')
 
+if BUILD_TYPE == "DEBUG" or BUILD_TYPE == "FINAL":
+    print("Target CPU (micro)architecture: ", ARCH)
+    print("Binary tuned for CPU (micro)architecture: ", TUNE)
+    print("Configuration: ", CONFIG)
+
 # TODO: Invoke Cargo
 
 SConscript('src/core/SConscript')
