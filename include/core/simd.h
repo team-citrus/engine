@@ -131,14 +131,27 @@ typedef __m256i m256i_t;
 #define get_i32(a) _mm_cvtsi128_si32(a)
 #define get_i64(a) _mm_cvtsi128_si64(a)
 
-#define mova_pd(ptr) _mm_load_pd(ptr)
-#define mova_ps(ptr) _mm_load_ps(ptr)
-#define mova_sd(ptr) _mm_load_sd(ptr)
-#define mova_ss(ptr) _mm_load_ss(ptr)
-#define mova_s128(ptr) _mm_load_si128(ptr)
-#define movu_s128(ptr) _mm_lddqu_si128(ptr)
+#define load_pd(ptr) _mm_load_pd(ptr)
+#define load_ps(ptr) _mm_load_ps(ptr)
+#define load_sd(ptr) _mm_load_sd(ptr)
+#define load_ss(ptr) _mm_load_ss(ptr)
+#define load_s128(ptr) _mm_load_si128(ptr)
+#define loadu_s128(ptr) _mm_lddqu_si128(ptr)
+
+#define store_pd(dest, src) _mm_store_pd(dest, src)
+#define store_ps(dest, src) _mm_store_ps(dest, src)
+#define store_sd(dest, src) _mm_store_sd(dest, src)
+#define store_ss(dest, src) _mm_store_ss(dest, src)
+#define store_s128(dest, src) _mm_store_si128(dest, src)
+
+#define ustore_pd(dest, src) _mm_storeu_pd(dest, src)
+#define ustore_ps(dest, src) _mm_storeu_ps(dest, src)
+#define ustore_sd(dest, src) store_sd(dest, src)
+#define ustore_ss(dest, src) store_ss(dest, src)
+#define ustore_s128(dest, src) _mm_storeu_si128(dest, src)
 
 #define load_si256(src) _mm256_load_si256(src)
+
 #define store_si256(dest, src) _mm256_store_si256(dest, src)
 
 #define spinlock_pause() _mm_pause()

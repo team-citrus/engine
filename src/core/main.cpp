@@ -85,7 +85,7 @@ int MAIN
     
     int argc;
     char **argv = CommandLineToArgvW(GetCommandLineA(), &junk);
-    if(!strcmp(argv[1], "--not-crash-handler"))
+    if(!strcmp(argv[1], "--not-crash-handler")) // Due to the way fork() works on *nix, we don't need to use argv.
     {
         char cmdline[1024];
         STARTUPINFOA sinfo;
