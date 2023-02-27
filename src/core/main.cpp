@@ -211,10 +211,20 @@ int MAIN
     pid_t id;
     if((id = fork()) != 0)
     {
-        // TODO: hide console
+        // TODO: simple GUI instead of cli
         int ret;
         waitpid(id, &ret, 0);
-        // TODO: bring up minimal error code display
+        
+        if(ret != 0)
+        {
+            printf("Exited with error code: %08X\n", ret);
+            puts(engine::interpretCrashCode(ret));
+            return 0;
+        }
+        else
+        {
+            return 0;
+        }
     }
     
     #else

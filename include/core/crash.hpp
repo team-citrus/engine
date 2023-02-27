@@ -23,4 +23,9 @@
 #define CRITICAL_FILE_MISSING 0x777777 | CORE_PREFIX
 #define DEPENDANCY_MISSING 0x888888 | CORE_PREFIX
 
+namespace engine
+{
+    const char *interpretCrashCode(int code); // TODO: Implement this
+}
+
 #endif
