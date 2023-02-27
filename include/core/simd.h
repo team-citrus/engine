@@ -11,6 +11,21 @@
 
 #include <x86intrin.h>
 
+// Create a shuffle mask for shuffling an xmmreg packed with 32 bit integers
+// a is xmmreg_i32[3], b is xmmreg_i32[2], etc.
+#define XMM_I32_CREATE_SHUFFLE_MASK(a, b, c, d) ((a & 3) << 6) | ((b & 3) << 4) | ((c & 3) << 2) | (d & 3)
+
+// Create a shuffle mask for shuffling an xmmreg packed with 32 bit floats
+// a is xmmreg_f32[3], b is xmmreg_f32[2], etc.
+#define XMM_F32_CREATE_SHUFFLE_MASK(a, b, c, d) ((a & 3) << 6) | ((b & 3) << 4) | ((c & 3) << 2) | (d & 3)
+
+// Create a shuffle mask for shuffling a 64 bit value packed with 16 bit integers
+// a is val[3], b is val[2], etc.
+#define XMM_I16_CREATE_SHUFFLE_MASK(a, b, c, d) XMM_I32_CREATE_SHUFFLE_MASK(a, b, c, d)
+
+// Create a shuffle mask for shuffling an xmmreg packed with 64 bit floats
+// a is xmmreg_f64[0] = a ? xmmreg_f64[0] : xmmreg_f64[1], b is xmmreg_f64[1] = a ? xmmreg_f64[0] : xmmreg_f64[1]
+
 typedef __m128 m128f_t;
 typedef __m128d m128d_t;
 typedef __m128i m128i_t;
@@ -81,7 +96,17 @@ typedef __m256i m256i_t;
 #define extract_i16(a, i) _mm_extract_epi16(a, i)
 #define extract_i32(a, i) _mm_extract_epi32(a, i)
 #define extract_i64(a, i) _mm_extract_epi64(a, i)
-#define extract_f32(a, i) _mm_extract_ps(a, i)
+
+#define shuffle_i8(a, xm) _mm_shuffle_epi8(a, xm)
+#define shuffle64_i8(a, m) _mm_shuffle_pi8(a, m)
+#define shuffleh_i16(a, m) _mm_shufflehi_epi16(a, m)
+#define shufflel_i16(a, m) _mm_shufflelo_epi16(a, m)
+#define shuffle64_i16(a, m) _mm_shuffle_pi16(a, m)
+#define shuffle_i32(a, m) _mm_shuffle_epi32(a, m)
+#define shufflesr_f64(a, m) _mm_shuffle_pd(a, a, m)
+#define shuffle_f64(a, b, m) _mm_shuffle_pd(a, b, m)
+#define shufflesr_f32(a, m) _mm_shuffle_ps(a, a, m)
+#define shuffle_f32(a, b, m) _mm_shuffle_ps(a, b, m)
 
 #define broadcast_i8(a) _mm_set1_epi8(a)
 #define broadcast_i16(a) _mm_set1_epi16(a)
