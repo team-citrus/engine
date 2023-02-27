@@ -1,4 +1,12 @@
 /*
+*   name: soloud/src/core/soloud_fft.cpp
+*   origin: SoLoud
+*   purpose: Unknown
+*   author: Takuya OOURA, Laurent de Soras, and Jari Komppa
+*   license: WTFPL
+*/
+
+/*
 SoLoud audio engine
 Copyright (c) 2013-2018 Jari Komppa
 

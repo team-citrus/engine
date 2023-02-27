@@ -1,3 +1,11 @@
+/*
+*   name: soloud/src/audiosource/speech/darry.cpp
+*   origin: SoLoud
+*   purpose: Unknown
+*   author: Nick Ing-Simmons
+*   license: CC0-1.0
+*/
+
 #include <stdlib.h>
 #include <string.h>
 #include "darray.h"

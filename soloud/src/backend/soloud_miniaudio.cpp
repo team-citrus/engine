@@ -1,4 +1,12 @@
 /*
+*   name: soloud/src/backend/soloud_miniaudio.cpp
+*   origin: SoLoud
+*   purpose: Miniaudio backend for SoLoud audio engine
+*   author: Jari Komppa
+*   license: Libpng OR Zlib
+*/
+
+/*
 SoLoud audio engine
 Copyright (c) 2013-2020 Jari Komppa
 

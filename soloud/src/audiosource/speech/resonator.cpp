@@ -1,4 +1,12 @@
-#include <math.h>
+/*
+*   name: soloud/src/audiosource/speech/resonator.cpp
+*   origin: SoLoud
+*   purpose: Unknown
+*   author: Nick Ing-Simmons
+*   license: CC0-1.0
+*/
+
+#include <cmath>
 #include "resonator.h"
 
 #ifndef PI

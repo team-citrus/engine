@@ -1,4 +1,12 @@
 /*
+*   name: soloud/src/core/soloud_core_setters.cpp
+*   origin: SoLoud
+*   purpose: Unknown
+*   author: Jari Komppa
+*   license: Libpng OR Zlib
+*/
+
+/*
 SoLoud audio engine
 Copyright (c) 2013-2015 Jari Komppa
 

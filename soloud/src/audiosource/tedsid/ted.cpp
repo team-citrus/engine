@@ -1,3 +1,11 @@
+/*
+*   name: soloud/src/audiosource/tedsid/ted.cpp
+*   origin: tedplay
+*   purpose: Unknown
+*   author: Attila Grosz
+*   license: Unlicense
+*/
+
 #include <string.h>
 #include "ted.h"
 

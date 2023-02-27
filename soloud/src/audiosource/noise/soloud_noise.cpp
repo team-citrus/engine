@@ -1,4 +1,12 @@
 /*
+*   name: soloud/src/audiosource/noise/soloud_noise.cpp
+*   origin: SoLoud
+*   purpose: Noise module for SoLoud audio engine
+*   author: Jari Komppa
+*   license: Libpng OR Zlib
+*/
+
+/*
 SoLoud audio engine
 Copyright (c) 2020 Jari Komppa
 

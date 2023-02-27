@@ -48,3 +48,7 @@ As well, by making the engine free software, we hope to set a precident in the g
   - [ ] physmain()
   - [ ] draw()
   - [ ] mix()
+
+## Disclaimers
+
+All of the files located in soloud/ and include/sys/soloud are modified versions of files orginially created for the [SoLoud audio engine](https://github.com/jarikomppa/soloud).

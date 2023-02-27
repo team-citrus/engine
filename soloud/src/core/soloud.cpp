@@ -1,4 +1,12 @@
 /*
+*   name: soloud/src/core/soloud_voiceops.cpp
+*   origin: SoLoud
+*   purpose: SoLoud core
+*   author: Jari Komppa
+*   license: Libpng OR Zlib
+*/
+
+/*
 SoLoud audio engine
 Copyright (c) 2013-2018 Jari Komppa
 

@@ -1,4 +1,12 @@
 /*
+*   name: soloud/src/audiosource/wav/soloud_wavstream.cpp
+*   origin: SoLoud
+*   purpose: WAV module for SoLoud audio engine
+*   author: Jari Komppa
+*   license: Libpng OR Zlib
+*/
+
+/*
 SoLoud audio engine
 Copyright (c) 2013-2018 Jari Komppa
 

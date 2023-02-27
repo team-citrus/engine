@@ -1,7 +1,10 @@
-/* **************************************************
- *  WARNING: this is a generated file. Do not edit. *
- *  Any edits will be overwritten by the generator. *
- ************************************************** */
+/*
+*   name: soloud/src/core/soloud_fft_lut.cpp
+*   origin: SoLoud
+*   purpose: Unknown
+*   author: Jari Komppa
+*   license: Libpng OR Zlib
+*/
 
 /*
 SoLoud audio engine

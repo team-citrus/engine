@@ -1,3 +1,11 @@
+/*
+*   name: soloud/src/audiosource/tedsid/sid.cpp
+*   origin: tedplay
+*   purpose: Unknown
+*   author: Attila Grosz
+*   license: Unlicense
+*/
+
 //  Issues:
 //  - Filter cutoff frequencies not 100% accurate
 //  - Combined waveforms of the 6581 incorrect (SID card used 8580 anyway)

@@ -1,3 +1,12 @@
+/*
+*   name: soloud/src/audiosource/speech/tts.cpp
+*   origin: SoLoud
+*   purpose: Unknown
+*   author: Nick Ing-Simmons
+*   license: CC0-1.0
+*/
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>

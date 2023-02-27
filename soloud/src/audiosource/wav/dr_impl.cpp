@@ -1,3 +1,11 @@
+/*
+*   name: soloud/src/audiosource/wav/dr_impl.cpp
+*   origin: SoLoud
+*   purpose: Unknown
+*   author: Unknown
+*   license: Libpng OR Zlib
+*/
+
 #define DR_MP3_IMPLEMENTATION
 #define DR_MP3_NO_STDIO
 #define DR_MP3_FLOAT_OUTPUT

@@ -1,4 +1,12 @@
 /*
+*   name: soloud/src/audiosource/vic/soloud_vic.cpp
+*   origin: SoLoud
+*   purpose: VIC 6560/6561 sound chip emulator
+*   author: Petri Hakkinen and Jari Komppa
+*   license: Libpng OR Zlib
+*/
+
+/*
 SoLoud audio engine
 Copyright (c) 2015 Jari Komppa
 
