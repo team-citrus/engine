@@ -1,3 +1,11 @@
+/*
+*   name: include/sys/soloud/soloud_c.h
+*   origin: SoLoud
+*   purpose: Unknown
+*   author: Jari Komppa
+*   license: Libpng OR Zlib
+*/
+
 /* **************************************************
  *  WARNING: this is a generated file. Do not edit. *
  *  Any edits will be overwritten by the generator. *

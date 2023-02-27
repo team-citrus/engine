@@ -1,3 +1,11 @@
+/*
+*   name: include/sys/soloud/klatt.h
+*   origin: SoLoud
+*   purpose: Unknown
+*   author: Nick Ing-Simmons
+*   license: CC0-1.0
+*/
+
 #ifndef KLATT_H
 #define KLATT_H
 

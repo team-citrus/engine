@@ -1,3 +1,11 @@
+/*
+*   name: include/sys/soloud/ted.h
+*   origin: tedplay
+*   purpose: Unknown
+*   author: Attila Grosz
+*   license: Unlicense
+*/
+
 class TED 
 {
 public: 

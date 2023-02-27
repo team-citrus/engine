@@ -1,3 +1,11 @@
+/*
+*   name: include/sys/soloud/resonator.cpp
+*   origin: SoLoud
+*   purpose: Unknown
+*   author: Nick Ing-Simmons
+*   license: CC0-1.0
+*/
+
 #ifndef RESONATOR_H
 #define RESONATOR_H
 

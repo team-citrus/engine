@@ -1,3 +1,11 @@
+/*
+*   name: include/sys/soloud/sid.h
+*   origin: tedplay
+*   purpose: Unknown
+*   author: Attila Grosz
+*   license: Unlicense
+*/
+
 #ifndef _SID_H
 #define _SID_H
 

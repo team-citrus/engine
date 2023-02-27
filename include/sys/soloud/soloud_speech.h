@@ -1,4 +1,12 @@
 /*
+*   name: include/sys/soloud/soloud_speech.h
+*   origin: SoLoud
+*   purpose: Unknown
+*   author: Jari Komppa
+*   license: Libpng OR Zlib
+*/
+
+/*
 SoLoud audio engine
 Copyright (c) 2013-2015 Jari Komppa
 
@@ -25,9 +33,9 @@ freely, subject to the following restrictions:
 #define SOLOUD_SPEECH_H
 
 #include "soloud.h"
-#include "../src/audiosource/speech/darray.h"
-#include "../src/audiosource/speech/klatt.h"
-#include "../src/audiosource/speech/tts.h"
+#include "darray.h"
+#include "klatt.h"
+#include "tts.h"
 
 namespace SoLoud
 {

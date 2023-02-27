@@ -1,4 +1,12 @@
 /*
+*   name: include/sys/soloud/miniaudio.h
+*   origin: miniaudio
+*   purpose: miniaudio audio playback and capture library
+*   author: David Reid
+*   license: MIT-0
+*/
+
+/*
 Audio playback and capture library. Choice of public domain or MIT-0. See license statements at the end of this file.
 miniaudio (formerly mini_al) - v0.9.10 - 2020-01-15
 

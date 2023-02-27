@@ -1,3 +1,11 @@
+/*
+*   name: include/sys/soloud/darray.h
+*   origin: SoLoud
+*   purpose: Unknown
+*   author: Nick Ing-Simmons
+*   license: CC0-1.0
+*/
+
 #if !defined(DARRAY_H)
 #define DARRAY_H
 

@@ -1,4 +1,12 @@
 /*
+*   name: include/sys/soloud/soloud_thread.h
+*   origin: SoLoud
+*   purpose: SoLoud multithreading(?)
+*   author: Jari Komppa
+*   license: Libpng OR Zlib
+*/
+
+/*
 SoLoud audio engine
 Copyright (c) 2013-2014 Jari Komppa
 

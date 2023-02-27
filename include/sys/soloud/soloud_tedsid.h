@@ -1,4 +1,12 @@
 /*
+*   name: include/sys/soloud/soloud_filter.h
+*   origin: SoLoud
+*   purpose: TED/SID module for SoLoud audio engine
+*   author: Jari Komppa
+*   license: Libpng OR Zlib
+*/
+
+/*
 TED/SID module for SoLoud audio engine
 Copyright (c) 2013-2015 Jari Komppa
 

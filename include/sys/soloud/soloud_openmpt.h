@@ -1,4 +1,12 @@
 /*
+*   name: include/sys/soloud/soloud_openmpt.h
+*   origin: SoLoud
+*   purpose: Openmpt module for SoLoud audio engine
+*   author: Jari Komppa
+*   license: Libpng OR Zlib
+*/
+
+/*
 Openmpt module for SoLoud audio engine
 Copyright (c) 2016 Jari Komppa
 

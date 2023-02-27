@@ -1,4 +1,12 @@
 /*
+*   name: include/sys/soloud/soloud_monotone.h
+*   origin: SoLoud
+*   purpose: MONOTONE module for SoLoud audio engine
+*   author: Jari Komppa
+*   license: Libpng OR Zlib
+*/
+
+/*
 MONOTONE module for SoLoud audio engine
 Copyright (c) 2013-2020 Jari Komppa
 

@@ -1,4 +1,12 @@
 /*
+*   name: include/sys/soloud/soloud_file_hack_off.h
+*   origin: SoLoud
+*   purpose: Unknown
+*   author: Jari Komppa
+*   license: Libpng OR Zlib
+*/
+
+/*
 SoLoud audio engine
 Copyright (c) 2013-2020 Jari Komppa
 

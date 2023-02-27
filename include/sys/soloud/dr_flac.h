@@ -1,4 +1,12 @@
 /*
+*   name: include/sys/soloud/dr_flac.h
+*   origin: SoLoud
+*   purpose: FLAC audio decoder
+*   author: David Reid 
+*   license: MIT-0
+*/
+
+/*
 FLAC audio decoder. Choice of public domain or MIT-0. See license statements at the end of this file.
 dr_flac - v0.12.5 - 2020-01-30
 

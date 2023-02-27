@@ -1,4 +1,12 @@
 /*
+*   name: include/sys/soloud/soloud_filter.h
+*   origin: SoLoud
+*   purpose: vizsn speech synthesizer
+*   author: Ville-Matias Heikkilä and Jari Komppa
+*   license: WTFPL
+*/
+
+/*
 SoLoud audio engine
 Copyright (c) 2013-2018 Jari Komppa
 

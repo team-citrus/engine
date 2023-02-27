@@ -1,3 +1,11 @@
+/*
+*   name: include/sys/soloud/stb_vorbis.h
+*   origin: SoLoud
+*   purpose: Ogg Vorbis audio decoder
+*   author: Sean Barrett
+*   license: MIT
+*/
+
 #define STB_VORBIS_HEADER_ONLY
 // Ogg Vorbis audio decoder - v1.19 - public domain
 // http://nothings.org/stb_vorbis/

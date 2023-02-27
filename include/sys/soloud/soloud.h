@@ -1,4 +1,12 @@
 /*
+*   name: include/sys/soloud/soloud_robotizefilter.h
+*   origin: SoLoud
+*   purpose: SoLoud main header file
+*   author: Jari Komppa
+*   license: Libpng OR Zlib
+*/
+
+/*
 SoLoud audio engine
 Copyright (c) 2013-2020 Jari Komppa
 

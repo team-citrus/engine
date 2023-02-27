@@ -29,6 +29,7 @@ As well, by making the engine free software, we hope to set a precident in the g
 - [x] Create code structure
 - [x] Create formatting guide
 - [ ] Integrate the Soloud sources into the engine
+  - [ ] Update the source code to use `engine::memalloc` and friends
   - [x] Necessary restructuring
   - [ ] Copyright information
   - [x] Sconscript files
