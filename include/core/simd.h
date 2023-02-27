@@ -27,6 +27,18 @@
 // a is xmmreg_f64[1] = a ? xmmreg_f64[0] : xmmreg_f64[1], b is xmmreg_f64[0] = a ? xmmreg_f64[0] : xmmreg_f64[1]
 #define XMM_F64_CREATE_SHUFFLE_MASK(a, b) ((a & 1) << 1) | (b & 1)
 
+// Create a blend mask for blending an xmmreg packed with 16 bit integers
+// a is xmmdest_i16[7] = a ? xmmsrc1_i16[7] : xmmsrc0_i16[7], etc.
+#define XMM_I16_CREATE_BLEND_MASK(a, b, c, d, e, f, g, h) ((a & 1) << 7) | ((b & 1) << 6) | ((c & 1) << 5) | ((d & 1) << 4) | ((e & 1) << 3) | ((f & 1) << 2) | ((g & 1) << 1) | (h & 1)
+
+// Create a blend mask for blending an xmmreg packed with 32 bit floats
+// a is xmmdest_f32[3] = a ? xmmsrc1_f32[3] : xmmsrc0_f32[3], etc.
+#define XMM_F32_CREATE_BLEND_MASK(a, b, c, d) ((a & 1) << 3) | ((b & 1) << 2) | ((c & 1) << 1) | (d & 1)
+
+// Create a blend mask for blending an xmmreg packed with 64 bit floats
+// a is xmmdest_f64[1] = a ? xmmsrc1_f64[1] : xmmsrc0_f64[1], b is xmmdest_f64[0] = b ? xmmsrc1_f64[0] : xmmsrc0_f64[0]
+#define XMM_F64_CREATE_BLEND_MASK(a, b) ((a & 1) << 1) | (b & 1)
+
 typedef __m128 m128f_t;
 typedef __m128d m128d_t;
 typedef __m128i m128i_t;
@@ -39,6 +51,30 @@ typedef __m128i m128i_t;
 
 // Create a shuffle mask for shuffling each 128 bit half of a ymmreg packed with 32 bit floats
 #define YMM_F32_CREATE_SHUFFLE_MASK(a, b, c, d) XMM_F32_CREATE_SHUFFLE_MASK(a, b, c, d)
+
+// Create a blend mask for blending an ymmreg packed with 64 bit floats
+// a is ymmdest_f64[3] = a ? ymmsrc1_f64[3] : ymmsrc0_f64[3], etc.
+#define YMM_F64_CREATE_BLEND_MASK(a, b, c, d) XMM_F32_CREATE_BLEND_MASK(a, b, c, d)
+
+// Create a blend mask for blending an ymmreg packed with 32 bit floats
+// a is ymmdest_f32[7] = a ? ymmsrc1_f32[7] : ymmsrc0_f32[7], etc.
+#define YMM_F32_CREATE_BLEND_MASK(a, b, c, d, e, f, g, h) XMM_I16_CREATE_BLEND_MASK(a, b, c, d, e, f, g, h)
+
+#if _MAVX_ >= 2
+
+// Create a blend mask for blending an xmmreg packed with 32 bit integers
+// a is xmmdest_i32[3] = a ? xmmsrc1_i32[3] : xmmsrc0_i32[3], etc.
+#define XMM_I32_CREATE_BLEND_MASK(a, b, c, d) XMM_F32_CREATE_BLEND_MASK(a, b, c, d)
+
+// Create a blend mask for blending each 128 bit half of a ymmreg packed with 16 bit ints
+// a is ymmhhdest_i16[7] = a ? ymmhhsrc1_i16[7] : ymmhhsrc0_i16[7], etc.
+#define YMM_I16_CREATE_BLEND_MASK(a, b, c, d, e, f, g, h) XMM_I16_CREATE_BLEND_MASK(a, b, c, d, e, f, g, h)
+
+// Create a blend mask for blending an ymmreg packed with 32 bit integers
+// a is ymmdest_i32[7] = a ? ymmsrc1_i32[7] : ymmsrc0_i32[7], etc.
+#define YMM_I32_CREATE_BLEND_MASK(a, b, c, d, e, f, g, h) XMM_I16_CREATE_BLEND_MASK(a, b, c, d, e, f, g, h)
+
+#endif
 
 // Create a permutate mask for shuffling 2 ymmregs
 // a is higher half of the dest, b is the lower half
@@ -226,6 +262,12 @@ typedef __m256i m256i_t;
 #define xor256_f64(a, b) _mm256_xor_pd(a, b)
 #define xor256_f32(a, b) _mm256_xor_ps(a, b)
 
+#define blend256_f64(a, b, m) _mm256_blend_pd(a, b, m)
+#define blend256_f32(a, b, m) _mm256_blend_ps(a, b, m)
+
+#define blendv256_f64(a, b, mv) _mm256_blendv_pd(a, b, mv)
+#define blendv256_f32(a, b, mv) _mm256_blendv_ps(a, b, mv)
+
 #if _MAVX_ >= 2
 
 #define add256_i8(a, b) _mm256_add_epi8(a, b)
@@ -264,6 +306,10 @@ typedef __m256i m256i_t;
 #define andnot_i256(a, b) _mm256_andnot_si256(a, b)
 #define or_i256(a, b) _mm256_or_si256(a, b)
 #define xor_i256(a, b) _mm256_xor_si256(a, b)
+
+#define blend256_i16(a, b, i) _mm256_blend_epi16(a, b, i)
+#define blend256_i32(a, b, i) _mm256_blend_epi32(a, b, i) 
+#define blendv256_i8(a, b, mv) _mm256_blendv_epi8(a, b, mv)
 
 #endif
 
