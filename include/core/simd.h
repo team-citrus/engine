@@ -24,13 +24,27 @@
 #define XMM_I16_CREATE_SHUFFLE_MASK(a, b, c, d) XMM_I32_CREATE_SHUFFLE_MASK(a, b, c, d)
 
 // Create a shuffle mask for shuffling an xmmreg packed with 64 bit floats
-// a is xmmreg_f64[0] = a ? xmmreg_f64[0] : xmmreg_f64[1], b is xmmreg_f64[1] = a ? xmmreg_f64[0] : xmmreg_f64[1]
+// a is xmmreg_f64[1] = a ? xmmreg_f64[0] : xmmreg_f64[1], b is xmmreg_f64[0] = a ? xmmreg_f64[0] : xmmreg_f64[1]
+#define XMM_F64_CREATE_SHUFFLE_MASK(a, b) ((a & 1) << 1) | (b & 1)
 
 typedef __m128 m128f_t;
 typedef __m128d m128d_t;
 typedef __m128i m128i_t;
 
-#ifdef __MAVX__
+#ifdef _MAVX_
+
+// Create a shuffle mask for shufflng an ymmreg packed with 64 bit floats
+// a is ymmreg_f64[3] = a ? ymmreg_f64[3] : ymmreg_f64[2], b is ymmreg_f64[2] = b ? ymmreg_f64[3] : ymmreg_f64[2], c is ymmreg_f64[1] = c ? ymmreg_f64[1] : ymmreg_f64[0], d is ymmreg_f64[1] = d ? ymmreg_f64[1] : ymmreg_f64[0] 
+#define YMM_F64_CREATE_SHUFFLE_MASK(a, b, c, d) ((a & 1) << 3) | ((b & 1) << 2) | ((c & 1) << 1) | (d & 1)
+
+// TODO: YMM_F32_CREATE_SHUFFLE_MASK
+
+// Create a permutate mask for shuffling 2 ymmregs
+// a is higher half of the dest, b is the lower half
+// If bit 3 is set, the selected 128 bits will be zeroed
+// If bit 1 is set, it will select from source 1, if bit 1 is clear, it will select from source 0
+// If bit 0 is set, it will select the high half of the reg, if bit 0 is clear, it will select the lower half of the right
+#define YMM_CREATE_PERMUTATE_MASK(a, b) ((a & 013) << 4) | (b & 013)
 
 typedef __m256 m256f_t;
 typedef __m256d m256d_t;
@@ -103,9 +117,20 @@ typedef __m256i m256i_t;
 #define shufflel_i16(a, m) _mm_shufflelo_epi16(a, m)
 #define shuffle64_i16(a, m) _mm_shuffle_pi16(a, m)
 #define shuffle_i32(a, m) _mm_shuffle_epi32(a, m)
-#define shufflesr_f64(a, m) _mm_shuffle_pd(a, a, m)
-#define shuffle_f64(a, b, m) _mm_shuffle_pd(a, b, m)
+
+#ifndef _MAVX_
+
 #define shufflesr_f32(a, m) _mm_shuffle_ps(a, a, m)
+#define shufflesr_f64(a, m) _mm_shuffle_pd(a, a, m)
+
+#else 
+
+#define shufflesr_f32(a, m) _mm_permute_ps(a, a, m)
+#define shufflesr_f64(a, m) _mm_permute_pd(a, m)
+
+#endif
+
+#define shuffle_f64(a, b, m) _mm_shuffle_pd(a, b, m)
 #define shuffle_f32(a, b, m) _mm_shuffle_ps(a, b, m)
 
 #define broadcast_i8(a) _mm_set1_epi8(a)
