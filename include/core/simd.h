@@ -37,7 +37,8 @@ typedef __m128i m128i_t;
 // a is ymmreg_f64[3] = a ? ymmreg_f64[3] : ymmreg_f64[2], b is ymmreg_f64[2] = b ? ymmreg_f64[3] : ymmreg_f64[2], c is ymmreg_f64[1] = c ? ymmreg_f64[1] : ymmreg_f64[0], d is ymmreg_f64[1] = d ? ymmreg_f64[1] : ymmreg_f64[0] 
 #define YMM_F64_CREATE_SHUFFLE_MASK(a, b, c, d) ((a & 1) << 3) | ((b & 1) << 2) | ((c & 1) << 1) | (d & 1)
 
-// TODO: YMM_F32_CREATE_SHUFFLE_MASK
+// Create a shuffle mask for shuffling each 128 bit half of a ymmreg packed with 32 bit floats
+#define YMM_F32_CREATE_SHUFFLE_MASK(a, b, c, d) XMM_F32_CREATE_SHUFFLE_MASK(a, b, c, d)
 
 // Create a permutate mask for shuffling 2 ymmregs
 // a is higher half of the dest, b is the lower half
@@ -98,8 +99,17 @@ typedef __m256i m256i_t;
 #define blendv_f64(a, b, m) _mm_blendv_pd(a, b, m)
 #define blendv_f32(a, b, m) _mm_blendv_ps(a, b, m)
 
-#define bslli_i128(a, i) _mm_bslli_si128(a, i)
-#define bsrli_i128(a, i) _mm_bsrli_si128(a, i)
+#define bshl_i128(a, i) _mm_bslli_si128(a, i)
+#define bshr_i128(a, i) _mm_bsrli_si128(a, i)
+
+#define shl_i128(a, i) _mm_slli_si128(a, i)
+#define shr_i128(a, i) _mm_srli_si128(a, i)
+#define shl_i16(a, i) _mm_slli_epi16(a, i)
+#define shr_i16(a, i) _mm_srli_epi16(a, i)
+#define shl_i32(a, i) _mm_slli_epi32(a, i)
+#define shr_i32(a, i) _mm_srli_epi32(a, i)
+#define shl_i64(a, i) _mm_slli_epi64(a, i)
+#define shr_i64(a, i) _mm_srli_epi64(a, i)
 
 #define ceil_pd(a) _mm_ceil_pd(a)
 #define ceil_ps(a) _mm_ceil_ps(a)
@@ -120,18 +130,18 @@ typedef __m256i m256i_t;
 
 #ifndef _MAVX_
 
-#define shufflesr_f32(a, m) _mm_shuffle_ps(a, a, m)
-#define shufflesr_f64(a, m) _mm_shuffle_pd(a, a, m)
+#define shuffle_f32(a, m) _mm_shuffle_ps(a, a, m)
+#define shuffle_f64(a, m) _mm_shuffle_pd(a, a, m)
 
 #else 
 
-#define shufflesr_f32(a, m) _mm_permute_ps(a, a, m)
-#define shufflesr_f64(a, m) _mm_permute_pd(a, m)
+#define shuffle_f32(a, m) _mm_permute_ps(a, a, m)
+#define shuffle_f64(a, m) _mm_permute_pd(a, m)
 
 #endif
 
-#define shuffle_f64(a, b, m) _mm_shuffle_pd(a, b, m)
-#define shuffle_f32(a, b, m) _mm_shuffle_ps(a, b, m)
+#define shufflem_f64(a, b, m) _mm_shuffle_pd(a, b, m)
+#define shufflem_f32(a, b, m) _mm_shuffle_ps(a, b, m)
 
 #define broadcast_i8(a) _mm_set1_epi8(a)
 #define broadcast_i16(a) _mm_set1_epi16(a)
@@ -191,6 +201,80 @@ typedef __m256i m256i_t;
 // ymm/AVX intrinsics
 
 #ifdef _MAVX_
+
+#define add256_f64(a, b) _mm256_add_pd(a, b)
+#define add256_f32(a, b) _mm256_add_ps(a, b)
+
+#define sub256_f64(a, b) _mm256_sub_pd(a, b)
+#define sub256_f32(a, b) _mm256_sub_ps(a, b)
+
+#define mul256_f64(a, b) _mm256_mul_pd(a, b)
+#define mul256_f32(a, b) _mm256_mul_ps(a, b)
+
+#define div256_f64(a, b) _mm256_div_pd(a, b)
+#define div256_f32(a, b) _mm256_div_ps(a, b)
+
+#define and256_f64(a, b) _mm256_and_pd(a, b)
+#define and256_f32(a, b) _mm256_and_ps(a, b)
+
+#define andnot256_f64(a, b) _mm256_andnot_pd(a, b)
+#define andnot256_f32(a, b) _mm256_andnot_ps(a, b)
+
+#define or256_f64(a, b) _mm256_or_pd(a, b)
+#define or256_f32(a, b) _mm256_or_ps(a, b)
+
+#define xor256_f64(a, b) _mm256_xor_pd(a, b)
+#define xor256_f32(a, b) _mm256_xor_ps(a, b)
+
+#if _MAVX_ >= 2
+
+#define add256_i8(a, b) _mm256_add_epi8(a, b)
+#define add256_i16(a, b) _mm256_add_epi16(a, b)
+#define add256_i32(a, b) _mm256_add_epi32(a, b)
+#define add256_i64(a, b) _mm256_add_epi64(a, b)
+
+#define sub256_i8(a, b) _mm256_sub_epi8(a, b)
+#define sub256_i16(a, b) _mm256_sub_epi16(a, b)
+#define sub256_i32(a, b) _mm256_sub_epi32(a, b)
+#define sub256_i64(a, b) _mm256_sub_epi64(a, b)
+
+#define mul256_i8(a, b) _mm256_mul_epi8(a, b)
+#define mul256_i16(a, b) _mm256_mul_epi16(a, b)
+#define mul256_i32(a, b) _mm256_mul_epi32(a, b)
+#define mul256_i64(a, b) _mm256_mul_epi64(a, b)
+
+#define shl256_i128(a, i) _mm256_bslli_epi128(a, i)
+#define shr256_i128(a, i) _mm256_bsrli_epi128(a, i)
+
+#define shl256_i16(a, i) _mm256_slli_epi16(a, i)
+#define shr256_i16(a, i) _mm256_srli_epi16(a, i)
+#define shl256_i32(a, i) _mm256_slli_epi32(a, i)
+#define shr256_i32(a, i) _mm256_srli_epi32(a, i)
+#define shl256_i64(a, i) _mm256_slli_epi64(a, i)
+#define shr256_i64(a, i) _mm256_srli_epi64(a, i)
+
+#define shlv256_i16(a, iv) _mm256_sll_epi16(a, iv)
+#define shrv256_i16(a, iv) _mm256_srl_epi16(a, iv)
+#define shlv256_i32(a, iv) _mm256_sll_epi32(a, iv)
+#define shrv256_i32(a, iv) _mm256_srl_epi32(a, iv)
+#define shlv256_i64(a, iv) _mm256_sll_epi64(a, iv)
+#define shrv256_i64(a, iv) _mm256_srl_epi64(a, iv)
+
+#define and_i256(a, b) _mm256_and_si256(a, b)
+#define andnot_i256(a, b) _mm256_andnot_si256(a, b)
+#define or_i256(a, b) _mm256_or_si256(a, b)
+#define xor_i256(a, b) _mm256_xor_si256(a, b)
+
+#endif
+
+#define shuffle256_f64(a, m) _mm256_permute_pd(a, m)
+#define shufflem256_f64(a, b, m) _mm256_shuffle_pd(a, b, m)
+#define shuffle256_f32(a, m) _mm256_permute_ps(a, m)
+#define shufflem256_f32(a, b, m) _mm256_shuffle_ps(a, b, m)
+
+#define permute256_f64(a, b, m) _mm256_permute2f128_pd(a, b, m)
+#define permute256_f32(a, b, m) _mm256_permute2f128_ps(a, b, m)
+#define permute_i256(a, b, m) _mm256_permute2f128_si256(a, b, m)
 
 #define load256_f64(ptr) _mm256_load_pd(ptr)
 #define load256_f32(ptr) _mm256_load_ps(ptr)
