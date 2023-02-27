@@ -210,6 +210,16 @@ typedef __m256i m256i_t;
 #define xor_f32(a, b) _mm_xor_ps(a, b)
 #define xor_i128(a, b) _mm_xor_si128(a, b)
 
+#define horizadd_i16(a, b) _mm_hadd_epi16(a, b)
+#define horizadd_i32(a, b) _mm_hadd_epi32(a, b)
+#define horizadd_f32(a, b) _mm_hadd_ps(a, b)
+#define horizadd_f64(a, b) _mm_hadd_pd(a, b)
+
+#define horizsub_i16(a, b) _mm_hsub_epi16(a, b)
+#define horizsub_i32(a, b) _mm_hsub_epi32(a, b)
+#define horizsub_f32(a, b) _mm_hsub_ps(a, b)
+#define horizsub_f64(a, b) _mm_hsub_pd(a, b)
+
 #define load_mf64(ptr) _mm_load_pd(ptr)
 #define load_mf32(ptr) _mm_load_ps(ptr)
 #define load_f64(ptr) _mm_load_sd(ptr)
@@ -311,6 +321,12 @@ typedef __m256i m256i_t;
 #define blend256_i32(a, b, i) _mm256_blend_epi32(a, b, i) 
 #define blendv256_i8(a, b, mv) _mm256_blendv_epi8(a, b, mv)
 
+#define horizadd256_i16(a, b) _mm256_hadd_epi16(a, b)
+#define horizadd256_i32(a, b) _mm256_hadd_epi32(a, b)
+
+#define horizsub256_i16(a, b) _mm256_hsub_epi16(a, b)
+#define horizsub256_i32(a, b) _mm256_hsub_epi32(a, b)
+
 #endif
 
 #define shuffle256_f64(a, m) _mm256_permute_pd(a, m)
@@ -321,6 +337,12 @@ typedef __m256i m256i_t;
 #define permute256_f64(a, b, m) _mm256_permute2f128_pd(a, b, m)
 #define permute256_f32(a, b, m) _mm256_permute2f128_ps(a, b, m)
 #define permute_i256(a, b, m) _mm256_permute2f128_si256(a, b, m)
+
+#define horizadd256_f64(a, b) _mm256_hadd_pd(a, b)
+#define horizadd256_f32(a, b) _mm256_hadd_ps(a, b)
+
+#define horizsub256_f64(a, b) _mm256_hsub_pd(a, b)
+#define horizsub256_f32(a, b) _mm256_hsub_ps(a, b)
 
 #define load256_f64(ptr) _mm256_load_pd(ptr)
 #define load256_f32(ptr) _mm256_load_ps(ptr)
