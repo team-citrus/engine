@@ -21,10 +21,9 @@ As well, by making the engine free software, we hope to set a precident in the g
 
 ## TODOs
 
-### High priority
+### High priority - ASAP
 
 - [x] Get a name for the engine
-- [ ] Write a proper readme
 - [x] Create build system
 - [x] Create code structure
 - [x] Create formatting guide
@@ -49,6 +48,22 @@ As well, by making the engine free software, we hope to set a precident in the g
   - [ ] physmain()
   - [ ] draw()
   - [ ] mix()
+
+### Medium priority - Before the next full release
+
+- [ ] Write a proper readme
+- [ ] Multi-arch support
+  - [ ] Generic implementations of CPU specific code
+  - [ ] More detailed build options for different platforms
+  - [ ] Optimization headers/APIs for different platforms and extensions
+    - [x] SSE4.2
+    - [x] AVX
+    - [x] AVX2
+    - [ ] AVX512
+    - [ ] SVE
+    - [ ] SVE2
+    - [ ] Neon
+  - [ ] AArch64 optimizations
 
 ## Disclaimers
 
