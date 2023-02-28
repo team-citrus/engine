@@ -32,6 +32,7 @@
 
 namespace engine
 {
+    // TODO: make engine::errorcode have a seperate variable for each thread, like errno
     extern unsigned int errorcode;
 }
 
