@@ -22,9 +22,9 @@ namespace internals
 {
 	namespace OpenGL
 	{
-        int loadGL();
-        int terminateGL();
-    }
+		int loadGL();
+		int terminateGL();
+	}
 }
 }
 
