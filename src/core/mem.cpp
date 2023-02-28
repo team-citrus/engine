@@ -216,25 +216,8 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 		bptr->fsize = bptr->asize;
 		bptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 
-		#ifdef _MAVX_
-
-		// Since we are certain that we will be copying 32 byte aligned 32 byte blocks we can use AVX instructions to speed things up instead of memcpy
-		// Although memcpy probably uses the same basic solution under the hood, it needs to perform comparisions that we don't need to use.
-		for(size_t i = 0; i < bptr->fsize; i++)
-			store_i256(rptr + i, load_i256(bptr + i + 1));
-
-		else
-
-		// Same solution as the one above, but with xmm/SSE intrinsics.
-		// Still works faster than memcpy since we don't have to check alignment, and anything aligned to 32 bytes is also aligned to 16 bytes.
-
-		m128i_t *sptr = (m128i_t*)(bptr + 1);
-		m128i_t *dptr = (m128i_t*)rptr;
-
-		for(size_t i = 0; i < bptr->fsize * 2; i++)
-			store_i128(sptr + i, load_i128(dptr + i));
-		
-		#endif
+		// No need for preprocessor nonsense, ymm_memcpy converts to xmm_memcpy on if AVX is disabled
+		ymm_memcpy(rptr, bptr + i, bptr->fsize);
 
 		unlock();
 		return rptr;
