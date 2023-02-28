@@ -171,7 +171,7 @@ typedef __m256i m256i_t;
 
 #else 
 
-#define shuffle_f32(a, m) _mm_permute_ps(a, a, m)
+#define shuffle_f32(a, m) _mm_permute_ps(a, m)
 #define shuffle_f64(a, m) _mm_permute_pd(a, m)
 
 #endif
@@ -228,8 +228,8 @@ typedef __m256i m256i_t;
 
 #define uload_mf64(ptr) _mm_loadu_pd(ptr)
 #define uload_mf32(ptr) _mm_loadu_ps(ptr)
-#define uload_f64(ptr) load_sd(ptr)
-#define uload_f32(ptr) load_ss(ptr)
+#define uload_f64(ptr) load_f64(ptr)
+#define uload_f32(ptr) load_f32(ptr)
 #define uload_i128(ptr) _mm_lddqu_si128(ptr)
 
 #define store_mf64(dest, src) _mm_store_pd(dest, src)
@@ -327,6 +327,18 @@ typedef __m256i m256i_t;
 #define horizsub256_i16(a, b) _mm256_hsub_epi16(a, b)
 #define horizsub256_i32(a, b) _mm256_hsub_epi32(a, b)
 
+#define ibroadcast_i8(a) _mm_broadcastb_epi8(a)
+#define ibroadcast_i16(a) _mm_broadcastw_epi16(a)
+#define ibroadcast_i32(a) _mm_broadcastd_epi32(a)
+#define ibroadcast_i64(a) _mm_broadcastq_epi64(a)
+#define ibroadcast_f32(a) _mm_broadcastss_ps(a)
+#define ibroadcast_f64(a) *(m128d_t*)&ibroadcast_i64(*(m128i_t*)&a) // It ain't pretty but it should work
+
+#define ibroadcast256_i8(a) _mm256_broadcastb_epi8(a)
+#define ibroadcast256_i16(a) _mm256_broadcastw_epi16(a)
+#define ibroadcast256_i32(a) _mm256_broadcastd_epi32(a)
+#define ibroadcast256_i64(a) _mm256_broadcastq_epi64(a)
+
 #endif
 
 #define shuffle256_f64(a, m) _mm256_permute_pd(a, m)
@@ -343,6 +355,13 @@ typedef __m256i m256i_t;
 
 #define horizsub256_f64(a, b) _mm256_hsub_pd(a, b)
 #define horizsub256_f32(a, b) _mm256_hsub_ps(a, b)
+
+#define broadcast256_i8(i) _mm256_set1_epi8(i)
+#define broadcast256_i16(i) _mm256_set1_epi16(i)
+#define broadcast256_i32(i) _mm256_set1_epi32(i)
+#define broadcast256_i64(i) _mm256_set1_epi64x(i)
+#define broadcast256_f32(f) _mm256_broadcast_ss(&f)
+#define broadcast256_f64(f) _mm256_broadcast_sd(&f)
 
 #define load256_f64(ptr) _mm256_load_pd(ptr)
 #define load256_f32(ptr) _mm256_load_ps(ptr)
