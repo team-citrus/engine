@@ -32,16 +32,19 @@ using namespace internals;
 
 int OpenGL::loadGL()
 {
+    // TODO: If both Vulkan and OpenGL are being compiled, make them both DLLs
+    // TODO: If just OpenGL is being compiled, embed it into the main archive
+    
     // Since OpenGL is only supported as an extension for backwards compatibility, it is it's own seperate DLL
     #ifdef __unix__
 
-    OpenGL::gl_dll = dlopen("liblegacyrender.so", RTLD_NOW | RTLD_GLOBAL);
+    OpenGL::gl_dll = dlopen("libcenginegl.so", RTLD_NOW | RTLD_GLOBAL);
 
     // TODO: Create and fill the trampoline
 
     #elif defined(_WIN32)
 
-    OpenGL::gl_dll = LoadLibraryA("GL.dll");
+    OpenGL::gl_dll = LoadLibraryA("cenginegl.dll");
 
     // TODO: Create and fill the trampoline
 
