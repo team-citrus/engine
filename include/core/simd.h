@@ -87,6 +87,14 @@ typedef __m256 m256f_t;
 typedef __m256d m256d_t;
 typedef __m256i m256i_t;
 
+#if _MAVX_ >= 512
+
+typedef __m512 m512f_t;
+typedef __m512d m512d_t
+typedef __m512i m512i_t;
+
+#endif
+
 #endif
 
 // xmm/SSE intrinsics
@@ -379,6 +387,16 @@ typedef __m256i m256i_t;
 #define ustore256_f32(dest, src) _mm256_storeu_ps(dest, src)
 #define ustore_i256(dest, src) _mm256_storeu_si256(dest, src)
 
+#if _MAVX_ >= 512
+
+#define load_i512(ptr) _mm512_load_si512(ptr)
+
+#define store_i512(dest, src) _mm512_store_si512(dest, src)
+
+// TODO: AVX512
+
+#endif
+
 #endif
 
 // Non-SIMD intrinsics
@@ -391,5 +409,50 @@ typedef __m256i m256i_t;
 #define crc32_u64(crc, u64) _mm_crc32_u64(crc, u64)
 
 // TODO: Add more stuff
+
+// Copy from 16 byte aligned address src b 16 byte blocks to 16 byte aligned address dest
+void xmm_memcpy(void *dest, void *src, size_t b)
+{
+    m128i_t *vdest = dest;
+    m128i_t *vsrc = src;
+    for(int i = 0; i < b; i++) store_i128(&(vdest[i]), load_i128(&(vsrc[i])));
+}
+
+
+// Copy from 32 byte aligned address src b 32 byte blocks to 32 byte aligned address dest
+void ymm_memcpy(void *dest, void *src, size_t b)
+{
+    #ifdef _MAVX_
+    
+    m256i_t *vdest = dest;
+    m256i_t *vsrc = src;
+    for(int i = 0; i < b; i++) store_i256(&(vdest[i]), load_i256(&(vsrc[i])));
+    
+    #else
+    
+    xmm_memcpy(dest, src, b * 2);
+    
+    #endif
+}
+
+// Copy from 64 byte aligned address src b 64 byte blocks to 64 byte aligned address dest
+void zmm_memcpy(void *dest, void *src, size_t b)
+{
+    #if defined(_MAVX_) && _MAVX_ >= 512
+    
+    m512i_t *vdest = dest;
+    m512i_t *vsrc = src;
+    for(size_t i = 0; i < b; i++) store_i512(&(vdest[i]), load_i512(&(vsrc[i]));
+    
+    #elif defined(_MAVX_)
+    
+    ymm_memcpy(dest, src, b * 2);
+    
+    #else
+    
+    xmm_memcpy(dest, src, b * 4);
+    
+    #endif
+}
 
 #endif
