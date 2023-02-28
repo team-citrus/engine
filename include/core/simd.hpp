@@ -14,101 +14,172 @@
 
 // TODO: Make this actually useful
 
-class m128_i8
+class f32x4
 {
     public:
-    m128i_t Pi8;
+    m128f_t packed;
 
-    m128_i8(m128i_t i)
+    f32x4()
     {
-        Pi8 = i;
-    }
-
-    m128_i8 operator+(m128_i8 &i)
-    {
-        return m128_i8(add_i8(Pi8, i.Pi8));
+        packed = broadcast_f32(0.0f);
     }
 
-    m128_i8 operator+(m128i_t &i)
+    f32x4(m128f_t p)
     {
-        return m128_i8(add_i8(Pi8, i));
+        packed = p;
     }
 
-    m128_i8 operator+(i8 i)
+    f32x4(f32 f)
     {
-        m128i_t a = broadcast_i8(i);
-        return *this + a;
-    }
-    
-    m128_i8 operator-(m128_i8 &i)
-    {
-        return m128_i8(sub_epi8(Pi8, i.Pi8));
+        packed = broadcast_f32(f);
     }
 
-    m128_i8 operator-(m128i_t &i)
+    f32x4(f32 *f)
     {
-        return m128_i8(sub_epi8(Pi8, i));
+        packed = uload_mf32(f);
     }
 
-    m128_i8 operator-(i8 i)
+    f32x4 operator=(m128f_t p)
     {
-        m128i_t a = broadcast_i8(i);
-        return *this - a;
-    }
-    
-    m128_i8 operator|(m128_i8 &i)
-    {
-        return m128_i8(or_i128(Pi8, i.Pi8));
+        packed = p;
     }
 
-    m128_i8 operator|(m128i_t &i)
+    f32x4 operator=(f32 f)
     {
-        return m128_i8(or_i128(Pi8, i));
+        packed = broadcast_f32(f);
     }
 
-    m128_i8 operator|(i8 i)
+    f32x4 operator=(f32 *f)
     {
-        m128i_t a = broadcast_i8(i);
-        return *this | a;
-    }
-    
-    m128_i8 operator&(m128_i8 &i)
-    {
-        return m128_i8(and_i128(Pi8, i.Pi8));
+        packed = uload_mf32(f);
     }
 
-    m128_i8 operator&(m128i_t &i)
+    f32x4 operator+(f32x4 &f)
     {
-        return m128_i8(and_i128(Pi8, i));
+        return f32x4(add_mf32(packed, f.packed));
     }
 
-    m128_i8 operator&(i8 i)
+    f32x4 operator+(m128f_t f)
     {
-        m128i_t a = broadcast_i8(i);
-        return *this & m128_i8(a);
-    }
-    
-    m128_i8 operator&(i8 i)
-    {
-        m128i_t a = broadcast_i8(i);
-        return *this & a;
-    }
-    
-    m128_i8 operator^(m128_i8 &i)
-    {
-        return m128_i8(xor_i128(Pi8, i.Pi8));
+        return f32x4(add_mf32(packed, f));
     }
 
-    m128_i8 operator^(m128i_t &i)
+    f32x4 operator+(f32 f)
     {
-        return m128_i8(xor_i128(Pi8, i));
+        return *this + broadcast_f32(f);
     }
 
-    m128_i8 operator^(i8 i)
+    f32x4 operator-(f32x4 &f)
     {
-        m128i_t a = broadcast_i8(i);
-        return *this ^ a;
+        return f32x4(sub_mf32(packed, f.packed));
+    }
+
+    f32x4 operator-(m128f_t f)
+    {
+        return f32x4(sub_mf32(packed, f));
+    }
+
+    f32x4 operator-(f32 f)
+    {
+        return *this - broadcast_f32(f);
+    }
+
+    f32x4 operator*(f32x4 &f)
+    {
+        return f32x4(mul_mf32(packed, f.packed));
+    }
+
+    f32x4 operator*(m128f_t f)
+    {
+        return f32x4(mul_mf32(packed, f));
+    }
+
+    f32x4 operator*(f32 f)
+    {
+        return *this * broadcast_f32(f);
+    }
+
+    f32x4 operator/(f32x4 &f)
+    {
+        return f32x4(div_mf32(packed, f.packed));
+    }
+
+    f32x4 operator/(m128f_t f)
+    {
+        return f32x4(div_mf32(packed, f));
+    }
+
+    f32x4 operator/(f32 f)
+    {
+        return *this / broadcast_f32(f);
+    }
+
+    f32x4 operator&(f32x4 &f)
+    {
+        return f32x4(and_f32(packed, f.packed));
+    }
+
+    f32x4 operator&(m128f_t f)
+    {
+        return f32x4(and_f32(packed, f));
+    }
+
+    f32x4 operator&(f32 f)
+    {
+        return *this & broadcast_f32(f);
+    }
+
+    f32x4 operator^(f32x4 &f)
+    {
+        return f32x4(xor_f32(packed, f.packed));
+    }
+
+    f32x4 operator^(m128f_t f)
+    {
+        return f32x4(xor_f32(packed, f));
+    }
+
+    f32x4 operator^(f32 f)
+    {
+        return *this ^ broadcast_f32(f);
+    }
+
+    f32x4 operator|(f32x4 &f)
+    {
+        return f32x4(or_f32(packed, f.packed));
+    }
+
+    f32x4 operator|(m128f_t f)
+    {
+        return f32x4(or_f32(packed, f));
+    }
+
+    f32x4 operator|(f32 f)
+    {
+        return *this | broadcast_f32(f);
+    }
+
+    f32x4 blend(f32x4 b, i8 m)
+    {
+        return f32x4(blend_f32(packed, b.packed, m));
+    }
+
+    f32x4 blend(m128f_t b, i8 m)
+    {
+        return f32x4(blend_f32(packed, b, m));
+    }
+
+    f32x4 ceil()
+    {
+        return f32x4(ceil_ps(packed));
+    }
+
+    f32x4 shuffle(i8 m)
+    {
+        return f32x4(shuffle_f32(packed, m));
     }
 };
+
+using xmm_f32 = f32x4;
 
 #endif
