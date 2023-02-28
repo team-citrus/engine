@@ -418,41 +418,38 @@ void xmm_memcpy(void *dest, void *src, size_t b)
     for(int i = 0; i < b; i++) store_i128(&(vdest[i]), load_i128(&(vsrc[i])));
 }
 
+#ifdef _MAVX_
 
 // Copy from 32 byte aligned address src b 32 byte blocks to 32 byte aligned address dest
 void ymm_memcpy(void *dest, void *src, size_t b)
 {
-    #ifdef _MAVX_
-    
     m256i_t *vdest = dest;
     m256i_t *vsrc = src;
     for(int i = 0; i < b; i++) store_i256(&(vdest[i]), load_i256(&(vsrc[i])));
-    
-    #else
-    
-    xmm_memcpy(dest, src, b * 2);
-    
-    #endif
 }
+
+#else
+
+// Copy from 32 byte aligned address src b 32 byte blocks to 32 byte aligned address dest
+#define ymm_memcpy(dest, src, b) xmm_memcpy(dest, src, b * 2)
+
+#endif
+
+#if defined(_MAVX_) && _MAVX_ >= 512
 
 // Copy from 64 byte aligned address src b 64 byte blocks to 64 byte aligned address dest
 void zmm_memcpy(void *dest, void *src, size_t b)
 {
-    #if defined(_MAVX_) && _MAVX_ >= 512
-    
     m512i_t *vdest = dest;
     m512i_t *vsrc = src;
     for(size_t i = 0; i < b; i++) store_i512(&(vdest[i]), load_i512(&(vsrc[i]));
-    
-    #elif defined(_MAVX_)
-    
-    ymm_memcpy(dest, src, b * 2);
-    
-    #else
-    
-    xmm_memcpy(dest, src, b * 4);
-    
-    #endif
-}
 
+    
+}
+                                             
+#else
+                                             
+// Copy from 64 byte aligned address src b 64 byte blocks to 64 byte aligned address dest   
+#define zmm_memcpy(dest, src, b) ymm_memcpy(dest, src, b * 2)
+                                             
 #endif
