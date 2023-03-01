@@ -16,16 +16,14 @@
 
 engine::hashMap<thrd_t, unsigned int> errcodes;
 
-unsigned int engine::errorcode()
+unsigned int &engine::errorcode()
 {
     static bool inited = false;
-    engine::option<unsigned int &>ret;
     if(!inited)
         errcodes = engine::hashMap<thrd_t, unsigned int>(32);
 
-    if((ret = errcodes.add(thrd_current(), 0)).is_none())
-        return errcodes[thrd_current()];
-    else
-        return ret.unwrap();
+    inited = true;
+    errcodes.add(thrd_current(), 0).isNone();
+    return errcodes[thrd_current()];
 }
 

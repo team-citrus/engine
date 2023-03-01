@@ -12,6 +12,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include "core/extensions.h"
 #include "core/vector.hpp"
 #include "core/pair.hpp"
 #include "core/mem.hpp"
@@ -33,7 +34,7 @@ namespace engine
         size_t c;
         pair<hash_t, T> *ptr;
         public:
-        _OPTIMIZE_(3) hashMap(pair<KEY, T> p[], size_t ss)
+        OPTIMIZE(3) hashMap(pair<KEY, T> p[], size_t ss)
         {
             *this = hashMap<KEY, T>(ss);
             for(size_t i = 0; i < ss; i++)
@@ -80,12 +81,12 @@ namespace engine
             }
         }
 
-        _OPTIMIZE_(3) hashMap(Vector<pair<KEY, T>> p)
+        OPTIMIZE(3) hashMap(Vector<pair<KEY, T>> p)
         {
             *this = hashMap<KEY, T>(p.data(), p.getCount());
         }
 
-        _OPTIMIZE_(3) hashMap(size_t cc)
+        OPTIMIZE(3) hashMap(size_t cc)
         {
             s = 0;
             ptr = memalloc(sizeof(pair<hash_t,T>) * (c = cc), MEM_FLAG_UNIT_BYTE);
@@ -93,7 +94,7 @@ namespace engine
             memset(ptr, 0, sizeof(pair<hash_t, T>) * c);
         }
 
-        _OPTIMIZE_(3) hashMap(hashMap<KEY, T> &cc)
+        OPTIMIZE(3) hashMap(hashMap<KEY, T> &cc)
         {
             c = cc.c;
             s = cc.s;
@@ -106,7 +107,7 @@ namespace engine
             memfree(ptr);
         }
 
-        _OPTIMIZE_(3) 
+        OPTIMIZE(3) 
 
         #ifdef _FILE_IS_ERRNO_DOT_CPP_
         OPERATOR
@@ -190,7 +191,7 @@ namespace engine
             return s;
         }
 
-        _OPTIMIZE_(3) void rm(KEY k)
+        OPTIMIZE(3) void rm(KEY k)
         {
             memset(&this[k], 0, sizeof(pair<hash_t, T>));
             s--;

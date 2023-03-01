@@ -19,6 +19,17 @@ namespace engine
         T t;
         bool some;
         public:
+        option()
+        {
+            return none<T>();
+        }
+
+        option(option<T> &&o)
+        {
+            some = o.some;
+            t = o.t;
+        }
+
         OPERATOR bool isSome()
         {
             return some;
@@ -34,8 +45,9 @@ namespace engine
             return t;
         }
 
-        friend template<typename T> option<T> some(T t);
-        friend template<typename T> option<T> none();
+
+        template<typename T> friend option<T> some(T t);
+        template<typename T> friend option<T> none();
     };
 
     template<typename T>
