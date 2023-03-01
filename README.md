@@ -63,7 +63,7 @@ As well, by making the engine free software, we hope to set a precident in the g
     - [ ] AVX512
     - [ ] SVE
     - [ ] SVE2
-    - [ ] Neon
+    - [x] Neon
   - [ ] AArch64 optimizations
 - [ ] Mult-platoform support/Portability
   - [x] Linux support
