@@ -9,6 +9,7 @@
 #ifndef CITRUS_ENGINE_SINGLE_INSRUCTION_MULTIPLE_DATA_H__
 #define CITRUS_ENGINE_SINGLE_INSRUCTION_MULTIPLE_DATA_H__
 
+#ifdef __x86_64__
 #include <x86intrin.h>
 
 // Create a shuffle mask for shuffling an xmmreg packed with 32 bit integers
@@ -451,5 +452,29 @@ void zmm_memcpy(void *dest, void *src, size_t b)
                                              
 // Copy from 64 byte aligned address src b 64 byte blocks to 64 byte aligned address dest   
 #define zmm_memcpy(dest, src, b) ymm_memcpy(dest, src, b * 2)
-                                             
+
+#endif
+
+#else
+
+#define spinlock_pause() 
+
+#if defined(__aarch64__)
+
+#include <arm_neon.h>
+
+#elif defined(__i386__)
+
+#error x86/x86-32/i*86 is not supported by the Citrus Engine! The Citrus Engine only supports 64 bit targets!
+
+#elif defined(__arm__)
+
+#error 32-bit Arm is not supported by the Citrus Engine! The Citrus Engine only supports 64 bit targets!
+
+#else
+
+#error Unsupported CPU architecture!
+
+#endif
+
 #endif

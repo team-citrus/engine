@@ -12,6 +12,8 @@
 #include "core/rustints.h"
 #include "core/simd.h"
 
+#ifdef __x86_64__
+
 // TODO: Make this actually useful
 
 class f32x4
@@ -415,5 +417,25 @@ using xmm_f64 = f64x2;
 
 // TODO: Integer SIMD stuff
 // TODO: ymm stuff
+
+#elif defined(__aarch64__)
+
+#include <arm_neon.h>
+
+// TODO: Arm Neon code
+
+#elif defined(__i386__)
+
+#error x86/x86-32/i*86 is not supported by the Citrus Engine! The Citrus Engine only supports 64 bit targets!
+
+#elif defined(__arm__)
+
+#error 32-bit Arm is not supported by the Citrus Engine! The Citrus Engine only supports 64 bit targets!
+
+#else
+
+#error Unsupported CPU architecture!
+
+#endif
 
 #endif
