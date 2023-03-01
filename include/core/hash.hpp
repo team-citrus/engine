@@ -99,7 +99,7 @@ namespace engine
             c = cc.c;
             s = cc.s;
             ptr = memalloc(sizeof(pair<hash_t,T>) * c, MEM_FLAG_UNIT_BYTE);
-            memcpy(ptr, cc.ptr, c);
+            memcpy(ptr, cc.ptr, c); // TODO: Do some speed comparison against ymm_memcpy(ptr, cc.ptr, (size << 59) ? (size >> 5) + 1 : size >> 5);
         }
 
         ~hashMap()

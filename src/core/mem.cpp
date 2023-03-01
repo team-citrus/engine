@@ -255,13 +255,13 @@ void engine::internals::Pool::free(engine::internals::poolBlock *bptr)
 void *engine::memalloc(size_t size, uint16_t flags)
 {
 	// Make a pool allocation with suitable rounding
-	return engine::internals::pool.allocate((size % 32) ? size/32 + 1 : size/32);
+	return engine::internals::pool.allocate((size << 59) ? (size >> 5) + 1 : size >> 5);
 }
 
 void *engine::memrealloc(void *ptr, size_t size, uint16_t flags)
 {
-	// Perform the actual reallocation with proper rounding
-	return engine::internals::pool.reallocate(ptr, (size % 32) ? size/32 + 1 : size/32);
+	// Perform the actual reallocation with proper rounding, using bitwise operations incase the compiler is dumb and doesn't perform the optimizations
+	return engine::internals::pool.reallocate(ptr, (size << 59) ? (size >> 5) + 1 : size >> 5);
 }
 
 void engine::memfree(void *ptr)
