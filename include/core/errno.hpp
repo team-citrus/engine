@@ -1,7 +1,7 @@
 /*
-*	name: include/core/errorcode.hpp
+*	name: include/core/errno.hpp
 *	origin: Citrus Engine
-*	purpose: Provide engine::errorcode
+*	purpose: Provide engine::errorcode()
 *	author: https://github.com/ComradeYellowCitrusFruit
 *	license: LGPL-3.0-only
 */
@@ -32,8 +32,24 @@
 
 namespace engine
 {
-    // TODO: make engine::errorcode have a seperate variable for each thread, like errno
-    extern unsigned int errorcode;
+    #ifdef _INTERNALS_ENGINE_THREAD_MAIN_
+    
+    namespace internals
+    {
+        OPERATOR void engine::removeErrorcodeForThread()
+        {
+            errcodes.rm(thrd_current());
+        }
+    }
+
+    #endif
+
+    void clearErrorcode()
+    {
+        errorcode() = 0;
+    }
+    
+    unsigned int &errorcode();
 }
 
 #endif

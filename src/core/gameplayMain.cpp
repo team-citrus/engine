@@ -6,6 +6,9 @@
 *   license: LGPL-3.0-only
 */
 
+#define _INTERNALS_ENGINE_THREAD_MAIN_
+
+#include "core/errno.hpp"
 #include "core/scene.hpp"
 #include "core/scene_int.hpp"
 #include "core/component.hpp"
@@ -26,6 +29,8 @@ namespace engine
         // Run the gameplay code
         int gameplayMain()
         {
+            engine::clearErrorcode();
+
             // Physics and render lock gameplay
             while(isRenderExecuting.load()) spinlock_pause();
             while(isPhysicsExecuting.load()) spinlock_pause();
@@ -39,11 +44,14 @@ namespace engine
                 for(int j = 0; j < curScene->objects[i].cCount; j++)
                 {
                     curScene->objects[i].components[j]->update();
+                    engine::clearErrorcode();
                 }
             }
 
             executeQueue(rQueue);
             isGameplayExecuting.store(false);
+
+            removeErrorcodeForThread();
         }
     };
 };

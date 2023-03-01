@@ -62,12 +62,12 @@ alloc_goto:
 		{
 			if(_POOL_LIMIT_IS_HARD_ || limitExceeded)
 			{
-				engine::errorcode = ENGINE_NO_MEM;
+				engine::errorcode() = ENGINE_NO_MEM;
 				return -1;
 			}
 			else
 			{
-				engine::errorcode = ENGINE_SOFT_MEM_LIMIT_REACHED;
+				engine::errorcode() = ENGINE_SOFT_MEM_LIMIT_REACHED;
 				limitExceeded = true;
 				#ifndef _WIN32
 
@@ -82,7 +82,7 @@ alloc_goto:
 
 				if((uintptr_t)ptr != ((uintptr_t)pool.start + _POOL_SIZE_))
 				{
-					engine::errorcode = ENGINE_NO_MEM;
+					engine::errorcode() = ENGINE_NO_MEM;
 					
 					#ifndef _WIN32
 					munmap(ptr, _POOL_EXPANSION_SIZE_);
@@ -175,18 +175,18 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 	
 	if(ptr == NULL)
 	{
-		engine::errorcode = ENGINE_MEMREALLOC_INVALID_PTR;
+		engine::errorcode() = ENGINE_MEMREALLOC_INVALID_PTR;
 		return this->return this->allocate(blocks);
 	}
 	else if(bptr->amagic != POOL_ALLOC_BLOCK_MAGIC)
 	{
-		engine::errorcode = ENGINE_MEMREALLOC_INVALID_PTR;
+		engine::errorcode() = ENGINE_MEMREALLOC_INVALID_PTR;
 		return this->allocate(blocks);
 	}
 	else if(!blocks)
 	{
 		this->free(bptr);
-		engine::errorcode = ENGINE_MEMREALLOC_INVALID_PTR;
+		engine::errorcode() = ENGINE_MEMREALLOC_INVALID_PTR;
 		return ptr;
 	}
 
@@ -229,10 +229,10 @@ void engine::internals::Pool::free(engine::internals::poolBlock *bptr)
 	lock();
 	if(bptr + 1 == NULL)
 	{
-		engine::errorcode = ENGINE_MEMFREE_INVALID_PTR;
+		engine::errorcode() = ENGINE_MEMFREE_INVALID_PTR;
 		return;
 	}
-	engine::errorcode = bptr->fmagic == POOL_FREE_BLOCK_MAGIC ? ENGINE_MEMFREE_INVALID_PTR : engine::errorcode ;
+	engine::errorcode() = bptr->fmagic == POOL_FREE_BLOCK_MAGIC ? ENGINE_MEMFREE_INVALID_PTR : engine::errorcode ;
 	bptr->fsize = bptr->asize;
 	bptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 

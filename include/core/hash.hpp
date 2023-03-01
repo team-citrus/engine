@@ -33,7 +33,7 @@ namespace engine
         size_t c;
         pair<hash_t, T> *ptr;
         public:
-        hashMap(pair<KEY, T> p[], size_t ss)
+        _OPTIMIZE_(3) hashMap(pair<KEY, T> p[], size_t ss)
         {
             *this = hashMap<KEY, T>(ss);
             for(size_t i = 0; i < ss; i++)
@@ -41,7 +41,7 @@ namespace engine
                 hash_t h = hash(&p[i].a, sizeof(KEY));
                 if(ptr[h % c].a == h) // Ahhhh hash collision
                 {
-                    engine::errorcode = ENGINE_HASH_COLLISION;
+                    engine::errorcode() = ENGINE_HASH_COLLISION;
                     *this = hashMap<KEY, T>(ss);
                     break;
                 }
@@ -59,7 +59,7 @@ namespace engine
                             hash_t hh = hash(&p[i].a, sizeof(KEY));
                             if(ptr[hh % c].a == hh)
                             {
-                                engine::errorcode = ENGINE_HASH_COLLISION;
+                                engine::errorcode() = ENGINE_HASH_COLLISION;
                                 *this = hashMap(ss);
                                 break;
                             }
@@ -80,12 +80,12 @@ namespace engine
             }
         }
 
-        hashMap(Vector<pair<KEY, T>> p)
+        _OPTIMIZE_(3) hashMap(Vector<pair<KEY, T>> p)
         {
             *this = hashMap<KEY, T>(p.data(), p.getCount());
         }
 
-        hashMap(size_t cc)
+        _OPTIMIZE_(3) hashMap(size_t cc)
         {
             s = 0;
             ptr = memalloc(sizeof(pair<hash_t,T>) * (c = cc), MEM_FLAG_UNIT_BYTE);
@@ -93,7 +93,7 @@ namespace engine
             memset(ptr, 0, sizeof(pair<hash_t, T>) * c);
         }
 
-        hashMap(hashMap<KEY, T> &cc)
+        _OPTIMIZE_(3) hashMap(hashMap<KEY, T> &cc)
         {
             c = cc.c;
             s = cc.s;
@@ -105,6 +105,12 @@ namespace engine
         {
             memfree(ptr);
         }
+
+        _OPTIMIZE_(3) 
+
+        #ifdef _FILE_IS_ERRNO_DOT_CPP_
+        OPERATOR
+        #endif
 
         option<T> add(KEY k, T t)
         {
@@ -135,7 +141,11 @@ namespace engine
                     if(nptr[h % cc].a == h)
                     {
                         memfree(nptr);
-                        engine::errorcode = ENGINE_HASH_COLLISION;
+
+                        #ifndef _FILE_IS_ERRNO_DOT_CPP_
+                        engine::errorcode() = ENGINE_HASH_COLLISION;
+                        #endif
+
                         return none<T>(); 
                     }
                     else if(nptr[h % cc].a != 0)
@@ -157,7 +167,10 @@ namespace engine
             {
                 if(ptr[h % c].a == h) // Ahhhhh hash collision
                 {
-                    engine::errorcode = ENGINE_HASH_COLLISION;
+                    #ifndef _FILE_IS_ERRNO_DOT_CPP_
+                    engine::errorcode() = ENGINE_HASH_COLLISION;
+                    #endif
+
                     return none<T>();
                 }
                 else if(ptr[h % c].a != 0)
@@ -177,7 +190,7 @@ namespace engine
             return s;
         }
 
-        void rm(KEY k)
+        _OPTIMIZE_(3) void rm(KEY k)
         {
             memset(&this[k], 0, sizeof(pair<hash_t, T>));
             s--;
