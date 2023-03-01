@@ -70,6 +70,7 @@ As well, by making the engine free software, we hope to set a precident in the g
   - [x] Windows support
   - [ ] Generic BSD support
   - [ ] MacOS Support (low prority, just here for organizational purposes)
+- [ ] Rust suport (Should be considered between medium and high priority)
 
 ### Low priority (within the next few releases)
 
