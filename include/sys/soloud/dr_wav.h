@@ -327,6 +327,8 @@ typedef drwav_uint32     drwav_bool32;
 #define DRWAV_TRUE       1
 #define DRWAV_FALSE      0
 
+#include "../../core/mem.hpp"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -996,15 +998,9 @@ void drwav_free(void* p, const drwav_allocation_callbacks* pAllocationCallbacks)
 #include <assert.h>
 #define DRWAV_ASSERT(expression)           assert(expression)
 #endif
-#ifndef DRWAV_MALLOC
-#define DRWAV_MALLOC(sz)                   malloc((sz))
-#endif
-#ifndef DRWAV_REALLOC
-#define DRWAV_REALLOC(p, sz)               realloc((p), (sz))
-#endif
-#ifndef DRWAV_FREE
-#define DRWAV_FREE(p)                      free((p))
-#endif
+#define DRWAV_MALLOC(sz)                   engine::memalloc(sz, 0)
+#define DRWAV_REALLOC(p, sz)               engine::memrealloc(p, sz, 0)
+#define DRWAV_FREE(p)                      engine::memfree((p))
 #ifndef DRWAV_COPY_MEMORY
 #define DRWAV_COPY_MEMORY(dst, src, sz)    memcpy((dst), (src), (sz))
 #endif

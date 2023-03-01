@@ -3408,6 +3408,7 @@ IMPLEMENTATION
     #endif
 #endif
 
+// Man that's fuckin dumb af
 #ifdef MA_WIN32
 #include <windows.h>
 #include <objbase.h>
@@ -3869,59 +3870,27 @@ ma_format g_maFormatPriorities[] = {
     ma_format_u8           /* Low quality */
 };
 
-
+#include "../../core/mem.hpp"
 
 /******************************************************************************
 
 Standard Library Stuff
 
 ******************************************************************************/
-#ifndef MA_MALLOC
-#ifdef MA_WIN32
-#define MA_MALLOC(sz) HeapAlloc(GetProcessHeap(), 0, (sz))
-#else
-#define MA_MALLOC(sz) malloc((sz))
-#endif
-#endif
-
-#ifndef MA_REALLOC
-#ifdef MA_WIN32
-#define MA_REALLOC(p, sz) (((sz) > 0) ? ((p) ? HeapReAlloc(GetProcessHeap(), 0, (p), (sz)) : HeapAlloc(GetProcessHeap(), 0, (sz))) : ((VOID*)(size_t)(HeapFree(GetProcessHeap(), 0, (p)) & 0)))
-#else
-#define MA_REALLOC(p, sz) realloc((p), (sz))
-#endif
-#endif
-
-#ifndef MA_FREE
-#ifdef MA_WIN32
-#define MA_FREE(p) HeapFree(GetProcessHeap(), 0, (p))
-#else
-#define MA_FREE(p) free((p))
-#endif
-#endif
+#define MA_MALLOC(sz) engine::memalloc(sz, 0)
+#define MA_REALLOC(p, sz) engine::memrealloc((p), (sz), 0)
+#define MA_FREE(p) engine::memfree((p))
 
 #ifndef MA_ZERO_MEMORY
-#ifdef MA_WIN32
-#define MA_ZERO_MEMORY(p, sz) ZeroMemory((p), (sz))
-#else
 #define MA_ZERO_MEMORY(p, sz) memset((p), 0, (sz))
-#endif
 #endif
 
 #ifndef MA_COPY_MEMORY
-#ifdef MA_WIN32
-#define MA_COPY_MEMORY(dst, src, sz) CopyMemory((dst), (src), (sz))
-#else
 #define MA_COPY_MEMORY(dst, src, sz) memcpy((dst), (src), (sz))
-#endif
 #endif
 
 #ifndef MA_ASSERT
-#ifdef MA_WIN32
 #define MA_ASSERT(condition) assert(condition)
-#else
-#define MA_ASSERT(condition) assert(condition)
-#endif
 #endif
 
 #define MA_ZERO_OBJECT(p) MA_ZERO_MEMORY((p), sizeof(*(p)))
