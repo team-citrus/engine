@@ -30,7 +30,7 @@ As well, by making the engine free software, we hope to set a precident in the g
 - [ ] Integrate the Soloud sources into the engine
   - [ ] Update the source code to use `engine::memalloc` and friends
   - [x] Necessary restructuring
-  - [ ] Copyright information
+  - [x] Copyright information
   - [x] Sconscript files
 - [ ] Write headers for the graphics API
 - [ ] Write headers for the phyics API
@@ -41,7 +41,8 @@ As well, by making the engine free software, we hope to set a precident in the g
   - [x] `engine::map<A, B>`
   - [x] `engine::hash()`
   - [x] `engine::hashMap<K, T>`
-- [ ] Create the rendering pipeline
+- [ ] Create the rendering pipeline for Vulkan
+- [ ] Create the rendering pipeline for OpenGL
 - [ ] Create the main loop
   - [x] main()
   - [ ] gameplayMain()
@@ -52,7 +53,7 @@ As well, by making the engine free software, we hope to set a precident in the g
 ### Medium priority - Before the next full release
 
 - [ ] Write a proper readme
-- [ ] Multi-arch support
+- [ ] Multi-arch support/Portability (Should be considered between medium and high priority)
   - [ ] Generic implementations of CPU specific code
   - [ ] More detailed build options for different platforms
   - [ ] Optimization headers/APIs for different platforms and extensions
@@ -64,6 +65,21 @@ As well, by making the engine free software, we hope to set a precident in the g
     - [ ] SVE2
     - [ ] Neon
   - [ ] AArch64 optimizations
+- [ ] Mult-platoform support/Portability
+  - [x] Linux support
+  - [x] Windows support
+  - [ ] Generic BSD support
+  - [ ] MacOS Support (low prority, just here for organizational purposes)
+
+### Low priority (within the next few releases)
+
+- [ ] Raytracing rendering for Vulkan (Should be considered between medium and low priority)
+- [ ] Mobile support
+  - [ ] iOS (after MacOS support in terms of prority)
+  - [ ] Android (after MacOS support in terms of prority)
+- [ ] VR support
+- [ ] IR support
+- [ ] C# support
 
 ## Disclaimers
 
