@@ -73,7 +73,7 @@ namespace engine
 						};
 					};
 					// Expand the size to 32 bytes
-					m256i_t v;
+					uint_least8_t __force_size[32];
 				};
 		};
 

@@ -422,7 +422,7 @@ using xmm_f64 = f64x2;
 
 #include <arm_neon.h>
 
-// TODO: Arm Neon code
+// TODO: Arm Neon code.
 
 #elif defined(__i386__)
 
