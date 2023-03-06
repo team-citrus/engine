@@ -22,7 +22,7 @@
 // For Rust interop, no need to put these in a header
 extern "C"
 {
-    void rustExecGameplay();
+    void rust_exec_gameplay();
 }
 
 namespace engine
@@ -55,7 +55,7 @@ namespace engine
                 }
             }
 
-            rustExecGameplay();
+            rust_exec_gameplay();
             
             isGameplayExecuting.store(false);
 
