@@ -8,6 +8,7 @@
 
 #define _INTERNALS_ENGINE_THREAD_MAIN_
 
+#include "core/extensions.h"
 #include "core/errno.hpp"
 #include "core/scene.hpp"
 #include "core/scene_int.hpp"
@@ -17,6 +18,12 @@
 #include "core/object.hpp"
 #include "core/sync.hpp"
 #include "core/simd.h"
+
+// For Rust interop, no need to put these in a header
+extern "C"
+{
+    void rustExecGameplay();
+}
 
 namespace engine
 {
@@ -48,36 +55,11 @@ namespace engine
                 }
             }
 
-            executeQueue(rQueue);
+            rustExecGameplay();
+            
             isGameplayExecuting.store(false);
 
             removeErrorcodeForThread();
         }
     };
 };
-
-// For Rust interop, no need to put these in a header
-extern "C"
-{
-    // Add a function to a queue executed during engine::internals::gameplayMain()
-    // @note: Do not use outside of Rust code.
-    void addToQueue(void *ptr)
-    {
-        engine::internals::rQueue.push((engine::internals::queuePtr)ptr);
-    }
-
-    // Remove a function from a queue executed during engine::internals::gameplayMain()
-    // @note: Do nut use outside of Rust code.
-    void rmFromQueue(void *ptr)
-    {
-        engine::internals::queuePtr fnPtr = (engine::internals::queuePtr)ptr;
-        for(int i = 0; i < engine::internals::rQueue.getCount(); i++)
-        {
-            if(engine::internals::rQueue[i] == fnPtr)
-            {
-                engine::internals::rQueue.rm(i);
-                return;
-            }
-        }
-    }
-}

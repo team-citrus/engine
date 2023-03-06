@@ -30,13 +30,23 @@
 
 // TODO: More defines
 
+#ifdef _INTERNALS_ENGINE_THREAD_MAIN_
+
+#include "core/hash.hpp"
+
+extern engine::hashMap<thrd_t, unsigned int> errcodes;
+
+#endif
+
 namespace engine
 {
     #ifdef _INTERNALS_ENGINE_THREAD_MAIN_
     
+
+
     namespace internals
     {
-        OPERATOR void engine::removeErrorcodeForThread()
+        OPERATOR void removeErrorcodeForThread()
         {
             errcodes.rm(thrd_current());
         }
