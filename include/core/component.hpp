@@ -68,7 +68,12 @@ namespace engine
 			friend class object;
 	};
 
-	// TODO: Rust interop class
+	class rustComponent : component
+	{
+		public:
+		// Pointer to the actual component. Please note that actual Rust components can only be added from Rust
+		void *ptr; // TODO: Fix that
+	}
 };
 
 #endif
