@@ -19,12 +19,6 @@
 #include "core/sync.hpp"
 #include "core/simd.h"
 
-// For Rust interop, no need to put these in a header
-extern "C"
-{
-    void rust_exec_gameplay();
-}
-
 namespace engine
 {
     namespace internals
@@ -36,13 +30,13 @@ namespace engine
         // Run the gameplay code
         int gameplayMain()
         {
-            engine::clearErrorcode();
-
             // Physics and render lock gameplay
             while(isRenderExecuting.load()) spinlock_pause();
             while(isPhysicsExecuting.load()) spinlock_pause();
 
             isGameplayExecuting.store(true);
+            
+            engine::clearErrorcode();
 
             // TODO: There is probably something we are missing here.
 
@@ -54,12 +48,10 @@ namespace engine
                     engine::clearErrorcode();
                 }
             }
-
-            rust_exec_gameplay();
+            
+            removeErrorcodeForThread();
             
             isGameplayExecuting.store(false);
-
-            removeErrorcodeForThread();
         }
     };
 };
