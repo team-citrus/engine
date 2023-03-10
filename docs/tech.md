@@ -19,6 +19,7 @@ Technically, this is more of a job for an editor/SDK to handle, however, I don't
 - For sprites/textures, we prefer the PNG format.
 - For shaders, they should be stored somewhere outside of the main executable, however we don't care where.
   - When using both Vulkan and OpenGL, bytecode and source shaders should be stored seperately.
+- For configuration files, we prefer TOML.
 
 For everything else, we don't care how the data gets there as long as it does.
 You can pack and compress everything however you want, and as long as we can get everything when we need it, it's fine.
