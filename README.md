@@ -65,6 +65,7 @@ As well, by making the engine free software, we hope to set a precident in the g
     - [ ] SVE2
     - [x] Neon
   - [ ] AArch64 optimizations
+  - [x] AMD64 optimizations
 - [ ] Mult-platoform support/Portability
   - [x] Linux support
   - [x] Windows support
