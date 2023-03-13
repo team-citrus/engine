@@ -12,5 +12,6 @@
 #include "core/extensions.h"
 #include "graphics/shader.hpp"
 #include "graphics/compute.hpp"
+#include "graphics/matrix.hpp"
 
 #endif

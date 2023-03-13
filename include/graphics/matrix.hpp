@@ -9,6 +9,9 @@
 #ifndef CITRUS_ENGINE_COMPUTE_SHADERS_HPP__
 #define CITRUS_ENGINE_COMPUTE_SHADERS_HPP__
 
+#define GLM_FORCE_INTRINSICS true
+#define GLM_FORCE_ALIGNED true
+
 #include <glm/glm.hpp>
 #include <glm/mat2x2.hpp>
 #include <glm/mat3x3.hpp>
@@ -18,9 +21,9 @@ namespace engine
 {
     namespace render
     {
-        typedef glm::mat2 matrix2x2;
-        typedef glm::mat3 matrix3x3;
-        typedef glm::mat4 matrix4x4;
+        using matrix2x2 glm::mat2;
+        using matrix3x3 glm::mat3;
+        using matrix4x4 glm::mat4;
     }
 }
 

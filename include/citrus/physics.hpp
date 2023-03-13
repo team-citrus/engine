@@ -16,5 +16,6 @@
 #include "physics/physobject.hpp"
 #include "physics/rigidbody.hpp"
 #include "physics/vectors.hpp"
+#include "graphics/matrix.hpp"
 
 #endif
