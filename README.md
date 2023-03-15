@@ -65,7 +65,7 @@ As well, by making the engine free software, we hope to set a precident in the g
 - [ ] Mult-platoform support/Portability
   - [x] Linux support
   - [x] Windows support
-  - [ ] Generic BSD support
+  - [ ] Generic BSD/*nix support
   - [ ] MacOS Support (low prority, just here for organizational purposes)
 - [ ] Rust suport (Should be considered between medium and high priority)
 
@@ -74,7 +74,7 @@ As well, by making the engine free software, we hope to set a precident in the g
 - [ ] Raytracing rendering for Vulkan (Should be considered between medium and low priority)
 - [ ] Mobile support
   - [ ] iOS (after MacOS support in terms of prority)
-  - [ ] Android (after MacOS support in terms of prority)
+  - [ ] Android (between *nix support and MacOS support in terms of prority)
 - [ ] VR support
 - [ ] IR support
 - [ ] C# support
