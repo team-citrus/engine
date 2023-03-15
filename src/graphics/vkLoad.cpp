@@ -59,7 +59,7 @@ static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperti
 	int qCount;
 	VkQueueFamilyProperties *qProperties;
 	vkCall(vkGetPhysicalDeviceQueueFamilyProperties, dev, &qCount, NULL);
-	qProperties = memalloc(sizeof(VkQueueFamilyProperties) * qCount, MEM_FLAG_UNIT_BYTE);
+	qProperties = memalloc(sizeof(VkQueueFamilyProperties) * qCount);
 	vkCall(vkGetPhysicalDeviceQueueFamilyProperties, dev, &qCount, qProperties);
 	for(int i = 0; i < qCount; i++)
 	{
@@ -262,7 +262,7 @@ int Vulkan::vkLoad()
 
 	// Get the handles
 
-	VkPhysicalDevice *devices = memalloc(sizeof(VkPhysicalDevice) * devCount, 0);
+	VkPhysicalDevice *devices = memalloc(sizeof(VkPhysicalDevice) * devCount);
 	vkInstanceCall(vkEnumeratePhysicalDevices, Vulkan::instance, &devCount, devices);
 
 	// Filter out all of the eligible devices

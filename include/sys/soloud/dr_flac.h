@@ -1227,8 +1227,8 @@ static DRFLAC_INLINE drflac_bool32 drflac_has_sse41()
 #include <assert.h>
 #define DRFLAC_ASSERT(expression)           assert(expression)
 #endif
-#define DRFLAC_MALLOC(sz)                   engine::memalloc(sz, 0)
-#define DRFLAC_REALLOC(p, sz)               engine::memrealloc(p, sz, 0)
+#define DRFLAC_MALLOC(sz)                   engine::memalloc(sz)
+#define DRFLAC_REALLOC(p, sz)               engine::memrealloc(p, sz)
 #define DRFLAC_FREE(p)                      engine::memfree((p))
 #ifndef DRFLAC_COPY_MEMORY
 #define DRFLAC_COPY_MEMORY(dst, src, sz)    memcpy((dst), (src), (sz))

@@ -998,8 +998,8 @@ void drwav_free(void* p, const drwav_allocation_callbacks* pAllocationCallbacks)
 #include <assert.h>
 #define DRWAV_ASSERT(expression)           assert(expression)
 #endif
-#define DRWAV_MALLOC(sz)                   engine::memalloc(sz, 0)
-#define DRWAV_REALLOC(p, sz)               engine::memrealloc(p, sz, 0)
+#define DRWAV_MALLOC(sz)                   engine::memalloc(sz)
+#define DRWAV_REALLOC(p, sz)               engine::memrealloc(p, sz)
 #define DRWAV_FREE(p)                      engine::memfree((p))
 #ifndef DRWAV_COPY_MEMORY
 #define DRWAV_COPY_MEMORY(dst, src, sz)    memcpy((dst), (src), (sz))

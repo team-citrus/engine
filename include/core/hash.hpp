@@ -89,7 +89,7 @@ namespace engine
         OPTIMIZE(3) hashMap(size_t cc)
         {
             s = 0;
-            ptr = memalloc(sizeof(pair<hash_t,T>) * (c = cc), MEM_FLAG_UNIT_BYTE);
+            ptr = memalloc(sizeof(pair<hash_t,T>) * (c = cc));
 
             memset(ptr, 0, sizeof(pair<hash_t, T>) * c);
         }
@@ -98,7 +98,7 @@ namespace engine
         {
             c = cc.c;
             s = cc.s;
-            ptr = memalloc(sizeof(pair<hash_t,T>) * c, MEM_FLAG_UNIT_BYTE);
+            ptr = memalloc(sizeof(pair<hash_t,T>) * c);
             memcpy(ptr, cc.ptr, c); // TODO: Do some speed comparison against ymm_memcpy(ptr, cc.ptr, (size << 59) ? (size >> 5) + 1 : size >> 5);
         }
 
@@ -123,7 +123,7 @@ namespace engine
 
                 while(true)
                 {
-                    pair<hash_t, T> *nptr = memalloc(sizeof(pair<hash_t,T>) * cc, MEM_FLAG_UNIT_BYTE);
+                    pair<hash_t, T> *nptr = memalloc(sizeof(pair<hash_t,T>) * cc);
                     memset(nptr, 0, sizeof(pair<hash_t,T>) * cc);
 
                     for(size_t i = 0; i < c; i++)

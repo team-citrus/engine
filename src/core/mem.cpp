@@ -252,16 +252,16 @@ void engine::internals::Pool::free(engine::internals::poolBlock *bptr)
 	return;
 }
 
-void *engine::memalloc(size_t size, uint16_t flags)
+void *engine::memalloc(size_t size)
 {
 	// Make a pool allocation with suitable rounding
-	return engine::internals::pool.allocate((size << 59) ? (size >> 5) + 1 : size >> 5);
+	return engine::internals::pool.allocate((size & 0x1F) ? (size >> 5) + 1 : size >> 5);
 }
 
-void *engine::memrealloc(void *ptr, size_t size, uint16_t flags)
+void *engine::memrealloc(void *ptr, size_t size)
 {
 	// Perform the actual reallocation with proper rounding, using bitwise operations incase the compiler is dumb and doesn't perform the optimizations
-	return engine::internals::pool.reallocate(ptr, (size << 59) ? (size >> 5) + 1 : size >> 5);
+	return engine::internals::pool.reallocate(ptr, (size & 0x1F) ? (size >> 5) + 1 : size >> 5);
 }
 
 void engine::memfree(void *ptr)
@@ -269,10 +269,18 @@ void engine::memfree(void *ptr)
 	engine::internals::pool.free((engine::internals::poolBlock*)ptr - 1);
 }
 
+void *engine::zmalloc(size_t items, size_t size)
+{
+	size_t m = ((size * items) & 0x1F) ? ((size * items) >> 5) + 1 : (size * items) >> 5;
+	void *ret = engine::internals::pool.allocate(m);
+	ymm_memset(ret, 0, m);
+	return ret;
+}
+
 // b2Alloc_Default and b2Free_Default overrides
 B2_API void* b2Alloc_Default(int32_t size)
 {
-	return engine::memalloc(size, MEM_FLAG_UNIT_BYTE);
+	return engine::memalloc(size);
 }
 
 B2_API void b2Free_Default(void *mem)

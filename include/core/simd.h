@@ -412,11 +412,20 @@ typedef __m512i m512i_t;
 // TODO: Add more stuff
 
 // Copy from 16 byte aligned address src b 16 byte blocks to 16 byte aligned address dest
-void xmm_memcpy(void *dest, void *src, size_t b)
+__attribute__((always_inline)) void xmm_memcpy(void *dest, void *src, size_t b)
 {
     m128i_t *vdest = dest;
     m128i_t *vsrc = src;
     for(int i = 0; i < b; i++) store_i128(&(vdest[i]), load_i128(&(vsrc[i])));
+}
+
+// memset 16 byte aligned array in 16 byte blocks
+__attribute__((always_inline)) void xmm_memset(void *ptr, unsigned char c, size_t b)
+{
+    m128i_t val;
+    m128i_t *vptr = ptr;
+    val = broadcast_i8(c);
+    for(int i = 0; i < b; i++, vptr++) store_i128(vptr, val);
 }
 
 #ifdef _MAVX_
@@ -429,10 +438,22 @@ void ymm_memcpy(void *dest, void *src, size_t b)
     for(int i = 0; i < b; i++) store_i256(&(vdest[i]), load_i256(&(vsrc[i])));
 }
 
+// memset 32 byte aligned array in 32 byte blocks
+__attribute__((always_inline)) void ymm_memset(void *ptr, unsigned char c, size_t b)
+{
+    m256i_t val;
+    m256i_t *vptr = ptr;
+    val = broadcast256_i8(c);
+    for(int i = 0; i < b; i++, vptr++) store_i256(vptr, val);
+}
+
 #else
 
 // Copy from 32 byte aligned address src b 32 byte blocks to 32 byte aligned address dest
 #define ymm_memcpy(dest, src, b) xmm_memcpy(dest, src, b * 2)
+
+// memset 32 byte aligned array in 32 byte blocks
+#define ymm_memset(ptr, c, b) xmm_memcpy(ptr, c, b * 2)
 
 #endif
 
@@ -450,6 +471,9 @@ void zmm_memcpy(void *dest, void *src, size_t b)
                                              
 // Copy from 64 byte aligned address src b 64 byte blocks to 64 byte aligned address dest   
 #define zmm_memcpy(dest, src, b) ymm_memcpy(dest, src, b * 2)
+
+// memset 32 byte aligned array in 32 byte blocks
+#define zmm_memset(ptr, c, b) ymm_memcpy(ptr, c, b *2)
 
 #endif
 
@@ -473,11 +497,26 @@ void xmm_memcpy(void *dest, void *src, size_t b)
         vst1q_u64(&(rdest[i * 2]), vld1q_u64(&(src[i * 2])));
 }
 
+// memset 16 byte aligned array in 16 byte blocks
+void xmm_memset(void *ptr, unsigned char c, size_t b)
+{
+    uint64_t *rptr = ptr;
+    uint64x2_t val = vld1q_u64({0ull, 0ull});
+
+    for(size_t i = 0; i < b; i++, rptr += 2) vst1q_u64(rptr, val);
+}
+
 // Copy from 32 byte aligned address src b 32 byte blocks to 32 byte aligned address dest
 #define ymm_memcpy(dest, src, b) xmm_memcpy(dest, src, b * 2)
 
+// memset 32 byte aligned array in 32 byte blocks
+#define ymm_memset(ptr, c, b) xmm_memset(ptr, c, b * 2)
+
 // Copy from 64 byte aligned address src b 64 byte blocks to 64 byte aligned address dest   
 #define zmm_memcpy(dest, src, b) ymm_memcpy(dest, src, b * 2)
+
+// memset 64 byte aligned array in 64 byte blocks
+#define zmm_memset(ptr, c, b) ymm_memset(ptr, c, b * 2)
 
 #elif defined(__i386__)
 

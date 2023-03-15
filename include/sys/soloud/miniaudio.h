@@ -3877,8 +3877,8 @@ ma_format g_maFormatPriorities[] = {
 Standard Library Stuff
 
 ******************************************************************************/
-#define MA_MALLOC(sz) engine::memalloc(sz, 0)
-#define MA_REALLOC(p, sz) engine::memrealloc((p), (sz), 0)
+#define MA_MALLOC(sz) engine::memalloc(sz)
+#define MA_REALLOC(p, sz) engine::memrealloc((p), (sz))
 #define MA_FREE(p) engine::memfree((p))
 
 #ifndef MA_ZERO_MEMORY

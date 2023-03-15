@@ -33,7 +33,7 @@ namespace engine
 	*	@return Pointer to the allocation, NULL if an error occurs
 	*	errorcode will be set
 	*/
-	void *memalloc(size_t size, uint16_t flags);
+	void *memalloc(size_t size);
 
 	/* 	The main memory reallocation function
 	*	@param ptr The old pointer
@@ -42,7 +42,7 @@ namespace engine
 	*	@return Pointer to the new allocation, NULL if an error occurs
 	*	errorcode will be set
 	*/
-	void *memrealloc(void *ptr, size_t size, uint16_t flags);
+	void *memrealloc(void *ptr, size_t size);
 
 	/*	The main memory freeing function
 	*	Really just a wrapper around a couple different functions
@@ -50,12 +50,18 @@ namespace engine
 	*/
 	void memfree(void *ptr);
 
+	/*	The memalloc and friends equivalent of calloc
+	*	@param items Number of items
+	*	@param size Size per item
+	*/
+	void *zmalloc(size_t items, size_t size);
+
 	// memnew is an exception to the no lambdas rule
 
 	#define memnew(TYPE, COUNT) ( \
 		([](size_t s) -> TYPE* \
 		{ \
-			TYPE *r = memalloc(s + 32, 0); \
+			TYPE *r = memalloc(s + 32); \
 			*(size_t*)r = COUNT; \
 			r = (TYPE*)((uintptr_t)r + 32); \
 			for(int i = 0; i < COUNT; i++) r[i] = TYPE(); \

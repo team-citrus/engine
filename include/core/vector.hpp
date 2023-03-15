@@ -32,7 +32,7 @@ namespace engine
             OPERATOR T &push(T obj)
             {
                 count++;
-                ptr = (count >= capacity) ? memrealloc(ptr, (capcity += 8) * sizeof(T), MEM_FLAG_UNIT_BYTE) : ptr;
+                ptr = (count >= capacity) ? memrealloc(ptr, (capcity += 8) * sizeof(T)) : ptr;
                 ptr[count-1] = obj;
                 return ptr[count-1];
             }
@@ -43,7 +43,7 @@ namespace engine
                     return none<T>();
                 count--;
                 T obj = ptr[count];
-                ptr = memrealloc(ptr, count * sizeof(T), MEM_FLAG_UNIT_BYTE);
+                ptr = memrealloc(ptr, count * sizeof(T));
                 return some(obj);
             }
 
@@ -54,13 +54,13 @@ namespace engine
                 for(size_t i = index; i < count - 1; i--)
                     ptr[i] = ptr[i+1];
                 count--;
-                ptr = (count >= capcity - 8) ? memrealloc(ptr, (capacity -= 8) * sizeof(T), MEM_FLAG_UNIT_BYTE) : ptr;
+                ptr = (count >= capcity - 8) ? memrealloc(ptr, (capacity -= 8) * sizeof(T)) : ptr;
             }
 
             OPERATOR T &insert(size_t index, T obj)
             {
                 count++;
-                ptr = (count >= capcity) ? memrealloc(ptr, (capacity += 8) * sizeof(T), MEM_FLAG_UNIT_BYTE) : ptr;
+                ptr = (count >= capcity) ? memrealloc(ptr, (capacity += 8) * sizeof(T)) : ptr;
                 for(size_t i = count - 2; i > index; i--)
                     data[i+1] = data[i];
                 data[index] = obj;
@@ -77,9 +77,9 @@ namespace engine
                 return capacity;
             }
         
-            OPERATOR void shrinkToCapacity
+            OPERATOR void shrinkToCapacity()
             {
-                ptr = memrealloc(ptr, (count = capacity) * sizeof(T), MEM_FLAG_UNIT_BYTE);
+                ptr = memrealloc(ptr, (capacity = count) * sizeof(T));
             }
 
             OPERATOR T &getLast()
@@ -100,13 +100,13 @@ namespace engine
 
             Vector()
             {
-                ptr = memalloc((capacity = 8) * sizeof(T), MEM_FLAG_UNIT_BYTE);
+                ptr = memalloc((capacity = 8) * sizeof(T));
                 count = 0;
             }
         
             Vector(T arr[], size_t c)
             {
-                ptr = memalloc((capacity = (c % 8) ? c + c % 8 : c) * sizeof(T), MEM_FLAG_UNIT_BYTE);
+                ptr = memalloc((capacity = (c % 8) ? c + c % 8 : c) * sizeof(T));
                 memcpy(ptr, arr, c * sizeof(T));
             }
         
@@ -114,7 +114,7 @@ namespace engine
             {
                 count = v.count;
                 capacity = v.capacity;
-                ptr = memalloc(capacity * sizeof(T), MEM_FLAG_UNIT_BYTE);
+                ptr = memalloc(capacity * sizeof(T));
                 memcpy(ptr, v.ptr, count);
             }
 

@@ -25,7 +25,7 @@ namespace engine
 			_OPTIMIZE_(3) object()
 			{
 				cCount = 0;
-				components = (component**)memalloc(sizeof(component*), MEM_FLAG_UNIT_BYTE);
+				components = (component**)memalloc(sizeof(component*));
 			}
 
 			// Functions like Unity's AddComponent<T>()
@@ -33,7 +33,7 @@ namespace engine
 			T &addComponent()
 			{
 				componentCount++;
-				components = memrealloc(components, sizeof(component*) * componentCount, MEM_FLAG_UNIT_BYTE);
+				components = memrealloc(components, sizeof(component*) * componentCount);
 				components[componentCount - 1]->awake();
 				return *components[componentCount - 1];
 			}
