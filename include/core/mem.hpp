@@ -12,20 +12,8 @@
 #include <cstdint>
 #include <cstdlib>
 
-#define MEM_FLAG_UNIT_BYTE 0 << 0
-#define MEM_FLAG_UNIT_WORD 1 << 2
-#define MEM_FLAG_UNIT_DWORD 1 << 3
-#define MEM_FLAG_UNIT_QWORD 1 << 4
-#define MEM_FLAG_UNIT_KB 1 << 5
-#define MEM_FLAG_UNIT_MB 1 << 6
-#define MEM_FLAG_UNIT_PAGE 1 << 7
-
-#define HEAP_MAX_ALLOCATION_SIZE 96
-
 namespace engine
 {
-	// TODO: Remove flags
-
 	/*	The main memory allocation function
 	*	Really just a wrapper around a couple different functions
 	*	@param size Size in bytes
@@ -33,6 +21,7 @@ namespace engine
 	*	@return Pointer to the allocation, NULL if an error occurs
 	*	errorcode will be set
 	*/
+	__attribute__((malloc, assume_aligned(32), alloc_size(1)))
 	void *memalloc(size_t size);
 
 	/* 	The main memory reallocation function
@@ -42,6 +31,7 @@ namespace engine
 	*	@return Pointer to the new allocation, NULL if an error occurs
 	*	errorcode will be set
 	*/
+	__attribute__((assume_aligned(32), alloc_size(2)))
 	void *memrealloc(void *ptr, size_t size);
 
 	/*	The main memory freeing function
@@ -54,6 +44,7 @@ namespace engine
 	*	@param items Number of items
 	*	@param size Size per item
 	*/
+	__attribute__((malloc, assume_aligned(32), alloc_size(1, 2)))
 	void *zmalloc(size_t items, size_t size);
 
 	// memnew is an exception to the no lambdas rule

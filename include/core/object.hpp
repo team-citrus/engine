@@ -22,14 +22,14 @@ namespace engine
 	class object
 	{
 		public:
-			_OPTIMIZE_(3) object()
+			OPTIMIZE(3) object()
 			{
 				cCount = 0;
 				components = (component**)memalloc(sizeof(component*));
 			}
 
 			// Functions like Unity's AddComponent<T>()
-			_OPTIMIZE_(3) template<typename T>
+			OPTIMIZE(3) template<typename T>
 			T &addComponent()
 			{
 				componentCount++;
@@ -39,7 +39,7 @@ namespace engine
 			}
 
 			// Functions like Unity's GetComponent<T>()
-			_OPTIMIZE_(3) template<typename T>
+			OPTIMIZE(3) template<typename T>
 			T &getComponent()
 			{
 				for(int i = 0; i < componentCount; i++)
@@ -48,7 +48,7 @@ namespace engine
 			}
 
 			// Functions like Unity's hasComponent<T>()
-			_OPTIMIZE_(3) template<typename T>
+			OPTIMIZE(3) template<typename T>
 			OPERATOR bool hasComponent()
 			{
 				for(int i = 0; i < componentCount; i++)
@@ -57,7 +57,7 @@ namespace engine
 				return false;
 			}
 
-			_OPTIMIZE_(3) OPERATOR bool hasTag(const char *tag)
+			OPTIMIZE(3) OPERATOR bool hasTag(const char *tag)
 			{
 				hash_t h = hash(tag, strlen(tag));
 				for(int i = 0; i < tags.getCount(); i++)
@@ -66,12 +66,12 @@ namespace engine
 				return false;
 			}
 
-			_OPTIMIZE_(3) OPERATOR void addTag(const char *tag)
+			OPTIMIZE(3) OPERATOR void addTag(const char *tag)
 			{
 				tags.push(hash(tag, strlen(tag)));
 			}
 
-			_OPTIMIZE_(3) OPERATOR int componentCount()
+			OPTIMIZE(3) OPERATOR int componentCount()
 			{
 				return cCount;
 			}

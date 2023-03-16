@@ -24,12 +24,12 @@ namespace engine
 	{
 		FILE *logfile;
 		char buff[1024];
-		_OPTIMIZE_(2) OPERATOR void initLogging()
+		OPTIMIZE(2) OPERATOR void initLogging()
 		{
 			logfile = fopen(_LOG_FILE_, "a+");
 			setvbuf(logfile, buff, _IOFBF, 1024);
 		}
-		_OPTIMIZE_(2) OPERATOR void finiLogging()
+		OPTIMIZE(2) OPERATOR void finiLogging()
 		{
 			fclose(logfile);
 		}
@@ -37,7 +37,7 @@ namespace engine
 
 	// Logs a message, works like printf, and appends a newline
 
-	_OPTIMIZE_(2) template <typename... T>
+	OPTIMIZE(2) template <typename... T>
 	OPERATOR void log(const char *module, const char *format, T... args)
 	{
 		time_t t = time(NULL);
@@ -49,7 +49,7 @@ namespace engine
 	}
 
 	// Logs a message, and appends a newline, use this only in Rust code
-	_OPTIMIZE_(2) extern "C" void rust_log(const char *module, const char *str)
+	OPTIMIZE(2) extern "C" void rust_log(const char *module, const char *str)
 	{
 		log(module, str);
 	}

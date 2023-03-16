@@ -216,7 +216,7 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 		bptr->fsize = bptr->asize;
 		bptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 
-		// No need for preprocessor nonsense, ymm_memcpy converts to xmm_memcpy on if AVX is disabled
+		// No need for preprocessor nonsense, ymm_memcpy converts to xmm_memcpy if AVX is disabled
 		ymm_memcpy(rptr, bptr + i, bptr->fsize);
 
 		unlock();
