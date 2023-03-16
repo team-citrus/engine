@@ -1,7 +1,7 @@
 /*
 *   name: include/core/extensions.h
 *   origin: Citrus Engine
-*   purpose: Provide common compiler extensions in the form of preprocessor defines
+*   purpose: Provide common compiler extensions and C++ attributes in the form of preprocessor defines
 *   author: https://github.com/ComradeYellowCitrusFruit
 *   license: CC0-1.0 OR LGPL-3.0-only
 */
@@ -13,11 +13,13 @@
 
 #define _GNU_ __GNUC__
 
-#define ALWAYS_INLINE __attribute__((always_inline))
-#define DEPRECATED __attribute__((deprecated))
-#define NORETURN __attribute__((noreturn))
-#define PACKED __attribute__((__packed__)) __VA_ARGS__
+#define ALWAYS_INLINE [[gnu::always_inline]]
+#define DEPRECATED(...) [[deprecated(STRINGIFY(__VA_ARGS__))]]
+#define NORETURN [[noreturn]]
+#define PACKED __attribute__((__packed__))
 #define OPTIMIZE(i) __attribute__ ((optimize(i)))
+#define NO_DISCARD [[nodiscard]]
+#define PURE [[gnu::pure]]
 
 #else
 
