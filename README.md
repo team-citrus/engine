@@ -23,8 +23,8 @@ As well, by making the engine free software, we hope to set a precident in the g
 
 ### High priority - ASAP
 
-- [ ] Integrate the Soloud sources into the engine
-  - [ ] Update the source code to use `engine::memalloc` and friends
+- [x] Integrate the Soloud sources into the engine
+  - [x] Update the source code to use `engine::memalloc` and friends
   - [x] Necessary restructuring
   - [x] Copyright information
   - [x] Sconscript files
