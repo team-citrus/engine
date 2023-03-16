@@ -23,6 +23,7 @@
 #include "core/transform.hpp"
 #include "core/time.hpp"
 #include "core/hash.hpp"
+#include "core/mesh.hpp"
 #include "physics/vectors.hpp"
 
 #endif

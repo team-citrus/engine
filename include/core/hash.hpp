@@ -213,9 +213,16 @@ namespace engine
 
         OPERATOR T &operator[](KEY k)
         {
-            return ptr[hash(&k, sizeof(KEY)) % c];
+            return ptr[hash(&k, sizeof(KEY)) % c].b;
+        }
+
+        OPERATOR bool hasItem(KEY k)
+        {
+            return (ptr[hash(&k, sizeof(KEY)) % c].a != 0);
         }
     };
+
+    
     
     OPERATOR uint32_t crc32(void *data, size_t s)
     {

@@ -28,9 +28,12 @@ As well, by making the engine free software, we hope to set a precident in the g
   - [x] Necessary restructuring
   - [x] Copyright information
   - [x] Sconscript files
-- [ ] Write headers for the graphics API
-- [ ] Write headers for the phyics API
-- [ ] Write headers for general engine information
+- [ ] Write the graphics API
+  - [ ] Write the UI API
+- [ ] Write the phyics API
+- [ ] Write the core API
+  - [ ] Write the input system
+  - [ ] Meshes, verts, etc
 - [x] Write replacement functions and classes for some standard library functions and classes
   - [x] `engine::Vector<T>`
   - [x] `engine::pair<A, B>`
