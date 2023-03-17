@@ -71,6 +71,12 @@ namespace engine // TODO: Internalize some of this stuff
 			{
 				return;
 			}
+			
+			// Exists for obvious reasons.
+			virtual ~component()
+			{
+				return;
+			}
 
 			OPERATOR object &getObject()
 			{

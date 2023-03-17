@@ -46,7 +46,14 @@ namespace engine
                 );
             }
 
-            // TODO: Scene loading code
+            for(int i = 0; i < internals::curScene->objects.getCount(); i++)
+            {
+                internals::curScene->objects[i].~object();
+            }
+            curScene->objects.~Vector();
+
+            curScene = &scenes.lookup(currentScene);
+            curScene->constructor();
         }
     }
 }

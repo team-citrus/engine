@@ -20,12 +20,22 @@
 namespace engine
 {
 	class object
-	{
+	{	// TODO: More stuff
 		public:
 			OPTIMIZE(3) object()
 			{
 				cCount = 0;
 				components = (component**)memalloc(sizeof(component*));
+			}
+
+			OPTIMIZE(3) ~object()
+			{
+				for(size_t i = 0; i < cCount; i++)
+				{
+					components[i]->~component();
+				}
+
+				memfree(components);
 			}
 
 			// Functions like Unity's AddComponent<T>()

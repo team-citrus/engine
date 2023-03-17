@@ -22,8 +22,10 @@ namespace engine
 		{
 			public:
 			int ID;
+			
 			// Scenes have special constructors generated to initalize everything in a scene.
 			sceneConstructorPtr_t constructor;
+
 			// TODO: Add a type for shaders
 			// All objects in a scene
 			Vector<object> objects;

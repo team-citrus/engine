@@ -273,15 +273,15 @@ int MAIN
     else
         OpenGL::loadGL();
         
-     #elif defined(_VULKAN_)
+    #elif defined(_VULKAN_)
      
      Vulkan::vkLoad();
      
-     #else
+    #else
      
      OpenGL::loadGL();
      
-     #endif
+    #endif
 
     // TODO: Add GUI init, and splash screen stuff, splash screen should probably be on a different thread.
 

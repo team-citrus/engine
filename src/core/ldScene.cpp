@@ -17,5 +17,6 @@ int engine::loadScene(int ID)
     if(packedScene.isNone())
         return -1;
 
-    // TODO: Actual code
+    internals::loadNecesary = true;
+    internals::currentScene = ID;
 }
