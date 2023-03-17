@@ -1,4 +1,5 @@
 import json
+import os
 
 configFileName = "build/config.json"
 ARCH = "haswell"
@@ -41,12 +42,18 @@ if BUILD_TYPE == "DEBUG" or BUILD_TYPE == "FINAL":
     print("Binary tuned for CPU (micro)architecture: ", TUNE)
     print("Configuration: ", CONFIG)
 
-# TODO: Invoke Cargo
-
 SConscript('src/core/SConscript')
 SConscript('src/physics/SConscript')
 SConscript('src/graphics/SConscript')
 SConscript('soloud/src/SConscript')
 
-# TODO: Invoke stuff
+# TODO: Different build types for Rust
+
+if BUILD_TYPE == "DEBUG"
+    os.system("cargo build -v --profile dev")
+elif BUILD_TYPE == "FINAL":
+    os.system("cargo build -v --release")
+elif BUILD_TYPE == "QUICK":
+    os.system("cargo build --profile quick")
+    
 # TODO: Link Rust and C++
