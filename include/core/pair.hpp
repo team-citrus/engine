@@ -46,7 +46,7 @@ namespace engine
             for(int i = 0; i < vec.getCount(); i++)
             {
                 if(vec[i].a == a)
-                    return some(vec[i]);
+                    return option::option::some(vec[i]);
             }
         }
 
@@ -55,7 +55,7 @@ namespace engine
             for(int i = 0; i < vec.getCount(); i++)
             {
                 if(vec[i].b == b)
-                    return some(vec[i]);
+                    return option::some(vec[i]);
             }
             return none<pair<A, B>>();
         }
@@ -65,7 +65,7 @@ namespace engine
             for(int i = 0; i < vec.getCount(); i++)
             {
                 if(vec[i].a == a)
-                    return some<B&>(vec[i].b);
+                    return option::some<B&>(vec[i].b);
             }
             return none<B&>();
         }
@@ -75,7 +75,7 @@ namespace engine
             for(int i = 0; i < vec.getCount(); i++)
             {
                 if(vec[i].b == b)
-                    return some<A&>(vec[i].a);
+                    return option::some<A&>(vec[i].a);
             }
             return none<A&>();
         }

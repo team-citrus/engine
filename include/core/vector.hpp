@@ -44,7 +44,7 @@ namespace engine
                 count--;
                 T obj = ptr[count];
                 ptr = memrealloc(ptr, count * sizeof(T));
-                return some(obj);
+                return option::some(obj);
             }
 
             OPERATOR void rm(size_t index)
