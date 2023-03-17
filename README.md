@@ -34,6 +34,8 @@ As well, by making the engine free software, we hope to set a precident in the g
 - [ ] Write the core API
   - [ ] Write the input system
   - [ ] Meshes, verts, etc
+    - [ ] Write or otherwise adopt a FBX loader
+    - [ ] Write or otherwise adopt a binary format glTF loader
 - [x] Write replacement functions and classes for some standard library functions and classes
   - [x] `engine::Vector<T>`
   - [x] `engine::pair<A, B>`

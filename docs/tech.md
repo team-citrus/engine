@@ -15,7 +15,7 @@
 Technically, this is more of a job for an editor/SDK to handle, however, I don't care.
 
 - For audio, we prefer the OGG VORBIS format.
-- For models, we prefer the FBX format, compressed raw geometry, or glTF (.glb version).
+- For models, we prefer the FBX format, or glTF (.glb version).
 - For sprites/textures, we prefer the PNG format.
 - For shaders, they should be stored somewhere outside of the main executable, however we don't care where.
   - When using both Vulkan and OpenGL, bytecode and source shaders should be stored seperately.
