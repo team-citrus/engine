@@ -11,6 +11,7 @@
 
 #include <cstddef>
 #include "core/rustints.h"
+#include "core/transform.hpp"
 
 namespace engine
 {   
@@ -19,7 +20,15 @@ namespace engine
         typedef struct __MESH_BUFFER_HANDLE meshBufferHandle; // Everyone loves opaque types
     }
 
-    class vertex; // TODO: Contents compatible with the FBX format, including xyz coords, and UV coords
+    class vertex
+    {
+        public:
+        float3 pos;
+        float2 uv;
+
+        // TODO: Vertex normals?
+        // TODO: Methods... maybe?
+    }
 
     class face
     {
@@ -27,6 +36,9 @@ namespace engine
         vertex &a;
         vertex &b;
         vertex &c;
+
+        // TODO: Face normals?
+        // TODO: Methods... maybe?
     };
 
     class mesh
