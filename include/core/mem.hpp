@@ -46,6 +46,16 @@ namespace engine
 	__attribute__((malloc, assume_aligned(32), alloc_size(1, 2)))
 	void *zmalloc(size_t items, size_t size);
 
+	/** Just another name for zmalloc()
+	*	@param items Number of items
+	*	@param size Size per item
+	*/
+	ALWAYS_INLINE __attribute__((malloc, assume_aligned(32), alloc_size(1, 2)))
+	void *memcalloc(size_t items, size_t size)
+	{
+		return zmalloc(items, size);
+	}
+
 	// memnew is an exception to the no lambdas rule
 
 	#define memnew(TYPE, COUNT) ( \
