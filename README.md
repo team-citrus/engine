@@ -6,7 +6,7 @@ For this game engine, we have a simple goal in mind, **we want to create a simpl
 We also intend to use this game engine in our future projects, and hope others adopt it as well.
 As well, by making the engine free software, we hope to set a precident in the game development world.
 
-***If you are looking to contribute, the style guide can be found at docs/style.md, and the programmer's guide can be found at docs/guide.md.***
+***If you are looking to contribute, the style guide can be found at docs/style.md, and the contributing guide can be found at docs/contrib.md.***
 
 ## Compiling requirements
 

@@ -50,11 +50,12 @@ namespace engine
         template<typename T> friend option<T> none();
     };
 
-    template<typename T>
+    OPERATOR template<typename T>
     option<T> some(T t)
     {
         return option<T> { t, true };
     }
+    OPERATOR template<typename T>
     template<typename T> option<T> none()
     {
         option<T> opt;

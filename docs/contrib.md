@@ -1,9 +1,14 @@
-# A Brief Programmer's Guide to Contributing
+# A Brief Guide to Contributing
 
 ## Before you write a line of code
 
 **Before writing any C++ code, you must read the style guide (found at docs/style.md).**
 You should also read the namespace documentation (found at docs/namespaces.md) and the technology documentation (found at docs/tech.md), however it isn't manditory.
+
+## Git configuration
+
+We prefer the use of rebasing over merging when performing pulls, however merging isn't a crime.
+If you want to make the use of rebasing default instead of having to run `git pull --rebase`, run the command `git config pull.rebase true`.
 
 ## Styling
 
