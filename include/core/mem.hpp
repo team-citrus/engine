@@ -41,6 +41,7 @@ namespace engine
 	/**	Allocated memory using our custom block allocator and zero it.
 	*	@param items Number of items
 	*	@param size Size per item
+	*	@note This is not the zmalloc() from redis.
 	*/
 	__attribute__((malloc, assume_aligned(32), alloc_size(1, 2)))
 	void *zmalloc(size_t items, size_t size);
