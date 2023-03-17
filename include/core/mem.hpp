@@ -14,33 +14,31 @@
 
 namespace engine
 {
-	/*	The main memory allocation function
-	*	Really just a wrapper around a couple different functions
+	/**	Allocate memory using our custom block allocator
 	*	@param size Size in bytes
 	*	@param flags Flags
-	*	@return Pointer to the allocation, NULL if an error occurs
-	*	errorcode will be set
+	*	@return Pointer to the allocation, NULL if an error occurs, errorcode will be set
 	*/
 	__attribute__((malloc, assume_aligned(32), alloc_size(1)))
 	void *memalloc(size_t size);
 
-	/* 	The main memory reallocation function
+	/**	Reallocate memory allocated previously with memalloc or zmalloc
 	*	@param ptr The old pointer
 	*	@param size Size in bytes
 	*	@param flags Flags, 0 to use previous flags
-	*	@return Pointer to the new allocation, NULL if an error occurs
-	*	errorcode will be set
+	*	@return Pointer to the new allocation, NULL if an error occurs, errorcode will be set
+	*	@note If new memory is allocated by this function it will not be zero'd, even if the original block was allocated by zmalloc
 	*/
 	__attribute__((assume_aligned(32), alloc_size(2)))
 	void *memrealloc(void *ptr, size_t size);
 
-	/*	The main memory freeing function
-	*	Really just a wrapper around a couple different functions
+	/**	Free memory previously allocated with memalloc, zmalloc, or memrealloc
 	*	@param ptr Pointer to free
+	*	@note A double free won't do anything harmful. Invalid pointers will set errorcode, however only some will be caught
 	*/
 	void memfree(void *ptr);
 
-	/*	The memalloc and friends equivalent of calloc
+	/**	Allocated memory using our custom block allocator and zero it.
 	*	@param items Number of items
 	*	@param size Size per item
 	*/

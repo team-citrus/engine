@@ -32,12 +32,12 @@ engine::internals::Pool pool;
 // Used to make the code in free() and reallocate() clearer
 OPERATOR void mergeBlocks(engine::internals::poolBlock *nptr)
 {
-	engine::internals::poolBlock *tptr = nptr + 1;
+	engine::internals::poolBlock *tptr = nptr->next;
 	if(nptr->next == POOL_END) return;
 
 	while(true) // An infinite loop is fine, when the time is right it will return
 	{
-		while(tptr->fmagic != POOL_FREE_BLOCK_MAGIC || tptr->amagic != POOL_ALLOC_BLOCK_MAGIC) tptr++;
+		while(tptr->fmagic != POOL_FREE_BLOCK_MAGIC || tptr->amagic != POOL_ALLOC_BLOCK_MAGIC) tptr = tptr->next;
 
 		if(tptr->amagic == POOL_ALLOC_BLOCK_MAGIC) return;
 
@@ -227,22 +227,33 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 void engine::internals::Pool::free(engine::internals::poolBlock *bptr)
 {
 	lock();
-	if(bptr + 1 == NULL)
+
+	// NOTE: Only some invlid pointers will be caught
+
+	if(bptr + 1 == NULL || !(((uintptr_t)(bptr + 1)) & (0xFFFF << 52)) /* check for NULL and invalid userland pointers. */
+	|| bptr + 1 == (void*)0xDEADBEEF || bptr + 1 == (void*)0xDEADC0DE || bptr + 1 == (void*)0xCAFEBABE) /* check for common mneumonic pointers */
 	{
 		engine::errorcode() = ENGINE_MEMFREE_INVALID_PTR;
+		unlock();
 		return;
 	}
-	engine::errorcode() = bptr->fmagic == POOL_FREE_BLOCK_MAGIC ? ENGINE_MEMFREE_INVALID_PTR : engine::errorcode ;
-	bptr->fsize = bptr->asize;
-	bptr->fmagic = POOL_FREE_BLOCK_MAGIC;
+	if(bptr->fmagic == POOL_FREE_BLOCK_MAGIC)
+	{
+		bptr->fsize = bptr->asize;
+		bptr->fmagic = POOL_FREE_BLOCK_MAGIC;
+	}
+	else
+	{
+		engine::errorcode() = ENGINE_MEMFREE_INVALID_PTR;
+	}
 
 	// Update the variables
 	engine::internals::poolBlock *tptr = start;
-	while(tptr->fmagic != POOL_FREE_BLOCK_MAGIC) tptr++;
+	while(tptr->fmagic != POOL_FREE_BLOCK_MAGIC) tptr = tptr->next;
 	head = tptr;
 
 	// Merge all the blocks
-	while(tptr->next != NULL)
+	while(tptr->next != POOL_END)
 	{
 		mergeBlocks(tptr);
 		tptr = tptr->next;
