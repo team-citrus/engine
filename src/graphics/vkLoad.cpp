@@ -88,8 +88,15 @@ static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperti
 	for(int i = 0; i < deviceMemoryProperties.memoryHeapCount; i++)
 		vram += deviceMemoryProperties.memoryHeaps[i].size;
 	
-	// 3/4 GB as an arbitrary limit
-	if(vram < 1024 * 1024 * 768) return false;
+	// 1/2 GB as an arbitrary limit in case no other is set
+	
+	if(vram < 
+		#ifdef _MINIMUM_VRAM_
+		_MINIMUM_VRAM_
+		#else
+		(1024 * 1024 * 512)‬
+		#endif
+	) return false;
 	
 	return true;
 }
