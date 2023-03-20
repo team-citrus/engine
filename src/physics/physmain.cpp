@@ -28,7 +28,7 @@ namespace engine
         {
             while(!loadNecesary)
             {
-                while(!internals::physics::state.stepRate) spinlock_pause();
+                while(internals::physics::state.stepRate == 0) spinlock_pause();
                 while(isRenderExecuting.load()) spinlock_pause();
                 while(isGameplayExecuting.load()) spinlock_pause();
 
