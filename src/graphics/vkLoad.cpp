@@ -94,7 +94,7 @@ static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperti
 		#ifdef _MINIMUM_VRAM_
 		_MINIMUM_VRAM_
 		#else
-		(1024 * 1024 * 512)‬
+		(1024 * 1024 * 512)
 		#endif
 	) return false;
 	
