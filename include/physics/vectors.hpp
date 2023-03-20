@@ -11,6 +11,7 @@
 
 #define GLM_FORCE_INTRINSICS true
 #define GLM_FORCE_ALIGNED true
+#define GLM_FORCE_RADIANS true
 
 #include <glm/glm.hpp>
 #include <glm/vec2.hpp>
@@ -18,6 +19,10 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
+
+#undef GLM_FORCE_INTRINSICS
+#undef GLM_FORCE_ALIGNED
+#undef GLM_FORCE_RADIANS
 
 namespace engine
 {
