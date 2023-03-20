@@ -89,17 +89,15 @@ namespace engine
         OPTIMIZE(3) hashMap(size_t cc)
         {
             s = 0;
-            ptr = memalloc(sizeof(pair<hash_t,T>) * (c = cc));
-
-            memset(ptr, 0, sizeof(pair<hash_t, T>) * c);
+            ptr = zmalloc(sizeof(pair<hash_t,T>) * (c = cc));
         }
 
         OPTIMIZE(3) hashMap(hashMap<KEY, T> &cc)
         {
             c = cc.c;
             s = cc.s;
-            ptr = memalloc(sizeof(pair<hash_t,T>) * c);
-            memcpy(ptr, cc.ptr, c); // TODO: Do some speed comparison against ymm_memcpy(ptr, cc.ptr, (size << 59) ? (size >> 5) + 1 : size >> 5);
+            ptr = memcalloc(sizeof(pair<hash_t,T>) * c);
+            memcpy(ptr, cc.ptr, c); // TODO: Do some speed comparison against ymm_memcpy(ptr, cc.ptr, (size & 0x1F) ? (size >> 5) + 1 : size >> 5);
         }
 
         ~hashMap()
@@ -123,8 +121,7 @@ namespace engine
 
                 while(true)
                 {
-                    pair<hash_t, T> *nptr = memalloc(sizeof(pair<hash_t,T>) * cc);
-                    memset(nptr, 0, sizeof(pair<hash_t,T>) * cc);
+                    pair<hash_t, T> *nptr = memcalloc(sizeof(pair<hash_t,T>) * cc);
 
                     for(size_t i = 0; i < c; i++)
                     {
@@ -193,7 +190,7 @@ namespace engine
 
         OPTIMIZE(3) void rm(KEY k)
         {
-            memset(&this[k], 0, sizeof(pair<hash_t, T>));
+            memset(this + k, 0, sizeof(pair<hash_t, T>));
             s--;
 
             if(s <= c - 8)
