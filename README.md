@@ -24,10 +24,6 @@ As well, by making the engine free software, we hope to set a precident in the g
 ### High priority - ASAP
 
 - [x] Integrate the Soloud sources into the engine
-  - [x] Update the source code to use `engine::memalloc` and friends
-  - [x] Necessary restructuring
-  - [x] Copyright information
-  - [x] Sconscript files
 - [ ] Write the graphics API
   - [ ] Write the UI API
 - [ ] Write the phyics API
