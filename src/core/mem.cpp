@@ -290,12 +290,12 @@ void *engine::zmalloc(size_t items, size_t size)
 	return ret;
 }
 
-size_t memlen(void *ptr)
+size_t engine::memlen(void *ptr)
 {
 	return (((engine::internals::poolBlock*)ptr) - 1)->fmagic == POOL_FREE_BLOCK_MAGIC ? (((engine::internals::poolBlock*)ptr) - 1)->asize << 5 : (engine::errorcode = ENGINE_MEMFREE_INVALID_PTR);
 }
 
-int __memalloc_posix_memalign(void **memptr, size_t alignment, size_t size)
+int engine::__memalloc_posix_memalign(void **memptr, size_t alignment, size_t size)
 {
 	void **ptrs = engine::memalloc(8);
 	size_t ptr = 0;
