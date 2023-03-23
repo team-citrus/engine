@@ -17,6 +17,8 @@
 
 #endif
 
+#include <cerrno>
+#include <cstdlib>
 #include <cstring>
 #include <cstdint>
 
@@ -163,7 +165,7 @@ void *engine::internals::Pool::allocate(int blocks)
 
 	void *ret = alloc(blocks);
 	head = start;
-	while(head->fmagic != POOL_FREE_BLOCK_MAGIC && head->next != ) head = head->next;
+	while(head->fmagic != POOL_FREE_BLOCK_MAGIC && head->next != POOL_END) head = head->next;
 
 	unlock();
 	return (void*)ret;
@@ -286,6 +288,49 @@ void *engine::zmalloc(size_t items, size_t size)
 	void *ret = engine::internals::pool.allocate(m);
 	ymm_memset(ret, 0, m);
 	return ret;
+}
+
+size_t memlen(void *ptr)
+{
+	return (((engine::internals::poolBlock*)ptr) - 1)->fmagic == POOL_FREE_BLOCK_MAGIC ? (((engine::internals::poolBlock*)ptr) - 1)->asize << 5 : (engine::errorcode = ENGINE_MEMFREE_INVALID_PTR);
+}
+
+int __memalloc_posix_memalign(void **memptr, size_t alignment, size_t size)
+{
+	void **ptrs = engine::memalloc(8);
+	size_t ptr = 0;
+
+	if(alignment % sizeof(void*))
+	{
+		errno = EINVAL;
+		return EINVAL;
+	}
+
+	// Unfortunately, we need to iterate through a bunch of different buffers, wasting a ton of memory.
+	while(
+		(uintptr_t)(ptrs[ptr - 1] = engine::memalloc(size)) % alignment
+		&& engine::errorcode != ENGINE_NO_MEM
+	) ptrs = engine::memrealloc(ptrs, ++ptr);
+
+	if(engine::errorcode != ENGINE_NO_MEM)
+	{
+		for(size_t i = 0; i < ptr; i++)
+			engine::memfree(ptrs[i]);
+
+		engine::memfree(ptrs);
+		errno = ENOMEM;
+		return ENOMEM;
+	}
+	else
+	{
+		ptr--;
+		for(size_t i = 0; i < ptr; i++)
+			engine::memfree(ptrs[i]);
+
+		*memptr = ptrs[ptr];
+		engine::memfree(ptrs);
+		return 0;
+	}
 }
 
 // b2Alloc_Default and b2Free_Default overrides

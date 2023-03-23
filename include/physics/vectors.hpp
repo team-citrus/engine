@@ -34,6 +34,8 @@ namespace engine
         using vec4 = glm::vec4;
         using quat = glm::quat;
         using quaternion = quat;
+
+        // TODO: Wrapper functions
     };
 };
 

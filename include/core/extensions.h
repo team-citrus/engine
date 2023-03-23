@@ -20,6 +20,10 @@
 #define OPTIMIZE(i) __attribute__ ((optimize(i)))
 #define NO_DISCARD [[nodiscard]]
 #define PURE [[gnu::pure]]
+#define SYMBOL_ALIAS(x) __attribute__((alias(STRINGIFY(x))))
+#define ALIAS(x) SYMBOL_ALIAS(x)
+#define WEAK __attribute__((weak))
+#define WARN_UNUSED __attribute__((warn_unused_result))
 
 #else
 
