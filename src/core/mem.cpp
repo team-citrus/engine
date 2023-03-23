@@ -74,7 +74,13 @@ alloc_goto:
 				#ifndef _WIN32
 
 				void *ptr = mmap((void*)((uintptr_t)engine::internals::pool.start + _POOL_SIZE_), 
-					_POOL_EXPANSION_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON | MAP_FIXED_NOREPLACE, 0, 0);
+					_POOL_EXPANSION_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON | MAP_FIXED_NOREPLACE |
+					
+					#if _POOL_SIZE_ + _POOL_EXPANSION_SIZE_ % 1024 * 1024 * 1024 || _POOL_SIZE_ + _POOL_EXPANSION_SIZE_ % 1024 * 1024 * 2 && defined(_x86_64__)
+					MAP_HUGETLB | 0 << MAP_HUGE_SHIFT
+					#endif,
+					
+					0, 0);
 
 				#else
 

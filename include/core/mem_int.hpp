@@ -127,7 +127,13 @@ namespace engine
 				Pool()
 				{
 					#ifndef _WIN32
-					start = (engine::internals::poolBlock*)mmap(NULL, _POOL_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON, 0, 0);
+					start = (engine::internals::poolBlock*)mmap(NULL, _POOL_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON |
+					
+					#if _POOL_SIZE_ + _POOL_EXPANSION_SIZE_ % 1024 * 1024 * 1024 || _POOL_SIZE_ + _POOL_EXPANSION_SIZE_ % 1024 * 1024 * 2 && defined(_x86_64__)
+					MAP_HUGETLB | 0 << MAP_HUGE_SHIFT
+					#endif,
+
+					0, 0);
 					#else
 					start = (engine::internals::poolBlock*)VirtualAlloc(NULL, _POOL_SIZE_, MEM_COMMIT | MEM_RESERVE, 0);
 					#endif
