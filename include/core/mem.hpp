@@ -63,30 +63,6 @@ namespace engine
 	*/
 	DEPRECATED(It is best practice to only use the amount of specified space to be allocated)
 	size_t memlen(void *ptr);
-
-	// memnew is an exception to the no lambdas rule
-
-	#define memnew(TYPE, COUNT) ( \
-		([](size_t s) -> TYPE* \
-		{ \
-			TYPE *r = memalloc(s + 32); \
-			*(size_t*)r = COUNT; \
-			r = (TYPE*)((uintptr_t)r + 32); \
-			for(int i = 0; i < COUNT; i++) r[i] = TYPE(); \
-			return r; \
-		})(sizeof(TYPE) * COUNT) \
-	)
-
-	// memdelete is an exception to the no lambdas rule
-
-	#define memdelete(TYPE, PTR) ( \
-		([](TYPE *ptr) -> void \
-		{ \
-			size_t *s = (size_t*)((uintptr_t)ptr - 32); \
-			for(int i = 0; i < *s; i++) ptr[i].~TYPE(); \
-			memfree(s); \
-		})(PTR) \
-	)
 };
 
 NOMANGLE
