@@ -10,6 +10,7 @@
 #define CITRUS_ENGINE_STD_VECTOR_REPLACEMENT_HPP__
 
 #include <cstdlib>
+#include <iterator>
 #include "core/extensions.h"
 #include "core/mem.hpp"
 #include "core/option.hpp"
@@ -132,6 +133,8 @@ namespace engine
     
     template<class T>
     using darray = Vector<T>;
+
+    // TODO: iterators
 };
 
 #endif

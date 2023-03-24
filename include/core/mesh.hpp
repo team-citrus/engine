@@ -61,6 +61,8 @@ namespace engine
     using tri = face;
     using vert = vertex;
     using model = mesh;
+
+    // TODO: iterators
 }
 
 #endif
