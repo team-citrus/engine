@@ -37,13 +37,13 @@ As well, by making the engine free software, we hope to set a precident in the g
   - [x] `engine::map<A, B>`
   - [x] `engine::hash()`
   - [x] `engine::hashMap<K, T>`
-- [ ] Create the rendering pipeline for Vulkan
+- [ ] Create the rendering pipeline
 - [ ] Create the main loop
-  - [x] main()
-  - [ ] gameplayMain()
-  - [ ] physmain()
-  - [ ] draw()
-  - [ ] mix()
+  - [x] `main()`
+  - [ ] `gameplayMain()`/`gameplayM()`
+  - [ ] `physmain()`/`physics::physmain()`
+  - [ ] `draw()`/`Vulkan::vkDraw()`
+  - [ ] `mix()`/`sound::mix()`
 
 ### Medium priority - Before the next full release
 
