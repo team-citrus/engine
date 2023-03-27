@@ -28,7 +28,7 @@ namespace engine
         map<scene, int> scenes;
 
         // Run the gameplay code
-        int gameplayMain()
+        NEVER_INLINE int gameplayM()
         {
             // Physics and render lock gameplay
             while(isRenderExecuting.load()) spinlock_pause();

@@ -59,6 +59,55 @@ thrd_t internals::phys;
 thrd_t internals::mix;
 thrd_t internals::gameplay;
 
+WEAK NO_INLINE void realMain()
+{
+    while(true) // Outer loop is run each scene
+    {
+        // Physics runs on it's own internal timings, and executes some gameplay code
+        thrd_create(&internals::phys, internals::physmain, NULL);
+        thrd_detach(internals::phys);
+
+        while(true) // Inner loop is run each frame
+        {
+            size_t frameStart = getTimeInMils();
+
+            // Internally, each thread will handle synchronization
+            // They should execute in the following order:
+            // Physics  ->        -> Physics
+            // Gameplay -> Render
+            //          -> Mix
+            // Physics locks Gameplay and render and mix
+            // Gameplay locks render and mix and physics
+            // If gameplay executes at the same time as render and mix bad things will happen
+
+            // TODO: Optimize this
+
+            thrd_create(&internals::gameplay, internals::gameplayM, NULL);
+            thrd_create(&internals::render, internals::draw, NULL);
+            thrd_create(&internals::audio, internals::mix, NULL);
+
+            thrd_detach(internals::gameplay);
+            thrd_detach(internals::render);
+            thrd_detach(internals::audio);
+
+            thrd_join(internals::gameplay, NULL);
+            thrd_join(internals::render, NULL);
+            thrd_join(internals::audio, NULL);
+
+            if(internals::loadNecesary) break; // If a new scene needs to load, stop handling frames.
+
+            // Handle the waits
+            internals::frameDur = getTimeInMils() - frameStart;
+            waitms(
+                // Approximate the time between frames and wait for that duration
+                (frameDelta = (1000 - (frameDur * internals::frameRate))/internals::frameRate)
+            );
+        }
+
+        thrd_join(internals::phys, NULL); // Physics will load the new scene and then terminate.
+    }
+}
+
 void waitms(size_t mils)
 {
     #ifndef _WIN32
@@ -272,51 +321,7 @@ int MAIN
 
     // TODO: Load main scene
 
-    while(true) // Outer loop is run each scene
-    {
-        // Physics runs on it's own internal timings, and executes some gameplay code
-        thrd_create(&internals::phys, internals::physmain, NULL);
-        thrd_detach(internals::phys);
-
-        while(true) // Inner loop is run each frame
-        {
-            size_t frameStart = getTimeInMils();
-
-            // Internally, each thread will handle synchronization
-            // They should execute in the following order:
-            // Physics  ->        -> Physics
-            // Gameplay -> Render
-            //          -> Mix
-            // Physics locks Gameplay and render and mix
-            // Gameplay locks render and mix and physics
-            // If gameplay executes at the same time as render and mix bad things will happen
-
-            // TODO: Optimize this
-
-            thrd_create(&internals::gameplay, internals::gameplayMain, NULL);
-            thrd_create(&internals::render, internals::draw, NULL);
-            thrd_create(&internals::audio, internals::mix, NULL);
-
-            thrd_detach(internals::gameplay);
-            thrd_detach(internals::render);
-            thrd_detach(internals::audio);
-
-            thrd_join(internals::gameplay, NULL);
-            thrd_join(internals::render, NULL);
-            thrd_join(internals::audio, NULL);
-
-            if(internals::loadNecesary) break; // If a new scene needs to load, stop handling frames.
-
-            // Handle the waits
-            internals::frameDur = getTimeInMils() - frameStart;
-            waitms(
-                // Approximate the time between frames and wait for that duration
-                (frameDelta = (1000 - (frameDur * internals::frameRate))/internals::frameRate)
-            );
-        }
-
-        thrd_join(internals::phys, NULL); // Physics will load the new scene and then terminate.
-    }
+    realMain();
 
     return 0;
 }

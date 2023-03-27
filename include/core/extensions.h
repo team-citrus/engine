@@ -14,16 +14,17 @@
 #define _GNU_ __GNUC__
 
 #define ALWAYS_INLINE [[gnu::always_inline]]
+#define NEVER_INLINE [[gnu::noinline]]
 #define DEPRECATED(...) [[deprecated(STRINGIFY(__VA_ARGS__))]]
 #define NORETURN [[noreturn]]
 #define PACKED __attribute__((__packed__))
 #define OPTIMIZE(i) __attribute__ ((optimize(i)))
-#define NO_DISCARD [[nodiscard]]
+#define NO_DISCARD [[gnu::nodiscard]]
 #define PURE [[gnu::pure]]
 #define SYMBOL_ALIAS(x) __attribute__((alias(STRINGIFY(x))))
 #define ALIAS(x) SYMBOL_ALIAS(x)
-#define WEAK __attribute__((weak))
-#define WARN_UNUSED __attribute__((warn_unused_result))
+#define WEAK [[gnu::weak]]
+#define WARN_UNUSED [[gnu::warn_unused_result]]
 
 #else
 
@@ -33,6 +34,8 @@
 
 #define FORCE_INLINE ALWAYS_INLINE
 #define OPERATOR ALWAYS_INLINE
+
+#define NO_INLINE NEVER_INLINE
 
 #define STRINGIFY(...) __STRINGIFY__(##__VA_ARGS__)
 #define __STRINGIFY__(...) #__VA_ARGS__
