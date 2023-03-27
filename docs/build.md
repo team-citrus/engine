@@ -13,7 +13,6 @@ The exceptable arguments are:
 - `TUNE` - sets the microarch to tune for, exceptable values are any valid GCC `-mtune` values, default `cannonlake`
 - `BUILD_TYPE` - sets the build type, exceptable values are `FINAL`, `DEBUG`, and `QUICK`, default `FINAL`
 - `VULKAN` - tells the build system to build with Vulkan if set to `TRUE`, and not if set to `FALSE`, default `TRUE`
-- `OPENGL` - tells the build system to build with Vulkan if set to `TRUE`, and not if set to `FALSE`, default `FALSE`
 
 ## Config file
 

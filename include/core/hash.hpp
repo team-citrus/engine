@@ -218,8 +218,6 @@ namespace engine
             return (ptr[hash(&k, sizeof(KEY)) % c].a != 0);
         }
     };
-
-    
     
     OPERATOR uint32_t crc32(void *data, size_t s)
     {
@@ -231,6 +229,7 @@ namespace engine
 	
 	    return ret;
     }
+
 }
 
 #endif

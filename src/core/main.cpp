@@ -266,22 +266,7 @@ int MAIN
 
     // TODO: Implement settings
 
-    #if defined(_VULKAN_) && defined(_OPENGL_)
-    
-    if(usingVulkan)
-        Vulkan::vkLoad();
-    else
-        OpenGL::loadGL();
-        
-    #elif defined(_VULKAN_)
-     
-     Vulkan::vkLoad();
-     
-    #else
-     
-     OpenGL::loadGL();
-     
-    #endif
+    Vulkan::vkLoad();
 
     // TODO: Add GUI init, and splash screen stuff, splash screen should probably be on a different thread.
 

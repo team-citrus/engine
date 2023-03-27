@@ -25,6 +25,6 @@ This file is an attempt to serve as a high level list of these functions.
 - [ ] Various different rendering methods
 	- [ ] Rasterization (default)
 	- [ ] Raytracing
-	- [ ] Ray marching
+	- [ ] Ray marching (possibly)
 - [ ] Native modding API of some sort
 - [ ] VR support

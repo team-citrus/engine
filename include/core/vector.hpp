@@ -9,6 +9,7 @@
 #ifndef CITRUS_ENGINE_STD_VECTOR_REPLACEMENT_HPP__
 #define CITRUS_ENGINE_STD_VECTOR_REPLACEMENT_HPP__
 
+#include <cstddef>
 #include <cstdlib>
 #include <iterator>
 #include "core/extensions.h"
@@ -25,6 +26,22 @@ namespace engine
             size_t count;
             size_t capacity;
         public:
+            struct iterator
+            {
+                using iterator_category = std::forward_iterator_tag;
+                using difference_type = ptrdiff_t;
+                using value_type = T;
+                using pointer = T*;
+                using reference = T&;
+
+                friend bool operator== (const Vector::iterator& a, const Vector::iterator& b) { return v == v; };
+                friend bool operator!= (const Vector::iterator& a, const Vector::iterator& b) { return v != v; };
+
+                private:
+                Vector<T> &v;
+                ptrdiff_t diff;
+            }
+
             OPERATOR T &operator[](size_t index)
             {
                 return (index < count) ? data[index] : getLast();
@@ -133,8 +150,6 @@ namespace engine
     
     template<class T>
     using darray = Vector<T>;
-
-    // TODO: iterators
 };
 
 #endif

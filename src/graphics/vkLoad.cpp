@@ -136,25 +136,13 @@ static inline void countInferiors(Vector<int> &inferiors, Vector<int> deviceScor
 
 int Vulkan::vkLoad()
 {
-	// TODO: If both Vulkan and OpenGL are being compiled, make them both DLLs
-    // TODO: If just OpenGL is being compiled, embed it into the main archive
 	#ifdef __unix__
 
 	Vulkan::libvulkan = dlopen("libvulkan.so.1", RTLD_NOW | RTLD_GLOBAL);
 	if(Vulkan::libvulkan == NULL)
 	{
-		#if !defined(_OPENGL_)
-		
 		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "libvulkan.so.1 not found!");
 		exit(VULKAN_NOT_FOUND);
-		
-		#else
-		
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()/main()), "libvulkan.so.1 not found, loading OpenGL instead");
-		// TODO: engine::errorcode
-		return OpenGL::loadGL();
-		
-		#endif
 	}
 
 	// Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
@@ -166,18 +154,8 @@ int Vulkan::vkLoad()
 	Vulkan::libvulkan = LoadLibraryA("Vulkan-1.dll");
 	if(Vulkan::libvulkan == NULL)
 	{
-		#ifndef _OPENGL_
-		
 		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "Vulkan-1.dll not found!");
 		exit(VULKAN_NOT_FOUND);
-		
-		#else
-		
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()/main()), "Vulkan-1.dll not found, loading OpenGL instead");
-		// TODO: engine::errorcode
-		return OpenGL::loadGL();
-		
-		#endif
 	}
 
     // Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
@@ -188,18 +166,8 @@ int Vulkan::vkLoad()
 
 	if(vkGetInstanceProcAddr == NULL || vkGetDeviceProcAddr == NULL)
 	{
-		#ifndef _OPENGL_
-		
 		log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Failure to load critical Vulkan functions!");
 		exit(VK_LOAD_FAILURE);
-		
-		#else
-		
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()/main()), "Failure to load critical Vulkan functions, loading OpenGL instead");
-		// TODO: engine::errorcode
-		return OpenGL::loadGL();
-		
-		#endif
 	}
 
 	// Initalize Vulkan
@@ -229,18 +197,8 @@ int Vulkan::vkLoad()
 	// Initalize the instance
 	if(vkInstanceCall(vkCreateInstance, 0, &iInfo, NULL, &Vulkan::instance) != VK_SUCCESS)
 	{
-		#ifndef _OPENGL_
-		
 		log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Failure to create Vulkan instance!");
 		exit(VK_LOAD_FAILURE);
-		
-		#else
-		
-		log(_STRINGIFY_(main()/engine::internals::Vulkan::vkLoad()), "Failure to create Vulkan instance, loading OpenGL instead.");
-		// TODO: engine::errorcode
-		return OpenGL::initGL();
-		
-		#endif
 	}
 
 	// TODO: Validation layers
@@ -253,18 +211,8 @@ int Vulkan::vkLoad()
 	vkInstanceCall(vkEnumeratePhysicalDevices, Vulkan::instance, &devCount, NULL);
 	if(devCount == 0) 
 	{
-		#ifndef _OPENGL_
-		
 		log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "No (Vulkan supporting) GPUs found!");
 		exit(COMPATIBLE_GPU_NOT_FOUND);
-		
-		#else
-		
-		log(_STRINGIFY_(main()/engine::internals::Vulkan::vkLoad()), "No (Vulkan supporting) GPUs found, loading OpenGL instead.");
-		// TODO: engine::errorcode
-		return OpenGL::initGL();
-		
-		#endif
 	}
 
 	// Get the handles
@@ -389,7 +337,7 @@ int Vulkan::vkLoad()
 
 	if(vkCall(vkCreateDevice, Vulkan::physicalDevice, &devInfo, &device) != VK_SUCCESS)
 	{
-		log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Failure to create the logical device");
+		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "Failure to create the logical device");
 		exit(VK_LOAD_FAILURE);
 	}
 

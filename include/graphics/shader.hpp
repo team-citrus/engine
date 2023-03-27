@@ -10,7 +10,6 @@
 #define CITRUS_ENGINE_COMPUTE_SHADERS_HPP__
 
 #include <vulkan.h>
-#include <gl/gl.n>
 
 namespace engine
 {
@@ -21,7 +20,6 @@ namespace engine
             union
             {
                 VkShaderModule vkMod;
-                // TODO: OpenGL representation
             };
             public:
             shader(const char *shader);

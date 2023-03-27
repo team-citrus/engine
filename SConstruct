@@ -6,7 +6,6 @@ ARCH = "haswell"
 TUNE = "cannonlake"
 BUILD_TYPE = "FINAL"
 VULKAN = "TRUE"
-OPENGL = "FALSE"
 RUST = "FALSE"
 AVX = "TRUE"
 
@@ -15,9 +14,7 @@ if "ARCH" in ARGUMENTS:
 if "TUNE" in ARGUMENTS:
     TUNE = ARGUMENTS["TUNE"]
 if "VULKAN" in ARGUMENTS:
-    ARCH = ARGUMENTS["VULKAN"]
-if "OPENGL" in ARGUMENTS:
-    ARCH = ARGUMENTS["OPENGL"]
+    VULKAN = ARGUMENTS["VULKAN"]
 if "config-file" in ARGUMENTS:
     configFileName = ARGUMENTS["config-file"]
 
@@ -31,7 +28,6 @@ Export('ARCH')
 Export('BUILD_TYPE')
 Export('TUNE')
 Export('VULKAN')
-Export('OPENGL')
 Export('RUST')
 Export('AVX')
 Export('CONFIG')

@@ -11,7 +11,6 @@ Import('ARCH')
 Import('BUILD_TYPE')
 Import('TUNE')
 Import('VULKAN')
-Import('OPENGL')
 Import('DEFINES')
 
 flags.append("-march=" + ARCH)
@@ -32,16 +31,6 @@ elif BUILD_TYPE == "DEBUG":
     env.Append(CPPDEFINES = { "_DEBUG_" : None, "_MAVX_" : 1 })
 elif BUILD_TYPE == "QUICK":
     env.Append( CPPFLAGS = flags, CPPDEFINES = DEFINES )
-    env.Append(CPPDEFINES = { "_QUICK_" : None, "_MAVX_" : 1 }) # TODO: Option for enabling quick build with AVX and AVX2
+    env.Append(CPPDEFINES = { "_QUICK_" : None }) # TODO: Option for enabling quick build with AVX and AVX2
 
-# TODO: Vulkan version
-
-if VULKAN == 'TRUE':
-    env.Append( CPPDEFINES = { "_VULKAN_" : None } )
-    Object('vkLoad.cpp')
-    # TODO: If both Vulkan and OpenGL are being compiled, make them both DLLs
-if OPENGL == 'TRUE':
-    env.Append( CPPDEFINES = { "_OPENGL_" : None } )
-    Object('initGL.cpp')
-    # TODO: Add target cenginegl.dll/libcenginegl.so
-    # TODO: If just OpenGL is being compiled, embed it into the main arhive
+Object('vkLoad.cpp')

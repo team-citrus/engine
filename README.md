@@ -13,7 +13,6 @@ As well, by making the engine free software, we hope to set a precident in the g
 - Python
 - SCons
 - Vulkan SDK
-- OpenGL SDK
 - GLM
 - box2d
 - Bullet3
@@ -39,7 +38,6 @@ As well, by making the engine free software, we hope to set a precident in the g
   - [x] `engine::hash()`
   - [x] `engine::hashMap<K, T>`
 - [ ] Create the rendering pipeline for Vulkan
-- [ ] Create the rendering pipeline for OpenGL
 - [ ] Create the main loop
   - [x] main()
   - [ ] gameplayMain()

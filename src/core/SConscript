@@ -32,7 +32,7 @@ elif BUILD_TYPE == "QUICK":
     env.Append( CPPFLAGS = quick_flags, CPPDEFINES = DEFINES )
     env.Append(CPPDEFINES = { "_QUICK_" : None }) # TODO: Option for enabling quick build with AVX and AVX2
 
-Object(target = 'cengine0.o', source = 'main.cpp') # crt0.o reference, now laugh
+Object(target = 'cengine0.o', source = 'main.cpp') # Useful for modding purposes
 Object('mem.cpp')
 Object('gameplayMain.cpp')
 Object('ldScene.cpp')

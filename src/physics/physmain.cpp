@@ -26,6 +26,7 @@ namespace engine
     {
         int physmain()
         {
+            engine::clearErrorcode();
             while(!loadNecesary)
             {
                 while(internals::physics::state.stepRate == 0) spinlock_pause();
