@@ -42,9 +42,10 @@ namespace engine
 
             for(int i = 0; i < curScene->objects.getCount(); i++)
             {
-                for(int j = 0; j < curScene->objects[i].cCount; j++)
+                vec<component*> components = curScene->objects[i].getComponents();
+                for(int j = 0; j < components.getCount(); j++)
                 {
-                    curScene->objects[i].components[j]->update();
+                    components[j]->update();
                     engine::clearErrorcode();
                 }
             }

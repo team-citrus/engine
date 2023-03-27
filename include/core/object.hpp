@@ -16,6 +16,7 @@
 #include "core/mem.hpp"
 #include "core/Main.hpp"
 #include "core/hash.hpp"
+#include "core/vector.hpp"
 
 namespace engine
 {
@@ -85,12 +86,19 @@ namespace engine
 			{
 				return cCount;
 			}
+
+			#ifdef _INTERNALS_ENGINE_THREAD_MAIN_
+
+			OPTIMIZE(3) OPERATOR Vector<component*> getComponents()
+			{
+				return Vector<component*>(components, cCount);
+			}
+
+			#endif
 		private:
 			Vector<hash_t> tags;
 			int cCount;
 			component **components;
-
-			friend int internals::gameplayMain();
 	};
 
 	// TODO: Rust interop class

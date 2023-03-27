@@ -42,8 +42,6 @@ namespace engine
 {
     #ifdef _INTERNALS_ENGINE_THREAD_MAIN_
     
-
-
     namespace internals
     {
         OPERATOR void removeErrorcodeForThread()

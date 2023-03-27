@@ -112,7 +112,7 @@ void waitms(size_t mils)
 {
     #ifndef _WIN32
 
-    timespec t = { 0, (long)(mils * 1000000ull) };
+    timespec t = { 0, (long)(mils * 1000000l) };
     nanosleep(&t, NULL); // Doesn't matter if we don't sleep long enough, waitms() is only to make sure we yield to the OS
 
     #else 
