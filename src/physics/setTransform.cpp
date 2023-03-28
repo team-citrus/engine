@@ -30,14 +30,14 @@ OPERATOR void rigidbody::setPos(double x, double y, double z)
     return;
 }
 
-void rigidbody::setPos(vec2 pos)
+void rigidbody::setPos(Vec2 pos)
 {
     if(ownerSet)
         owner->setPos(pos);
     return;
 }
 
-void rigidbody::setPos(vec3 pos)
+void rigidbody::setPos(Vec3 pos)
 {
     if(ownerSet)
         owner->setPos(pos);
@@ -46,22 +46,22 @@ void rigidbody::setPos(vec3 pos)
 
 OPERATOR void physobject::setPos(double x, double y)
 {
-    setPos(vec2(x, y));
+    setPos(Vec2(x, y));
     return;
 }
 
 OPERATOR void physobject::setPos(double x, double y, double z)
 {
-    setPos(vec3(x, y, z));
+    setPos(Vec3(x, y, z));
     return;
 }
 
-void physobject::setPos(vec2 pos)
+void physobject::setPos(Vec2 pos)
 {
     coordinates2D = pos;
 }
 
-void physobject::setPos(vec3 pos)
+void physobject::setPos(Vec3 pos)
 {
     coordinates3D = pos;
 }
@@ -80,14 +80,14 @@ OPERATOR void rigidbody::setRot(double x, double y, double z)
     return;
 }
 
-void rigidbody::setRot(vec2 rot)
+void rigidbody::setRot(Vec2 rot)
 {
     if(ownerSet)
         owner->setRot(rot);
     return;
 }
 
-void rigidbody::setRot(vec3 rot)
+void rigidbody::setRot(Vec3 rot)
 {
     if(ownerSet)
         owner->setRot(rot);
@@ -96,22 +96,22 @@ void rigidbody::setRot(vec3 rot)
 
 OPERATOR void physobject::setRot(double x, double y)
 {
-    setRot(vec2(x, y));
+    setRot(Vec2(x, y));
     return;
 }
 
 OPERATOR void physobject::setRot(double x, double y, double z)
 {
-    setRot(vec3(x, y, z));
+    setRot(Vec3(x, y, z));
     return;
 }
 
-void physobject::setRot(vec2 rot)
+void physobject::setRot(Vec2 rot)
 {
     rotation2D = rot;
 }
 
-void physobject::setRot(vec3 rot)
+void physobject::setRot(Vec3 rot)
 {
     rotation3D = rot;
 }
@@ -130,14 +130,14 @@ OPERATOR void rigidbody::setScale(double x, double y, double z)
     return;
 }
 
-void rigidbody::setScale(vec2 scale)
+void rigidbody::setScale(Vec2 scale)
 {
     if(ownerSet)
         owner->setScale(scale);
     return;
 }
 
-void rigidbody::setScale(vec3 scale)
+void rigidbody::setScale(Vec3 scale)
 {
     if(ownerSet)
         owner->setScale(scale);
@@ -146,22 +146,22 @@ void rigidbody::setScale(vec3 scale)
 
 OPERATOR void physobject::setScale(double x, double y)
 {
-    setScale(vec2(x, y));
+    setScale(Vec2(x, y));
     return;
 }
 
 OPERATOR void physobject::setScale(double x, double y, double z)
 {
-    setScale(vec3(x, y, z));
+    setScale(Vec3(x, y, z));
     return;
 }
 
-void physobject::setScale(vec2 scale)
+void physobject::setScale(Vec2 scale)
 {
     coordinates2D = scale;
 }
 
-void physobject::setScale(vec3 scale)
+void physobject::setScale(Vec3 scale)
 {
     coordinates3D = scale;
 }

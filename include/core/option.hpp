@@ -14,17 +14,17 @@
 namespace engine
 {
     template <typename T>
-    class option
+    class Option
     {
         T t;
         bool some;
         public:
-        option()
+        Option()
         {
             return none<T>();
         }
 
-        option(option<T> &&o)
+        Option(Option<T> &&o)
         {
             some = o.some;
             t = o.t;
@@ -45,14 +45,14 @@ namespace engine
             return t;
         }
 
-        template<typename T> static OPERATOR option<T> some(T t)
+        template<typename T> static OPERATOR Option<T> some(T t)
         {
-            return option<T> { t, true };
+            return Option<T> { t, true };
         }
 
-        template<typename T> static OPERATOR option<T> none()
+        template<typename T> static OPERATOR Option<T> none()
         {
-            option<T> opt;
+            Option<T> opt;
             opt.some = false;
             return opt;
         }

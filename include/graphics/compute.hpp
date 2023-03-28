@@ -16,15 +16,15 @@ namespace engine
 {
     namespace render
     {
-        class computeShader
+        class ComputeShader
         {
             union
             {
                 VkShaderModule vkMod;
             };
             public:
-            computeShader(const char *shader);
-            ~computeShader();
+            ComputeShader(const char *shader);
+            ~ComputeShader();
             OPERATOR void operator()()
             {
                 dispatch();

@@ -32,9 +32,9 @@ namespace engine
     {
         size_t s;
         size_t c;
-        pair<hash_t, T> *ptr;
+        Pair<hash_t, T> *ptr;
         public:
-        OPTIMIZE(3) hashMap(pair<KEY, T> p[], size_t ss)
+        OPTIMIZE(3) hashMap(Pair<KEY, T> p[], size_t ss)
         {
             *this = hashMap<KEY, T>(ss);
             for(size_t i = 0; i < ss; i++)
@@ -81,7 +81,7 @@ namespace engine
             }
         }
 
-        OPTIMIZE(3) hashMap(Vector<pair<KEY, T>> p)
+        OPTIMIZE(3) hashMap(Vector<Pair<KEY, T>> p)
         {
             *this = hashMap<KEY, T>(p.data(), p.getCount());
         }
@@ -89,14 +89,14 @@ namespace engine
         OPTIMIZE(3) hashMap(size_t cc)
         {
             s = 0;
-            ptr = zmalloc(sizeof(pair<hash_t,T>) * (c = cc));
+            ptr = zmalloc(sizeof(Pair<hash_t,T>) * (c = cc));
         }
 
         OPTIMIZE(3) hashMap(hashMap<KEY, T> &cc)
         {
             c = cc.c;
             s = cc.s;
-            ptr = memcalloc(sizeof(pair<hash_t,T>) * c);
+            ptr = memcalloc(sizeof(Pair<hash_t,T>) * c);
             memcpy(ptr, cc.ptr, c); // TODO: Do some speed comparison against ymm_memcpy(ptr, cc.ptr, (size & 0x1F) ? (size >> 5) + 1 : size >> 5);
         }
 
@@ -111,7 +111,7 @@ namespace engine
         OPERATOR
         #endif
 
-        option<T> add(KEY k, T t)
+        Option<T> add(KEY k, T t)
         {
             hash_t h = hash(&k, sizeof(KEY));
             if(s + 1 >= c)
@@ -121,7 +121,7 @@ namespace engine
 
                 while(true)
                 {
-                    pair<hash_t, T> *nptr = memcalloc(sizeof(pair<hash_t,T>) * cc);
+                    Pair<hash_t, T> *nptr = memcalloc(sizeof(Pair<hash_t,T>) * cc);
 
                     for(size_t i = 0; i < c; i++)
                     {
@@ -153,7 +153,7 @@ namespace engine
                         continue;
                     }
                     else
-                        nptr[h % cc] = pair<hash_t,T>(h, t);
+                        nptr[h % cc] = Pair<hash_t,T>(h, t);
 
                     memfree(ptr);
                     ptr = nptr;
@@ -190,12 +190,12 @@ namespace engine
 
         OPTIMIZE(3) void rm(KEY k)
         {
-            memset(this + k, 0, sizeof(pair<hash_t, T>));
+            memset(this + k, 0, sizeof(Pair<hash_t, T>));
             s--;
 
             if(s <= c - 8)
             {
-                Vector<pair<KEY, T>> v;
+                Vector<Pair<KEY, T>> v;
                 for(size_t i = 0; i < c; i++)
                 {
                     if(ptr[i].a != 0)

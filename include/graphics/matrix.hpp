@@ -27,9 +27,9 @@ namespace engine
 {
     namespace render
     {
-        using matrix2x2 glm::mat2;
-        using matrix3x3 glm::mat3;
-        using matrix4x4 glm::mat4;
+        using Matrix2x2 glm::mat2;
+        using Matrix3x3 glm::mat3;
+        using Matrix4x4 glm::mat4;
     }
 }
 

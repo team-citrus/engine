@@ -15,15 +15,15 @@ namespace engine
 {
     namespace render
     {
-        class shader
+        class Shader
         {
             union
             {
                 VkShaderModule vkMod;
             };
             public:
-            shader(const char *shader);
-            ~shader();
+            Shader(const char *shader);
+            ~Shader();
         };
     }
 }

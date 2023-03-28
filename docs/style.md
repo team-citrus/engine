@@ -22,7 +22,7 @@ Include guard defines should use the following naming scheme:
 ## Function naming
 
 Function names should be conise but descriptive.
-Function names should use camelCase.
+Function names should use camelCase, as should all variables.
 
 ## Inline functions
 
@@ -47,6 +47,7 @@ Otherwise, `engine::memalloc` and friends should be used.
 Classes should essentially be used where ever structs would be used in C.
 Classes shouldn't be abused, and should be used sparingly.
 Classes should use operators whenever possible in place of methods.
+Classes should use PascalCase.
 
 ### Namespaces
 

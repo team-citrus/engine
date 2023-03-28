@@ -15,42 +15,18 @@
 
 namespace engine
 {
-    typedef physics::vec2 float2;
-    typedef physics::vec3 float3;
-    typedef physics::vec4 float4;
+    using Float2 = physics::Vec2;
+    using Float3 = physics::Vec3;
+    using Float4 = physics::Vec4;
 
-    class transform2D : component
+    class Transform2D : Component
     {
         public:
-            union
-            {
-                struct
-                {
-                    float x;
-                    float y;
-                };
-                float2 vec;
-            } position;
+            Float2 position;
 
-            union
-            {
-                struct
-                {
-                    float x;
-                    float y;
-                };
-                float2 vec;
-            } rotation;
+            Float2 rotation;
 
-            union
-            {
-                struct
-                {
-                    float x;
-                    float y;
-                };
-                float2 vec;
-            } scale;
+            Float2 scale;
 
 			virtual void awake()
 			{
@@ -83,41 +59,14 @@ namespace engine
 			}
     }
 
-    class transform3D : component
+    class Transform3D : Component
     {
         public:
-            union
-            {
-                struct
-                {
-                    float x;
-                    float y;
-                    float z;
-                };
-                float3 vec;
-            } position;
+            Float3 position;
 
-            union
-            {
-                struct
-                {
-                    float x;
-                    float y;
-                    float z;
-                };
-                float3 vec;
-            } rotation;
+            Float3 rotation;
 
-            union
-            {
-                struct
-                {
-                    float x;
-                    float y;
-                    float z;
-                };
-                float3 vec;
-            } scale;
+            Float3 scale;
 
 			virtual void awake()
 			{

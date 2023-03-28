@@ -1,7 +1,7 @@
 /*
-*   name: include/core/object.hpp
+*   name: include/core/Object.hpp
 *   origin: Citrus Engine
-*   purpose: Provide the engine::object class
+*   purpose: Provide the engine::Object class
 *   author: https://github.com/ComradeYellowCitrusFruit
 *   license: LGPL-3.0-only
 */
@@ -20,16 +20,16 @@
 
 namespace engine
 {
-	class object
+	class Object
 	{	// TODO: More stuff
 		public:
-			OPTIMIZE(3) object()
+			OPTIMIZE(3) Object()
 			{
 				cCount = 0;
 				components = (component**)memalloc(sizeof(component*));
 			}
 
-			OPTIMIZE(3) ~object()
+			OPTIMIZE(3) ~Object()
 			{
 				for(size_t i = 0; i < cCount; i++)
 				{
@@ -98,7 +98,7 @@ namespace engine
 		private:
 			Vector<hash_t> tags;
 			int cCount;
-			component **components;
+			Component **components;
 	};
 
 	// TODO: Rust interop class

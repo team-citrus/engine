@@ -23,9 +23,9 @@ namespace engine
 {
     namespace internals
     {
-        workQueue rQueue;
+        WorkQueue rQueue;
         scene *curScene;
-        map<scene, int> scenes;
+        Map<scene, int> scenes;
 
         // Run the gameplay code
         NEVER_INLINE int gameplayM()
@@ -42,7 +42,7 @@ namespace engine
 
             for(int i = 0; i < curScene->objects.getCount(); i++)
             {
-                vec<component*> components = curScene->objects[i].getComponents();
+                vec<Component*> components = curScene->objects[i].getComponents();
                 for(int j = 0; j < components.getCount(); j++)
                 {
                     components[j]->update();

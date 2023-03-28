@@ -33,7 +33,7 @@ namespace engine
 		};
 		
 		extern scene *curScene;
-		extern map<scene, int> scenes;
+		extern Map<scene, int> scenes;
 		extern bool loadNecesary;
 		extern int currentScene; // Used with loadNecessary to load the next scene when timing lines up.d
 

@@ -55,14 +55,14 @@ namespace engine
                 return ptr[count-1];
             }
 
-            OPERATOR option<T> pop()
+            OPERATOR Option<T> pop()
             {
                 if(!count)
                     return none<T>();
                 count--;
                 T obj = ptr[count];
                 ptr = memrealloc(ptr, count * sizeof(T));
-                return option::some(obj);
+                return Option::some(obj);
             }
 
             OPERATOR void rm(size_t index)
@@ -143,13 +143,7 @@ namespace engine
     };
     
     template<class T>
-    using vec = Vector<T>;
-    
-    template<class T>
-    using vector = Vector<T>;
-    
-    template<class T>
-    using darray = Vector<T>;
+    using Vec = Vector<T>;
 };
 
 #endif

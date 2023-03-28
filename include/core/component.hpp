@@ -16,23 +16,23 @@
 
 namespace engine // TODO: Internalize some of this stuff
 {
-	typedef void (*componentFuncPtr)(void*);
-	typedef void (*triggerFuncPtr)(void*, collider*, collider*)
+	typedef void (*ComponentFuncPtr)(void*);
+	typedef void (*TriggerFuncPtr)(void*, collider*, collider*)
 		
 	// Exactly like it's Rust counterpart
-	struct rustComponentBase
+	struct RustComponentBase
 	{
-		componentFuncPtr awake;
-		componentFuncPtr start;
-		componentFuncPtr update;
-		componentFuncPtr fixedUpdate;
-		triggerFuncPtr onTriggerEnter;
-		triggerFuncPtr onTriggerStay;
-		triggerFuncPtr onTriggerExit;
+		ComponentFuncPtr awake;
+		ComponentFuncPtr start;
+		ComponentFuncPtr update;
+		ComponentFuncPtr fixedUpdate;
+		TriggerFuncPtr onTriggerEnter;
+		TriggerFuncPtr onTriggerStay;
+		TriggerFuncPtr onTriggerExit;
 	};
 	
 	// The base class for all components, similar to Unity components
-	class component
+	class Component
 	{
 		public:
 			// Functions similar to Unity's awake()
@@ -78,12 +78,12 @@ namespace engine // TODO: Internalize some of this stuff
 				return;
 			}
 
-			OPERATOR object &getObject()
+			OPERATOR Object &getObject()
 			{
 				return owner;
 			}
 		private:
-			object &owner;
+			Object &owner;
 
 			// Use this to validate component type
 			std::type_info componentID;
@@ -91,11 +91,11 @@ namespace engine // TODO: Internalize some of this stuff
 	};
 
 	// Wrapper around Rust components, unfortunately C++ can't add or see into Rust components, not without copius amounts of Jerryrigging
-	class rustComponent : component
+	class RustComponent : component
 	{
 		public:
 		// Pointer to the actual component. Please note that actual Rust components can only be added from Rust
-		rustComponentBase *base; // TODO: Fix that
+		RustComponentBase *base; // TODO: Fix that
 		
 		void awake() override
 		{

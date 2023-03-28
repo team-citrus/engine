@@ -20,28 +20,28 @@ namespace engine
         typedef struct __MESH_BUFFER_HANDLE meshBufferHandle; // Everyone loves opaque types
     }
 
-    class vertex
+    class Vertex
     {
         public:
-        float3 pos;
-        float2 uv;
+        Float3 pos;
+        Float2 uv;
 
         // TODO: Vertex normals?
         // TODO: Methods... maybe?
     }
 
-    class face
+    class Face
     {
         public:
-        vertex &a;
-        vertex &b;
-        vertex &c;
+        Vertex &a;
+        Vertex &b;
+        Vertex &c;
 
         // TODO: Face normals?
         // TODO: Methods... maybe?
     };
 
-    class mesh
+    class Mesh
     {
         private:
         bool readwrite;
@@ -49,18 +49,18 @@ namespace engine
         public:
 
         // Creates an uninitalized mesh
-        mesh(); 
+        Mesh(); 
         // Loads mesh, and returns this class.
-        mesh(const char *name); 
+        Mesh(const char *name); 
 
-        face &operator[](size_t i);
+        Face &operator[](size_t i);
 
         // TODO: Stuff
     };
 
-    using tri = face;
-    using vert = vertex;
-    using model = mesh;
+    using Tri = Face;
+    using Vert = Vertex;
+    using Model = Mesh;
 
     // TODO: iterators
 }

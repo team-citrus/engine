@@ -15,10 +15,10 @@
 namespace engine
 {
     template <typename A, typename B>
-    class pair
+    class Pair
     {
         public:
-        pair(A aa, B bb)
+        Pair(A aa, B bb)
         {
             a = aa;
             b = bb;
@@ -28,80 +28,80 @@ namespace engine
     };
 
     template <typename K, typename B>
-    class map
+    class Map
     {
         public:
         OPERATOR void addPair(A a, B b)
         {
-            vec.push(pair<A, B>(a, b));
+            vec.push(Pair<A, B>(a, b));
         }
 
-        OPERATOR void addPair(pair<A, B> p)
+        OPERATOR void addPair(Pair<A, B> p)
         {
             vec.push(p);
         }
 
-        OPERATOR option<pair<A, B>> &lookupPair(A a)
+        OPERATOR Option<Pair<A, B>> &lookupPair(A a)
         {
             for(int i = 0; i < vec.getCount(); i++)
             {
                 if(vec[i].a == a)
-                    return option::option::some(vec[i]);
+                    return Option::Option::some(vec[i]);
             }
         }
 
-        OPERATOR option<pair<A, B>> &lookupPair(B b)
+        OPERATOR Option<Pair<A, B>> &lookupPair(B b)
         {
             for(int i = 0; i < vec.getCount(); i++)
             {
                 if(vec[i].b == b)
-                    return option::some(vec[i]);
+                    return Option::some(vec[i]);
             }
-            return none<pair<A, B>>();
+            return none<Pair<A, B>>();
         }
 
-        OPERATOR option<B&> getB(A a)
+        OPERATOR Option<B&> getB(A a)
         {
             for(int i = 0; i < vec.getCount(); i++)
             {
                 if(vec[i].a == a)
-                    return option::some<B&>(vec[i].b);
+                    return Option::some<B&>(vec[i].b);
             }
             return none<B&>();
         }
 
-        OPERATOR option<A&> getA(B b)
+        OPERATOR Option<A&> getA(B b)
         {
             for(int i = 0; i < vec.getCount(); i++)
             {
                 if(vec[i].b == b)
-                    return option::some<A&>(vec[i].a);
+                    return Option::some<A&>(vec[i].a);
             }
             return none<A&>();
         }
 
-        OPERATOR option<A&> lookup(B b)
+        OPERATOR Option<A&> lookup(B b)
         {
             return this->getA(b);
         }
 
-        OPERATOR option<B&> &lookup(A a)
+        OPERATOR Option<B&> &lookup(A a)
         {
             return this->getB(a);
         }
 
-        OPERATOR option<A&> operator[](A a)
+        OPERATOR Option<A&> operator[](A a)
         {
             return lookup(a);
         }
 
-        OPERATOR option<B&> operator[](B b)
+        OPERATOR Option<B&> operator[](B b)
         {
             return lookup(b);
         }
 
         private:
-        Vector<pair<A, B>> vec;
+        Vector<Pair<A, B>> vec;
     };
 
     // TODO: iterators

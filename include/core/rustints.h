@@ -52,22 +52,6 @@ typedef double f64;
 
 namespace engine
 {
-
-    template <typename T>
-    T max(T a, T b)
-    {
-        return (a > b) ? a : b;
-    }
-
-    template <typename T>
-    T min(T a, T b)
-    {
-        return (a < b) ? a : b;
-    }
-
-    template <typename T>
-    T abs(T a);
-
     u8 abs(u8 a)
     {
         return a;
@@ -90,22 +74,22 @@ namespace engine
 
     i8 abs(i8 a)
     {
-        return (a & 0x80) ? ~a + 1 : a;
+        return (a & (1 << 7)) ? ~a + 1 : a;
     }
 
     i16 abs(i16 a)
     {
-        return (a & 0x8000) ? ~a + 1 : a;
+        return (a & (1 << 15)) ? ~a + 1 : a;
     }
 
     i32 abs(i32 a)
     {
-        return (a & 0x80000000) ? ~a + 1 : a;
+        return (a & (1 << 31)) ? ~a + 1 : a;
     }
 
     i64 abs(i64 a)
     {
-        return (a & 0x8000000000000000) ? ~a + 1 : a;
+        return (a & (1 << 63)) ? ~a + 1 : a;
     }
 
     f32 abs(f32 a)
@@ -122,6 +106,24 @@ namespace engine
     T pow(T a, int power)
     {
         return (power) ? a * pow(a, power - 1) : (T)1;
+    }
+
+    template <typename T, constexpr int power>
+    constexpr T pow(const T a)
+    {
+        return a * pow<T, power - 1>(a);
+    }
+
+    template <typename T>
+    constexpr T pow<T, 1>(const T a)
+    {
+        return a;
+    }
+
+    template <typename T>
+    constexpr T pow<T, 0>(const T a)
+    {
+        return (T)1;
     }
 
     // TODO: sqrt and isqrt
