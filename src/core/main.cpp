@@ -108,6 +108,9 @@ WEAK NO_INLINE void realMain()
     }
 }
 
+// Probably the most commonly overriden weak function.
+WEAK NO_INLINE extern void crashHandler();
+
 void waitms(size_t mils)
 {
     #ifndef _WIN32
@@ -255,60 +258,10 @@ static inline void initSigs()
 
 int MAIN
 {
-    #ifndef _WIN32
-    
-    pid_t id;
-    if((id = fork()) != 0)
-    {
-        // TODO: simple GUI instead of cli
-        int ret;
-        waitpid(id, &ret, 0);
-        
-        if(ret != 0)
-        {
-            printf("Exited with error code: %08X\n", ret);
-            puts(engine::interpretCrashCode(ret));
-            return 0;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    
-    #else
-    
-    int argc;
-    char **argv = CommandLineToArgvW(GetCommandLineA(), &junk);
-    if(!strcmp(argv[1], "--not-crash-handler")) // Due to the way fork() works on *nix, we don't need to use argv.
-    {
-        char cmdline[1024];
-        STARTUPINFOA sinfo;
-        PROCESS_INFORMATION pinfo;
-        sprintf(cmdline, "%s --not-crash-handler", arg[0]);
-
-        if(CreateProcessA(NULL, cmdline, NULL, NULL, FALSE, CREATE_NO_WINDOW | DETACHED_PROCESS, NULL, NULL, &sinfo, &pinfo))
-        {
-            if(WaitForSingleObject(pinfo.hProcess, INFINITE) == WAIT_OBJECT_0)
-            {
-                int code;
-                GetExitCodeProcess(pinfo.hProcess, &code);
-                // TODO: bring up minimal error code display
-            }
-            else
-                exit(-1);
-        }
-        else
-        {
-            // TODO: Display failure message
-            exit(-1);
-        }
-    }
-    
-    #endif
-
     // Initalize everything
-    
+    crashHandler();
+
+
     initLogging();
     pool = Pool();
     initSigs();
