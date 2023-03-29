@@ -12,6 +12,7 @@
 #include <cerrno>
 #include <cstdint>
 #include <cstdlib>
+#include "core/extensions.h"
 
 namespace engine
 {
