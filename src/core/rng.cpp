@@ -14,10 +14,11 @@
 #endif
 
 #include <cstdio>
-
+#include <atomic>
 #include "core/rng.hpp"
 
 engine::RNG mainRNG ALIGN(64);
+std::atomic_bool rngLock;
 
 #ifdef __x86_64__
 
@@ -77,10 +78,17 @@ void engine::internals::initMainRNG()
     mainRNG.ctr = 0;
 
     #endif
+
+    rngLock.store(false);
 }
 
 void engine::internals::getSeedBytes(uint32_t matrix[])
 {
+    while(rngLock.load())
+		spinlock_pause();
+
+    rngLock.store(true);
+
     #ifndef __x86_64__
 
     if((uintptr_t)matrix & 0x3F) zmm_memcpy(matrix, mainRNG.matrix, 1);
@@ -96,6 +104,8 @@ void engine::internals::getSeedBytes(uint32_t matrix[])
     mainRNG.shuffle();
 
     #endif
+
+    rngLock.store(false);
 }
 
 #ifdef __x86_64__
