@@ -525,7 +525,7 @@ OPERATOR void zmm_memmove(void *dest, void *src, size_t b)
 
 // memset 64 byte aligned array in 64 byte blocks
 #define zmm_memset(ptr, c, b) ymm_memset(ptr, c, b * 2)
-
+ 
 // Copy from 64 byte aligned address src b 64 byte blocks to 64 byte aligned address dest in a manor that is safe on overlap
 #define zmm_memmove(ptr, dest, b) ymm_memmove(ptr, dest, b * 2)
 

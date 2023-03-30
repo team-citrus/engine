@@ -11,7 +11,7 @@
 
 #ifdef __GNUC__
 
-#define _GNU_ __GNUC__
+#define GNU __GNUC__
 
 #define ALWAYS_INLINE [[gnu::always_inline]]
 #define NEVER_INLINE [[gnu::noinline]]
@@ -25,6 +25,7 @@
 #define ALIAS(x) SYMBOL_ALIAS(x)
 #define WEAK [[gnu::weak]]
 #define WARN_UNUSED [[gnu::warn_unused_result]]
+#define ALIGN(x) __attribute__((aligned(x)))
 
 #else
 

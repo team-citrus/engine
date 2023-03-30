@@ -36,6 +36,7 @@
 #include "core/log.hpp"
 #include "core/errno.hpp"
 #include "core/crash.hpp"
+#include "core/rng.hpp"
 #include "graphics/vkInit.hpp"
 #include "graphics/initGL.hpp"
 
@@ -261,6 +262,7 @@ int MAIN
     // Initalize everything
     crashHandler();
 
+    initMainRNG();
 
     initLogging();
     pool = Pool();
