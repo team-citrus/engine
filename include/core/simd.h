@@ -414,34 +414,34 @@ typedef __m512i m512i_t;
 // Copy from 16 byte aligned address src b 16 byte blocks to 16 byte aligned address dest
 OPERATOR void xmm_memcpy(void *dest, void *src, size_t b)
 {
-    m128i_t *vdest = dest;
-    m128i_t *vsrc = src;
-    for(int i = 0; i < b; i++) store_i128(&(vdest[i]), load_i128(&(vsrc[i])));
+	m128i_t *vdest = dest;
+	m128i_t *vsrc = src;
+	for(int i = 0; i < b; i++) store_i128(&(vdest[i]), load_i128(&(vsrc[i])));
 }
 
 // Copy from 16 byte aligned address src b 16 byte blocks to 16 byte aligned address dest in a manor that is safe on overlap
 OPERATOR void xmm_memmove(void *dest, void *src, size_t b)
 {
-    m128i_t *vdest = dest;
-    m128i_t *vsrc = src;
-    if(dest == src)
-        return;
-    
-    if((uintptr_t)dest > (uintptr_t)src && (uintptr_t)dest < (uintptr_t)src + (b * 16))
-    {
-        for(int i = b - 1; i >= 0; i--) store_i128(&(vdest[i]), load_i128(&(vsrc[i])));
-    }
-    else
-        xmm_memcpy(dest, src, b);
+	m128i_t *vdest = dest;
+	m128i_t *vsrc = src;
+	if(dest == src)
+		return;
+	
+	if((uintptr_t)dest > (uintptr_t)src && (uintptr_t)dest < (uintptr_t)src + (b * 16))
+	{
+		for(int i = b - 1; i >= 0; i--) store_i128(&(vdest[i]), load_i128(&(vsrc[i])));
+	}
+	else
+		xmm_memcpy(dest, src, b);
 }
 
 // memset 16 byte aligned array in 16 byte blocks
 OPERATOR void xmm_memset(void *ptr, unsigned char c, size_t b)
 {
-    m128i_t val;
-    m128i_t *vptr = ptr;
-    val = broadcast_i8(c);
-    for(int i = 0; i < b; i++, vptr++) store_i128(vptr, val);
+	m128i_t val;
+	m128i_t *vptr = ptr;
+	val = broadcast_i8(c);
+	for(int i = 0; i < b; i++, vptr++) store_i128(vptr, val);
 }
 
 #ifdef _MAVX_
@@ -449,34 +449,34 @@ OPERATOR void xmm_memset(void *ptr, unsigned char c, size_t b)
 // Copy from 32 byte aligned address src b 32 byte blocks to 32 byte aligned address dest
 OPERATOR void ymm_memcpy(void *dest, void *src, size_t b)
 {
-    m256i_t *vdest = dest;
-    m256i_t *vsrc = src;
-    for(int i = 0; i < b; i++) store_i256(&(vdest[i]), load_i256(&(vsrc[i])));
+	m256i_t *vdest = dest;
+	m256i_t *vsrc = src;
+	for(int i = 0; i < b; i++) store_i256(&(vdest[i]), load_i256(&(vsrc[i])));
 }
 
 // memset 32 byte aligned array in 32 byte blocks
 OPERATOR void ymm_memset(void *ptr, unsigned char c, size_t b)
 {
-    m256i_t val;
-    m256i_t *vptr = ptr;
-    val = broadcast256_i8(c);
-    for(int i = 0; i < b; i++, vptr++) store_i256(vptr, val);
+	m256i_t val;
+	m256i_t *vptr = ptr;
+	val = broadcast256_i8(c);
+	for(int i = 0; i < b; i++, vptr++) store_i256(vptr, val);
 }
 
 // Copy from 32 byte aligned address src b 32 byte blocks to 32 byte aligned address dest in a manor that is safe on overlap
 OPERATOR void ymm_memmove(void *dest, void *src, size_t b)
 {
-    m256i_t *vdest = dest;
-    m256i_t *vsrc = src;
-    if(dest == src)
-        return;
-    
-    if((uintptr_t)dest > (uintptr_t)src && (uintptr_t)dest < (uintptr_t)src + (b * 16))
-    {
-        for(int i = b - 1; i >= 0; i--) store_i256(&(vdest[i]), load_i256(&(vsrc[i])));
-    }
-    else
-        ymm_memcpy(dest, src, b);
+	m256i_t *vdest = dest;
+	m256i_t *vsrc = src;
+	if(dest == src)
+		return;
+	
+	if((uintptr_t)dest > (uintptr_t)src && (uintptr_t)dest < (uintptr_t)src + (b * 16))
+	{
+		for(int i = b - 1; i >= 0; i--) store_i256(&(vdest[i]), load_i256(&(vsrc[i])));
+	}
+	else
+		ymm_memcpy(dest, src, b);
 }
 
 #else
@@ -497,29 +497,29 @@ OPERATOR void ymm_memmove(void *dest, void *src, size_t b)
 // Copy from 64 byte aligned address src b 64 byte blocks to 64 byte aligned address dest
 OPERATOR void zmm_memcpy(void *dest, void *src, size_t b)
 {
-    m512i_t *vdest = dest;
-    m512i_t *vsrc = src;
-    for(size_t i = 0; i < b; i++) store_i512(&(vdest[i]), load_i512(&(vsrc[i])));
+	m512i_t *vdest = dest;
+	m512i_t *vsrc = src;
+	for(size_t i = 0; i < b; i++) store_i512(&(vdest[i]), load_i512(&(vsrc[i])));
 }
 
 // Copy from 64 byte aligned address src b 64 byte blocks to 64 byte aligned address dest in a manor that is safe on overlap
 OPERATOR void zmm_memmove(void *dest, void *src, size_t b)
 {
-    m512i_t *vdest = dest;
-    m512i_t *vsrc = src;
-    if(dest == src)
-        return;
-    
-    if((uintptr_t)dest > (uintptr_t)src && (uintptr_t)dest < (uintptr_t)src + (b * 16))
-    {
-        for(int i = b - 1; i >= 0; i--) store_i512(&(vdest[i]), load_i512(&(vsrc[i])));
-    }
-    else
-        zmm_memcpy(dest, src, b);
+	m512i_t *vdest = dest;
+	m512i_t *vsrc = src;
+	if(dest == src)
+		return;
+	
+	if((uintptr_t)dest > (uintptr_t)src && (uintptr_t)dest < (uintptr_t)src + (b * 16))
+	{
+		for(int i = b - 1; i >= 0; i--) store_i512(&(vdest[i]), load_i512(&(vsrc[i])));
+	}
+	else
+		zmm_memcpy(dest, src, b);
 }
-                                             
+											 
 #else
-                                             
+											 
 // Copy from 64 byte aligned address src b 64 byte blocks to 64 byte aligned address dest   
 #define zmm_memcpy(dest, src, b) ymm_memcpy(dest, src, b * 2)
 
@@ -544,37 +544,37 @@ OPERATOR void zmm_memmove(void *dest, void *src, size_t b)
 // Copy from 16 byte aligned address src b 16 byte blocks to 16 byte aligned address dest
 OPERATOR void xmm_memcpy(void *dest, void *src, size_t b)
 {
-    uint64_t *rdest = dest;
-    uint64_t *rsrc = src;
+	uint64_t *rdest = dest;
+	uint64_t *rsrc = src;
 
-    for(size_t i = 0; i < b; i++)
-        vst1q_u64(&(rdest[i * 2]), vld1q_u64(&(src[i * 2])));
+	for(size_t i = 0; i < b; i++)
+		vst1q_u64(&(rdest[i * 2]), vld1q_u64(&(src[i * 2])));
 }
 
 // Copy from 16 byte aligned address src b 16 byte blocks to 16 byte aligned address dest in a manor that is safe on overlap
 OPERATOR void xmm_memmove(void *dest, void *src, size_t b)
 {
-    uint64_t *rdest = dest;
-    uint64_t *rsrc = src;
+	uint64_t *rdest = dest;
+	uint64_t *rsrc = src;
 
-    if(dest == src)
-        return;
-    
-    if((uintptr_t)dest > (uintptr_t)src && (uintptr_t)dest < (uintptr_t)src + (b * 16))
-    {
-        for(int i = b - 1; i >= 0; i--) vst1q_u64(&(rdest[i * 2]), vld1q_u64(&(src[i * 2])));
-    }
-    else
-        xmm_memcpy(dest, src, b);
+	if(dest == src)
+		return;
+	
+	if((uintptr_t)dest > (uintptr_t)src && (uintptr_t)dest < (uintptr_t)src + (b * 16))
+	{
+		for(int i = b - 1; i >= 0; i--) vst1q_u64(&(rdest[i * 2]), vld1q_u64(&(src[i * 2])));
+	}
+	else
+		xmm_memcpy(dest, src, b);
 }
 
 // memset 16 byte aligned array in 16 byte blocks
 OPERATOR void xmm_memset(void *ptr, unsigned char c, size_t b)
 {
-    uint64_t *rptr = ptr;
-    uint64x2_t val = vld1q_u64({0ull, 0ull});
+	uint64_t *rptr = ptr;
+	uint64x2_t val = vld1q_u64({0ull, 0ull});
 
-    for(size_t i = 0; i < b; i++, rptr += 2) vst1q_u64(rptr, val);
+	for(size_t i = 0; i < b; i++, rptr += 2) vst1q_u64(rptr, val);
 }
 
 // Copy from 32 byte aligned address src b 32 byte blocks to 32 byte aligned address dest

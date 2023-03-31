@@ -11,7 +11,7 @@
 
 namespace engine
 {
-    int loadScene(int ID);
+	int loadScene(int ID);
 };
 
 #endif

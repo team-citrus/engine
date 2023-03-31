@@ -158,7 +158,7 @@ int Vulkan::vkLoad()
 		exit(VULKAN_NOT_FOUND);
 	}
 
-    // Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
+	// Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
 	Vulkan::vkGetInstanceProcAddr = (Vulkan::vkGIPA_t)GetProcAddress(Vulkan::libvulkan, _STRINGIFY_(vkGetInstanceProcAddr));
 	Vulkan::vkGetDeviceProcAddr = (Vulkan::vkGDPA_t)GetProcAddress(Vulkan::libvulkan, _STRINGIFY_(vkGetDeviceProcAddr));
 

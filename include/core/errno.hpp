@@ -40,24 +40,24 @@ extern engine::hashMap<thrd_t, unsigned int> errcodes;
 
 namespace engine
 {
-    #ifdef _INTERNALS_ENGINE_THREAD_MAIN_
-    
-    namespace internals
-    {
-        OPERATOR void removeErrorcodeForThread()
-        {
-            errcodes.rm(thrd_current());
-        }
-    }
+	#ifdef _INTERNALS_ENGINE_THREAD_MAIN_
+	
+	namespace internals
+	{
+		OPERATOR void removeErrorcodeForThread()
+		{
+			errcodes.rm(thrd_current());
+		}
+	}
 
-    #endif
+	#endif
 
-    void clearErrorcode()
-    {
-        errorcode() = 0;
-    }
-    
-    unsigned int &errorcode();
+	void clearErrorcode()
+	{
+		errorcode() = 0;
+	}
+	
+	unsigned int &errorcode();
 }
 
 #endif

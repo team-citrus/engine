@@ -18,12 +18,12 @@ engine::hashMap<thrd_t, unsigned int> errcodes;
 
 unsigned int &engine::errorcode()
 {
-    static bool inited = false;
-    if(!inited)
-        errcodes = engine::hashMap<thrd_t, unsigned int>(32);
+	static bool inited = false;
+	if(!inited)
+		errcodes = engine::hashMap<thrd_t, unsigned int>(32);
 
-    inited = true;
-    errcodes.add(thrd_current(), 0).isNone();
-    return errcodes[thrd_current()];
+	inited = true;
+	errcodes.add(thrd_current(), 0).isNone();
+	return errcodes[thrd_current()];
 }
 

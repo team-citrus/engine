@@ -25,12 +25,12 @@
 
 namespace engine
 {
-    namespace render
-    {
-        using Matrix2x2 glm::mat2;
-        using Matrix3x3 glm::mat3;
-        using Matrix4x4 glm::mat4;
-    }
+	namespace render
+	{
+		using Matrix2x2 glm::mat2;
+		using Matrix3x3 glm::mat3;
+		using Matrix4x4 glm::mat4;
+	}
 }
 
 #endif

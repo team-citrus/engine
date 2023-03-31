@@ -21,38 +21,38 @@
 
 namespace engine
 {
-    namespace internals
-    {
-        WorkQueue rQueue;
-        scene *curScene;
-        Map<scene, int> scenes;
+	namespace internals
+	{
+		WorkQueue rQueue;
+		scene *curScene;
+		Map<scene, int> scenes;
 
-        // Run the gameplay code
-        NEVER_INLINE int gameplayM()
-        {
-            // Physics and render lock gameplay
-            while(isRenderExecuting.load()) spinlock_pause();
-            while(isPhysicsExecuting.load()) spinlock_pause();
+		// Run the gameplay code
+		NEVER_INLINE int gameplayM()
+		{
+			// Physics and render lock gameplay
+			while(isRenderExecuting.load()) spinlock_pause();
+			while(isPhysicsExecuting.load()) spinlock_pause();
 
-            isGameplayExecuting.store(true);
-            
-            engine::clearErrorcode();
+			isGameplayExecuting.store(true);
+			
+			engine::clearErrorcode();
 
-            // TODO: There is probably something we are missing here.
+			// TODO: There is probably something we are missing here.
 
-            for(int i = 0; i < curScene->objects.getCount(); i++)
-            {
-                vec<Component*> components = curScene->objects[i].getComponents();
-                for(int j = 0; j < components.getCount(); j++)
-                {
-                    components[j]->update();
-                    engine::clearErrorcode();
-                }
-            }
-            
-            removeErrorcodeForThread();
-            
-            isGameplayExecuting.store(false);
-        }
-    };
+			for(int i = 0; i < curScene->objects.getCount(); i++)
+			{
+				vec<Component*> components = curScene->objects[i].getComponents();
+				for(int j = 0; j < components.getCount(); j++)
+				{
+					components[j]->update();
+					engine::clearErrorcode();
+				}
+			}
+			
+			removeErrorcodeForThread();
+			
+			isGameplayExecuting.store(false);
+		}
+	};
 };

@@ -13,19 +13,19 @@
 
 namespace engine
 {
-    namespace render
-    {
-        class Shader
-        {
-            union
-            {
-                VkShaderModule vkMod;
-            };
-            public:
-            Shader(const char *shader);
-            ~Shader();
-        };
-    }
+	namespace render
+	{
+		class Shader
+		{
+			union
+			{
+				VkShaderModule vkMod;
+			};
+			public:
+			Shader(const char *shader);
+			~Shader();
+		};
+	}
 }
 
 #endif

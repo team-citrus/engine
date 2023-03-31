@@ -29,8 +29,8 @@
 
 engine::hash_t engine::hash(void *data, size_t bytes)
 {
-    static uintptr_t _key_[] = { ROTATE((uintptr_t)engine::hash, 32), ROTATE((uintptr_t)engine::memalloc, 32) };
-    uint64_t *key = (uint64_t*)_key_;
+	static uintptr_t _key_[] = { ROTATE((uintptr_t)engine::hash, 32), ROTATE((uintptr_t)engine::memalloc, 32) };
+	uint64_t *key = (uint64_t*)_key_;
 	uint64_t k0 = key[0];
 	uint64_t k1 = key[1];
 	uint64_t b = (uint64_t)bytes << 56;
@@ -42,7 +42,7 @@ engine::hash_t engine::hash(void *data, size_t bytes)
 	uint64_t v3 = k1 ^ 0x7465646279746573ULL;
 
 	while (bytes >= 8)
-    {
+	{
 		uint64_t mi = *in;
 		in += 1; bytes -= 8;
 		v3 ^= mi;
@@ -52,14 +52,14 @@ engine::hash_t engine::hash(void *data, size_t bytes)
 
 	uint64_t t = 0; uint8_t *pt = (uint8_t *)&t; uint8_t *m = (uint8_t *)in;
 	switch (bytes)
-    {
-	    case 7: pt[6] = m[6];
-	    case 6: pt[5] = m[5];
-	    case 5: pt[4] = m[4];
-	    case 4: *((uint32_t*)&pt[0]) = *((uint32_t*)&m[0]); break;
-	    case 3: pt[2] = m[2];
-	    case 2: pt[1] = m[1];
-	    case 1: pt[0] = m[0];
+	{
+		case 7: pt[6] = m[6];
+		case 6: pt[5] = m[5];
+		case 5: pt[4] = m[4];
+		case 4: *((uint32_t*)&pt[0]) = *((uint32_t*)&m[0]); break;
+		case 3: pt[2] = m[2];
+		case 2: pt[1] = m[1];
+		case 1: pt[0] = m[0];
 	}
 	b |= t;
 

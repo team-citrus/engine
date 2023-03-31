@@ -24,50 +24,50 @@ WEAK NO_INLINE void realMain();
 
 namespace engine
 {
-    namespace internals
-    {
-        namespace Vulkan
-        {
-            NEVER_INLINE int vkDraw();
-        }
+	namespace internals
+	{
+		namespace Vulkan
+		{
+			NEVER_INLINE int vkDraw();
+		}
 
-        namespace physics
-        {
-            NEVER_INLINE int physmain();
-        }
+		namespace physics
+		{
+			NEVER_INLINE int physmain();
+		}
 
-        namespace sound
-        {
-            NEVER_INLINE int mix();
-        }
+		namespace sound
+		{
+			NEVER_INLINE int mix();
+		}
 
-        NEVER_INLINE int gameplayM();
+		NEVER_INLINE int gameplayM();
 
-        extern bool usingVulkan;
-        extern int frameRate;
-        extern jmp_buf buf;
+		extern bool usingVulkan;
+		extern int frameRate;
+		extern jmp_buf buf;
 
-        extern thrd_t render;
-        extern thrd_t phys;
-        extern thrd_t audio;
-        extern thrd_t gameplay;
+		extern thrd_t render;
+		extern thrd_t phys;
+		extern thrd_t audio;
+		extern thrd_t gameplay;
 
-        // Making these functions weak aliases is INCREDIBLY useful for modding
+		// Making these functions weak aliases is INCREDIBLY useful for modding
 
-        // Render the scene, and draw the UI
-        NEVER_INLINE WEAK ALIAS(engine::internals::Vulkan::vkDraw)
-        int draw();
-        // Step the physics simulation, and call all physics triggered functions
-        NEVER_INLINE WEAK ALIAS(engine::internals::physics::physmain)
-        int physmain();
-        // Perform audio operations
-        NEVER_INLINE WEAK ALIAS(engine::internals::sound::mix)
-        int mix();
+		// Render the scene, and draw the UI
+		NEVER_INLINE WEAK ALIAS(engine::internals::Vulkan::vkDraw)
+		int draw();
+		// Step the physics simulation, and call all physics triggered functions
+		NEVER_INLINE WEAK ALIAS(engine::internals::physics::physmain)
+		int physmain();
+		// Perform audio operations
+		NEVER_INLINE WEAK ALIAS(engine::internals::sound::mix)
+		int mix();
 
-        // Run the gameplay code
-        NEVER_INLINE WEAK ALIAS(engine::internals::gameplayM)
-        int gameplayMain();
-    };
+		// Run the gameplay code
+		NEVER_INLINE WEAK ALIAS(engine::internals::gameplayM)
+		int gameplayMain();
+	};
 };
 
 #endif

@@ -13,10 +13,10 @@ using namespace engine;
 
 int engine::loadScene(int ID)
 {
-    Option<internals::scene &> packedScene = internals::scenes.lookup(ID);
-    if(packedScene.isNone())
-        return -1;
+	Option<internals::scene &> packedScene = internals::scenes.lookup(ID);
+	if(packedScene.isNone())
+		return -1;
 
-    internals::loadNecesary = true;
-    internals::currentScene = ID;
+	internals::loadNecesary = true;
+	internals::currentScene = ID;
 }

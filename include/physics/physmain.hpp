@@ -23,42 +23,42 @@ namespace internals
 {
 	namespace physics
 	{
-        using namespace physics;
+		using namespace physics;
 
-        // Initalize physics
-        void Init(bool 2D);
+		// Initalize physics
+		void Init(bool 2D);
 
-        // Deconstruct physics
-        void Fini();
+		// Deconstruct physics
+		void Fini();
 
-        /*  Steps the main physics simulation
-        *   @warning THIS SHOULD ONLY BE CALLED WITHIN physmain()
-        *   DO NOT CALL IT ANYWHERE ELSE UNLESS YOU WANT TO SERIOUSLY MESS THINGS UP.
-        *   @return Any error codes that might arrise
-        */
-        int step();
+		/*  Steps the main physics simulation
+		*   @warning THIS SHOULD ONLY BE CALLED WITHIN physmain()
+		*   DO NOT CALL IT ANYWHERE ELSE UNLESS YOU WANT TO SERIOUSLY MESS THINGS UP.
+		*   @return Any error codes that might arrise
+		*/
+		int step();
 
-        // State of physics
-        class PHYS_STATE
-        {
-            public:
-            bool is2D;
-            int stepRate;
-            union
-            {
-                b2World world2D;
-                btDiscreteDynamicsWorld world3D;
-            };
-            union
-            {
-                Vector<engine::physics::physobject2D> objs2D;
-                Vector<engine::physics::physobject3D> objs3D;
-            };
-        }
+		// State of physics
+		class PHYS_STATE
+		{
+			public:
+			bool is2D;
+			int stepRate;
+			union
+			{
+				b2World world2D;
+				btDiscreteDynamicsWorld world3D;
+			};
+			union
+			{
+				Vector<engine::physics::physobject2D> objs2D;
+				Vector<engine::physics::physobject3D> objs3D;
+			};
+		}
 
-        // The physics state
-        PHYS_STATE state;
-    };
+		// The physics state
+		PHYS_STATE state;
+	};
 };
 };
 #endif

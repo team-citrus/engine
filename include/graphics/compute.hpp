@@ -14,26 +14,26 @@
 
 namespace engine
 {
-    namespace render
-    {
-        class ComputeShader
-        {
-            union
-            {
-                VkShaderModule vkMod;
-            };
-            public:
-            ComputeShader(const char *shader);
-            ~ComputeShader();
-            OPERATOR void operator()()
-            {
-                dispatch();
-            }
-            void dispatch();
+	namespace render
+	{
+		class ComputeShader
+		{
+			union
+			{
+				VkShaderModule vkMod;
+			};
+			public:
+			ComputeShader(const char *shader);
+			~ComputeShader();
+			OPERATOR void operator()()
+			{
+				dispatch();
+			}
+			void dispatch();
 
-            // TODO: Args and stuff
-        };
-    }
+			// TODO: Args and stuff
+		};
+	}
 }
 
 

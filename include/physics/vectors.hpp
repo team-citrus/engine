@@ -26,17 +26,17 @@
 
 namespace engine
 {
-    namespace physics
-    {
-        // C++ style typedefs,
-        using Vec2 = glm::vec2;
-        using Vec3 = glm::vec3;
-        using Vec4 = glm::vec4;
-        using Quat = glm::quat;
-        using Quaternion = Quat;
+	namespace physics
+	{
+		// C++ style typedefs,
+		using Vec2 = glm::vec2;
+		using Vec3 = glm::vec3;
+		using Vec4 = glm::vec4;
+		using Quat = glm::quat;
+		using Quaternion = Quat;
 
-        // TODO: Wrapper functions
-    };
+		// TODO: Wrapper functions
+	};
 };
 
 #endif

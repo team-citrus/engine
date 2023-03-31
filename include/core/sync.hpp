@@ -14,12 +14,12 @@
 
 namespace engine
 {
-    namespace internals
-    {
-        extern MUTEX std::atomic_bool isPhysicsExecuting;
-        extern MUTEX std::atomic_bool isRenderExecuting;
-        extern MUTEX std::atomic_bool isGameplayExecuting;
-    }
+	namespace internals
+	{
+		extern MUTEX std::atomic_bool isPhysicsExecuting;
+		extern MUTEX std::atomic_bool isRenderExecuting;
+		extern MUTEX std::atomic_bool isGameplayExecuting;
+	}
 }
 
 #endif

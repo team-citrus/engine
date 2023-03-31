@@ -25,7 +25,7 @@
 
 namespace engine
 {
-    const char *interpretCrashCode(int code); // TODO: Implement this
+	const char *interpretCrashCode(int code); // TODO: Implement this
 }
 
 #endif

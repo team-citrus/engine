@@ -11,14 +11,14 @@
 
 namespace engine
 {
-    float getFrameDelta();
-    float getFrameDeltaD();
+	float getFrameDelta();
+	float getFrameDeltaD();
 
-    namespace physics
-    {
-        float getPhysicsDelta();
-        float getPhysicsDeltaD();
-    }
+	namespace physics
+	{
+		float getPhysicsDelta();
+		float getPhysicsDeltaD();
+	}
 }
 
 #endif

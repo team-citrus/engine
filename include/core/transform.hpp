@@ -15,58 +15,18 @@
 
 namespace engine
 {
-    using Float2 = physics::Vec2;
-    using Float3 = physics::Vec3;
-    using Float4 = physics::Vec4;
+	using Float2 = physics::Vec2;
+	using Float3 = physics::Vec3;
+	using Float4 = physics::Vec4;
 
-    class Transform2D : Component
-    {
-        public:
-            Float2 position;
+	class Transform2D : Component
+	{
+		public:
+			Float2 position;
 
-            Float2 rotation;
+			Float2 rotation;
 
-            Float2 scale;
-
-			virtual void awake()
-			{
-				return;
-			}
-			virtual void start()
-			{
-				return;
-			}
-			virtual void update()
-			{
-				return;
-			}
-			
-			virtual void fixedUpdate()
-			{
-				return;
-			}
-			virtual void onTriggerEnter()
-			{
-				return;
-			}
-			virtual void onTriggerStay()
-			{
-				return;
-			}
-			virtual void onTriggerExit()
-			{
-				return;
-			}
-    }
-
-    class Transform3D : Component
-    {
-        public:
-            Float3 position;
-
-            Float3 rotation;
-
-            Float3 scale;
+			Float2 scale;
 
 			virtual void awake()
 			{
@@ -97,7 +57,47 @@ namespace engine
 			{
 				return;
 			}
-    }
+	}
+
+	class Transform3D : Component
+	{
+		public:
+			Float3 position;
+
+			Float3 rotation;
+
+			Float3 scale;
+
+			virtual void awake()
+			{
+				return;
+			}
+			virtual void start()
+			{
+				return;
+			}
+			virtual void update()
+			{
+				return;
+			}
+			
+			virtual void fixedUpdate()
+			{
+				return;
+			}
+			virtual void onTriggerEnter()
+			{
+				return;
+			}
+			virtual void onTriggerStay()
+			{
+				return;
+			}
+			virtual void onTriggerExit()
+			{
+				return;
+			}
+	}
 };
 
 #endif
