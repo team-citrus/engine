@@ -5,6 +5,9 @@
 *   author: Niels Lohmann
 *   license: MIT
 */
+#ifndef CITRUS_ENGINE_JSON_PARSER_HPP__
+#define CITRUS_ENGINE_JSON_PARSER_HPP__
+
 #include <string>
 #include "core/vector.hpp"
 #include "core/pair.hpp"
@@ -38,3 +41,5 @@ namespace engine
 
 	using JSon = internals::nlohmann::basic_json<Map, Vector, std::string, int64_t, uint64_t, float, std::allocator, adl_serializer, Vector<uint8_t>>;
 }
+
+#endif
