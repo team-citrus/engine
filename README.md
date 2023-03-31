@@ -33,10 +33,15 @@ As well, by making the engine free software, we hope to set a precident in the g
     - [ ] Write or otherwise adopt a binary format glTF loader
 - [x] Write replacement functions and classes for some standard library functions and classes
   - [x] `engine::Vector<T>`
-  - [x] `engine::pair<A, B>`
-  - [x] `engine::map<A, B>`
+    - [ ] `std::vector<T>` compatibility
+  - [x] `engine::Pair<A, B>`
+    - [ ] `std::pair<T1, T2>` compatibility
+  - [x] `engine::Map<A, B>`
+    - [ ] `std::map<Key, T>` compatibilty
   - [x] `engine::hash()`
-  - [x] `engine::hashMap<K, T>`
+    - [ ] `std::hash<>()` compatibility
+  - [x] `engine::HashMap<K, T>`
+    - [ ] `std::unordered_map<Key, T>` compatibility
 - [ ] Create the rendering pipeline
 - [ ] Create the main loop
   - [x] `main()`
