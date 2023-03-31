@@ -27,10 +27,16 @@ namespace engine
 		B b;
 	};
 
-	template <typename K, typename B>
+	template <typename K, typename T>
 	class Map
 	{
 		public:
+		using key_type = K;
+		using mapped_type = T;
+		using size_type = size_t;
+		using difference_type = ptrdiff_t;
+		// TODO: Other std::map compat stuff.
+		
 		OPERATOR void addPair(A a, B b)
 		{
 			vec.push(Pair<A, B>(a, b));

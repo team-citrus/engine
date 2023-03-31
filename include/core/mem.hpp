@@ -12,6 +12,8 @@
 #include <cerrno>
 #include <cstdint>
 #include <cstdlib>
+#include <cstddef>
+#include <memory>
 #include "core/extensions.h"
 
 namespace engine
@@ -64,6 +66,8 @@ namespace engine
 	*/
 	DEPRECATED(It is best practice to only use the amount of specified space to be allocated)
 	size_t memlen(void *ptr);
+
+	// TODO: Add an allocator type
 };
 
 NOMANGLE
