@@ -31,18 +31,6 @@ namespace engine
 			NEVER_INLINE int vkDraw();
 		}
 
-		namespace physics
-		{
-			NEVER_INLINE int physmain();
-		}
-
-		namespace sound
-		{
-			NEVER_INLINE int mix();
-		}
-
-		NEVER_INLINE int gameplayM();
-
 		extern bool usingVulkan;
 		extern int frameRate;
 		extern jmp_buf buf;
@@ -58,14 +46,14 @@ namespace engine
 		NEVER_INLINE WEAK ALIAS(engine::internals::Vulkan::vkDraw)
 		int draw();
 		// Step the physics simulation, and call all physics triggered functions
-		NEVER_INLINE WEAK ALIAS(engine::internals::physics::physmain)
+		NEVER_INLINE
 		int physmain();
 		// Perform audio operations
-		NEVER_INLINE WEAK ALIAS(engine::internals::sound::mix)
+		NEVER_INLINE
 		int mix();
 
 		// Run the gameplay code
-		NEVER_INLINE WEAK ALIAS(engine::internals::gameplayM)
+		NEVER_INLINE
 		int gameplayMain();
 	};
 };
