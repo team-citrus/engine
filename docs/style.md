@@ -49,9 +49,15 @@ Brackets should be put on their own lines for functions.
 For `if` blocks and the like, we don't care, do as you will.
 
 ```c++
+// good
 void foo()
 {
   // Code
+}
+
+// bad
+void bar() {
+
 }
 ```
 
@@ -86,7 +92,7 @@ else
 ### `switch`
 
 `switch` should be used instead of `if`/`else` whenever applicable.
-`case`s should be indented, and code placed at the same indentation level.
+We do not care about `case` indentation, do as you will.
 
 ```c++
 // good
