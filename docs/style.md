@@ -1,16 +1,19 @@
 # C++ Code Style Guide
 
+For all engine C++ code, the styling specified here should be used above all else.
+If there is anything we haven't specfied, the [Linux Kernel Style Guide](https://www.kernel.org/doc/html/v4.10/process/coding-style.html) should be obeyed, especially the part about burning a copy of the GNU Coding Standards.
+
 ## Compiler extensions
 
 You should avoid using compiler extensions too often, however there is nothing wrong with using them.
 Common compiler extensions as well as some additional defines can be found in include/core/extensions.h, anything defines in that file can be used freely.
 Inline assembly is discouraged, but not illegal.
-If you ever use inline assembly, make sure it is well commented to make any future translations easier, and use gcc inline assembly with constraints for clarity and to prevent the use of black magic.
+If you ever use inline assembly, make sure it is well commented to make any future translations easier, and use gcc extended assembly for clarity and to prevent the use of black magic.
 
 ## Preprocessor defines
 
-Preprocessor defines should be written in all caps.
-SCREAMING_SNAKE_CASE should be used as well.
+SCREAMING_SNAKE_CASE should be used for preprocessor defines, for the most part.
+Generally, preprocessor defines should be avoided, however it isn't illegal to use them.
 
 ## Headers
 
@@ -35,12 +38,96 @@ Operators should be defined with `OPERATOR`, which is a macro defined in include
 Although this is not manditory, it is prefered.
 Simple method and functions should follow that same rule.
 
+## Nesting
+
+Generally, you should avoid more than three layers of indentation in code.
+Practices like early returns can help avoid this.
+
+## Brackets
+
+Brackets should be put on their own lines for functions.
+For `if` blocks and the like, we don't care, do as you will.
+
+```c++
+void foo()
+{
+  // Code
+}
+```
+
+## Indentation
+
+Indentation should be tabs, set as one pleases.
+
+## Conditionals
+
+### `if`
+
+`if`/`else` chains should be kept as short as possible.
+`if`/`else` chains should be used as little as possible.
+
+### `?:`/The Ternary Operator
+
+Since we aren't in Rust, the ternary operator should be used instead of an `if` and `else` when using a simple condition to assign to a variable.
+Ternary Operators shouldn't be chained, in any scenario where that would happen, use `if`/`else` chains or `switch` instead.
+
+```c++
+// good
+int a = thingIsHappening ? 0xABCD : 0xCDAB;
+
+// bad
+int a;
+if(thingIsHappening)
+    a = 0xABCD;
+else
+    a = 0xCDAB;
+```
+
+### `switch`
+
+`switch` should be used instead of `if`/`else` whenever applicable.
+`case`s should be indented, and code placed at the same indentation level.
+
+```c++
+// good
+int getTheValue(int param)
+{
+    switch(param)
+    {
+        case 0xA:
+            return 'a';
+        case 0xB:
+            return 'b';
+        case 0xC:
+            return 'c';
+        case 0xD:
+            return 'd';
+        default:
+            return -1;
+    }
+}
+
+// bad
+int getTheValue(int param)
+{
+    if(param == 0xA)
+        return 'a';
+    else if(param == 0xB)
+        return 'b';
+    else if(param == 0xC)
+        return 'c'; 
+    else if(param == 0xD)
+        return 'd';
+    else
+        return -1;
+}
+```
+
 ## OOP features
 
 ### `new` and `delete`
 
 Unless you need to use `new`, you should use `engine::memalloc`.
-Otherwise, `engine::memalloc` and friends should be used.
 
 ### Classes
 
@@ -69,7 +156,7 @@ Classical C bitwise operators should be used instead of the newer ones (`bitand`
 
 libc functions, except `malloc` and friends don't have any restrictions, they can be used anywhere.
 Although the symbols of `malloc` and friends have been overriden, they should still be avoided in engine code.
-STL functions and classes should be avoided, , but are fine to use.
+STL functions and classes should be avoided, but are fine to use.
 However, you can not use `std::vector`, `std::map`, or `std::unordered_map`.
 For these, we provide our own alternatives.
 
