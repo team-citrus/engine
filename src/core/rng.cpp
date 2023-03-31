@@ -22,11 +22,7 @@ std::atomic_bool rngLock;
 
 #ifdef __x86_64__
 
-ALWAYS_INLINE uint8_t rcon(int round)
-{
-	if(round <= 1) return 1;
-	else (round<<1) ^ (0x11b & -(round>>7));
-}
+#define rcon(round) ((round <= 1) ? 1 : (round<<1) ^ (0x11b & -(round>>7)))
 
 ALWAYS_INLINE void roundKey(uint8_t key[], uint8_t rkey[], int round)
 {
@@ -118,20 +114,10 @@ void engine::internals::AES(uint8_t key[], uint64_t unique[], uint8_t output[])
 		uint8_t keybuff[16];
 		roundKey(key, keybuff, i);
 		
-		switch(i)
-		{
-			case 13:
-
+		if(i == 13)
 			ustore_i128(output, _mm_aesenclast_si128(uload_i128(output), uload_i128(keybuff)));
-
-			break;
-
-			default:
-
+		else
 			ustore_i128(output, _mm_aesenc_si128(uload_i128(output), uload_i128(keybuff)));
-
-			break;
-		}
 	}
 }
 
