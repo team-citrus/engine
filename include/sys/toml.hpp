@@ -1024,12 +1024,12 @@ TOML_ENABLE_WARNINGS;
 	#endif
 #endif
 #if TOML_ABI_NAMESPACES
-	#define TOML_NAMESPACE_START				namespace toml { inline namespace TOML_CONCAT(v, TOML_LIB_MAJOR)
+	#define TOML_NAMESPACE_START				namespace engine { inline namespace toml { inline namespace TOML_CONCAT(v, TOML_LIB_MAJOR)
 	#define TOML_NAMESPACE_END					} static_assert(true)
 	#define TOML_NAMESPACE						::toml::TOML_CONCAT(v, TOML_LIB_MAJOR)
 	#define TOML_ABI_NAMESPACE_START(name)		inline namespace name { static_assert(true)
 	#define TOML_ABI_NAMESPACE_BOOL(cond, T, F)	TOML_ABI_NAMESPACE_START(TOML_CONCAT(TOML_EVAL_BOOL_, cond)(T, F))
-	#define TOML_ABI_NAMESPACE_END				} static_assert(true)
+	#define TOML_ABI_NAMESPACE_END				}} static_assert(true)
 #else
 	#define TOML_NAMESPACE_START				namespace toml
 	#define TOML_NAMESPACE_END					static_assert(true)

@@ -15,9 +15,7 @@
 #define NLOHMANN_JSON_NAMESPACE_BEGIN                \
     namespace engine                                 \
     {                                                \
-	namespace internals								 \
-	{												 \
-	namespace nlohmann								 \
+	inline namespace nlohmann								 \
 	{												 \
     inline namespace NLOHMANN_JSON_NAMESPACE_CONCAT( \
                 NLOHMANN_JSON_ABI_TAGS,              \
@@ -27,7 +25,6 @@
 #define NLOHMANN_JSON_NAMESPACE_END                                     \
     }  /* namespace (inline namespace) NOLINT(readability/namespace) */ \
     }  /* namespace nlohmann */											\
-	}  /* namespace internals */										\
 	}  /* namespace engine */
 
 #include <nlohmann/json.hpp>
@@ -37,9 +34,9 @@
 
 namespace engine
 {
-	using namespace internals::nlohmann::literals;
+	using namespace nlohmann::literals;
 
-	using JSon = internals::nlohmann::basic_json<Map, Vector, std::string, int64_t, uint64_t, float, std::allocator, adl_serializer, Vector<uint8_t>>;
+	using JSon = nlohmann::basic_json<Map, Vector, std::string, int64_t, uint64_t, float, std::allocator, adl_serializer, Vector<uint8_t>>;
 }
 
 #endif

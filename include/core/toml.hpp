@@ -6,7 +6,6 @@
 *	license: LGPL-3.0-only
 */
 
-// TODO: make this internal
 #include <toml.hpp>
 #include "core/extensions.h"
 
@@ -15,10 +14,8 @@
 
 namespace engine
 {
-	using TOMLTable = toml::table;
-	using TOMLParseError = toml::parse_error;
-	
-	// TODO: actual wrapper.
+	using toml = engine::internals::toml;
+	using namespace engine::toml;
 }
 
 #endif
