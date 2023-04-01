@@ -17,7 +17,15 @@ namespace engine
 {   
 	namespace internals
 	{
-		typedef struct __MESH_BUFFER_HANDLE meshBufferHandle; // Everyone loves opaque types
+		class meshBufferHandle
+		{
+			public:
+			// Index buffer, useful for to save memory,
+			Vector<size_t> indexBuffer;
+
+			// The actual vertices.
+			Vector<Vertex> verts;
+		};
 	}
 
 	class Vertex

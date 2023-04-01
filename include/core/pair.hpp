@@ -9,23 +9,14 @@
 #ifndef CITRUS_ENGINE_PAIRS_HPP___
 #define CITRUS_ENGINE_PAIRS_HPP___
 
+#include <utility>
 #include "core/option.hpp"
 #include "core/vector.hpp"
 
 namespace engine
 {
 	template <typename A, typename B>
-	class Pair
-	{
-		public:
-		Pair(A aa, B bb)
-		{
-			a = aa;
-			b = bb;
-		}
-		A a;
-		B b;
-	};
+	using Pair = std::pair<A, B>
 
 	template <typename K, typename T>
 	class Map
@@ -51,7 +42,7 @@ namespace engine
 		{
 			for(int i = 0; i < vec.getCount(); i++)
 			{
-				if(vec[i].a == a)
+				if(vec[i].first == a)
 					return Option::Option::some(vec[i]);
 			}
 		}
@@ -60,7 +51,7 @@ namespace engine
 		{
 			for(int i = 0; i < vec.getCount(); i++)
 			{
-				if(vec[i].b == b)
+				if(vec[i].second == b)
 					return Option::some(vec[i]);
 			}
 			return none<Pair<A, B>>();
@@ -70,8 +61,8 @@ namespace engine
 		{
 			for(int i = 0; i < vec.getCount(); i++)
 			{
-				if(vec[i].a == a)
-					return Option::some<B&>(vec[i].b);
+				if(vec[i].first == a)
+					return Option::some<B&>(vec[i].second);
 			}
 			return none<B&>();
 		}
@@ -80,8 +71,8 @@ namespace engine
 		{
 			for(int i = 0; i < vec.getCount(); i++)
 			{
-				if(vec[i].b == b)
-					return Option::some<A&>(vec[i].a);
+				if(vec[i].first == b)
+					return Option::some<A&>(vec[i].first);
 			}
 			return none<A&>();
 		}

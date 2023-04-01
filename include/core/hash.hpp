@@ -39,14 +39,14 @@ namespace engine
 			*this = hashMap<KEY, T>(ss);
 			for(size_t i = 0; i < ss; i++)
 			{
-				hash_t h = hash(&p[i].a, sizeof(KEY));
-				if(ptr[h % c].a == h) // Ahhhh hash collision
+				hash_t h = hash(&p[i].first, sizeof(KEY));
+				if(ptr[h % c].first == h) // Ahhhh hash collision
 				{
 					engine::errorcode() = ENGINE_HASH_COLLISION;
 					*this = hashMap<KEY, T>(ss);
 					break;
 				}
-				else if(ptr[h % c].a != 0)
+				else if(ptr[h % c].first != 0)
 				{
 					size_t sc = ss;
 					
@@ -57,14 +57,14 @@ namespace engine
 						
 						for(size_t i = 0; i < s; i++);
 						{
-							hash_t hh = hash(&p[i].a, sizeof(KEY));
-							if(ptr[hh % c].a == hh)
+							hash_t hh = hash(&p[i].first, sizeof(KEY));
+							if(ptr[hh % c].first == hh)
 							{
 								engine::errorcode() = ENGINE_HASH_COLLISION;
 								*this = hashMap(ss);
 								break;
 							}
-							else if(ptr[hh % c].a != 0)
+							else if(ptr[hh % c].first != 0)
 							{
 								memfree(ptr);
 								break;
@@ -125,8 +125,8 @@ namespace engine
 
 					for(size_t i = 0; i < c; i++)
 					{
-						hash_t in = ptr[i].a;
-						if(nptr[in % cc].a != 0)
+						hash_t in = ptr[i].first;
+						if(nptr[in % cc].first != 0)
 						{
 							memfree(nptr);
 							cc += 8;
@@ -136,7 +136,7 @@ namespace engine
 							nptr[in % cc] = ptr[i];
 					}
 
-					if(nptr[h % cc].a == h)
+					if(nptr[h % cc].first == h)
 					{
 						memfree(nptr);
 
@@ -146,7 +146,7 @@ namespace engine
 
 						return none<T>(); 
 					}
-					else if(nptr[h % cc].a != 0)
+					else if(nptr[h % cc].first != 0)
 					{
 						memfree(nptr);
 						cc += 8;
@@ -163,7 +163,7 @@ namespace engine
 			}
 			else
 			{
-				if(ptr[h % c].a == h) // Ahhhhh hash collision
+				if(ptr[h % c].first == h) // Ahhhhh hash collision
 				{
 					#ifndef _FILE_IS_ERRNO_DOT_CPP_
 					engine::errorcode() = ENGINE_HASH_COLLISION;
@@ -171,14 +171,14 @@ namespace engine
 
 					return none<T>();
 				}
-				else if(ptr[h % c].a != 0)
+				else if(ptr[h % c].first != 0)
 					goto iCollision;
 				else
 				{
-					ptr[h % c].a = h;
-					ptr[h % c].b = t;
+					ptr[h % c].first = h;
+					ptr[h % c].second = t;
 					s++;
-					return ptr[h % c].b;
+					return ptr[h % c].second;
 				}
 			}
 		}
@@ -198,7 +198,7 @@ namespace engine
 				Vector<Pair<KEY, T>> v;
 				for(size_t i = 0; i < c; i++)
 				{
-					if(ptr[i].a != 0)
+					if(ptr[i].first != 0)
 						v.push(ptr[i]);
 				}
 				
@@ -210,12 +210,12 @@ namespace engine
 
 		OPERATOR T &operator[](KEY k)
 		{
-			return ptr[hash(&k, sizeof(KEY)) % c].b;
+			return ptr[hash(&k, sizeof(KEY)) % c].second;
 		}
 
 		OPERATOR bool hasItem(KEY k)
 		{
-			return (ptr[hash(&k, sizeof(KEY)) % c].a != 0);
+			return (ptr[hash(&k, sizeof(KEY)) % c].first != 0);
 		}
 	};
 	
