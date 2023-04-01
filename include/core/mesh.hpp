@@ -12,19 +12,34 @@
 #include <cstddef>
 #include "core/rustints.h"
 #include "core/transform.hpp"
+#include "core/component.hpp"
 
 namespace engine
 {   
+	using IndexBuffer = Vector<size_t>;
+
 	namespace internals
 	{
 		class meshBufferHandle
 		{
+			int flags;
+			size_t refs;
 			public:
+			meshBufferHandle(const char *meshName);
+
 			// Index buffer, useful for to save memory,
-			Vector<size_t> indexBuffer;
+			IndexBuffer indexBuffer;
 
 			// The actual vertices.
 			Vector<Vertex> verts;
+
+			// Vertex groups
+			IndexBuffer *vertexGroups;
+			size_t groupCount;
+			
+			meshBufferHandle &getNew(const char *meshName, int flags);
+			meshBufferHandle &getNew(int flags);
+			void removeRef();
 		};
 	}
 
@@ -51,9 +66,8 @@ namespace engine
 
 	class Mesh
 	{
-		private:
-		bool readwrite;
-		internals::meshBufferHandle *buf; // Mesh buffers will be used to save memory by pointing them to the same buffer until a write/non-RO access occurs, then creating a new one.
+		internals::meshBufferHandle &buf; // Mesh buffers will be used to save memory by pointing them to the same buffer until a write/non-RO access occurs, then creating a new one.
+		
 		public:
 
 		// Creates an uninitalized mesh
@@ -61,10 +75,22 @@ namespace engine
 		// Loads mesh, and returns this class.
 		Mesh(const char *name); 
 
-		Face &operator[](size_t i);
+		Face &indexFace(size_t i);
+		Vertex &operator[](size_t i)
+		{
+			return buf.verts[i];
+		}
 
 		// TODO: Stuff
 	};
+
+	class MeshRenderer : Component
+	{
+		public:
+		Mesh mesh;
+
+		// TODO: settings and materials and shaders
+	}
 
 	using Tri = Face;
 	using Vert = Vertex;
