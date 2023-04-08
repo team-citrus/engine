@@ -9,96 +9,82 @@
 #ifndef CITRUS_ENGINE_PAIRS_HPP___
 #define CITRUS_ENGINE_PAIRS_HPP___
 
+#include <type_traits>
 #include <utility>
+#include <cstring>
 #include "core/option.hpp"
 #include "core/vector.hpp"
 
 namespace engine
 {
 	template <typename A, typename B>
-	using Pair = std::pair<A, B>
+	using Pair = std::pair<A, B>;
 
 	template <typename K, typename T>
 	class Map
 	{
+		struct No {}; 
+		template<typename T, typename Arg> No operator== (const T&, const Arg&);
+		template<typename T, typename Arg> No operator< (const T&, const Arg&);
+		template<typename T, typename Arg> No operator> (const T&, const Arg&);
+
+		template<typename T, typename Arg = T>
+  		struct ExistingOperators
+  		{
+    		enum
+			{ 
+				equal = !std::is_same<decltype(std::declval<T>() == std::declval<Arg>()), ::No>::value,
+				lesser = !std::is_same<decltype(std::declval<T>() < std::declval<Arg>()), ::No>::value,
+				greater = !std::is_same<decltype(std::declval<T>() > std::declval<Arg>()), ::No>::value,
+			};
+  		};
+
+		class Node
+		{
+			public:
+			Node()
+			{
+				memset(this, 0, sizeof(Node));
+			}
+			Node(bool clr)
+			{
+				*this = Node();
+				this->color = clr;
+			}
+			Node(bool clr, Pair<K, T> p)
+			{
+				*this = Node(clr);
+				this->pair = p;
+			}
+			~Node()
+			{
+				if(leafA != NULL) delete leafA;
+				if(leafB != NULL) delete leafB;
+			}
+			bool color;
+			Node *leafA;
+			Node *leafB;
+			Pair<K, T> pair;
+		}
+
+		Node *tree;
 		public:
 		using key_type = K;
 		using mapped_type = T;
 		using size_type = size_t;
 		using difference_type = ptrdiff_t;
-		// TODO: Other std::map compat stuff.
-		
-		OPERATOR void addPair(A a, B b)
+		// TODO: More std::map compatablity stuff
+
+		Map()
 		{
-			vec.push(Pair<A, B>(a, b));
+			tree = new Node();
+		}
+		~Map()
+		{
+			delete tree;
 		}
 
-		OPERATOR void addPair(Pair<A, B> p)
-		{
-			vec.push(p);
-		}
-
-		OPERATOR Option<Pair<A, B>> &lookupPair(A a)
-		{
-			for(int i = 0; i < vec.getCount(); i++)
-			{
-				if(vec[i].first == a)
-					return Option::Option::some(vec[i]);
-			}
-		}
-
-		OPERATOR Option<Pair<A, B>> &lookupPair(B b)
-		{
-			for(int i = 0; i < vec.getCount(); i++)
-			{
-				if(vec[i].second == b)
-					return Option::some(vec[i]);
-			}
-			return none<Pair<A, B>>();
-		}
-
-		OPERATOR Option<B&> getB(A a)
-		{
-			for(int i = 0; i < vec.getCount(); i++)
-			{
-				if(vec[i].first == a)
-					return Option::some<B&>(vec[i].second);
-			}
-			return none<B&>();
-		}
-
-		OPERATOR Option<A&> getA(B b)
-		{
-			for(int i = 0; i < vec.getCount(); i++)
-			{
-				if(vec[i].first == b)
-					return Option::some<A&>(vec[i].first);
-			}
-			return none<A&>();
-		}
-
-		OPERATOR Option<A&> lookup(B b)
-		{
-			return this->getA(b);
-		}
-
-		OPERATOR Option<B&> &lookup(A a)
-		{
-			return this->getB(a);
-		}
-
-		OPERATOR Option<A&> operator[](A a)
-		{
-			return lookup(a);
-		}
-
-		OPERATOR Option<B&> operator[](B b)
-		{
-			return lookup(b);
-		}
-
-		private:
-		Vector<Pair<A, B>> vec;
+		// TODO: Stuff.
 	};
 
 	// TODO: iterators

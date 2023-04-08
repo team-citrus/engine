@@ -23,6 +23,8 @@ namespace engine
 {
 	typedef size_t hash_t;
 
+	// TODO: std::hash style struct
+
 	// A SlipHash implementation, the key is based off some addresses
 	// Implementation based on https://github.com/majek/csiphash/blob/master/csiphash.c
 	hash_t hash(void *data, size_t bytes);
