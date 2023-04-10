@@ -32,10 +32,7 @@ namespace engine
 		NEVER_INLINE int gameplayMain()
 		{
 			// Physics and render lock gameplay
-			while(isRenderExecuting.load()) spinlock_pause();
-			while(isPhysicsExecuting.load()) spinlock_pause();
-
-			isGameplayExecuting.store(true);
+			while(isGameplayBlocked.load()) spinlock_pause();
 			
 			engine::clearErrorcode();
 
@@ -53,7 +50,13 @@ namespace engine
 			
 			removeErrorcodeForThread();
 			
-			isGameplayExecuting.store(false);
+			if(renderJustExecuted.load())
+			{
+				isPhysicsBlocked.store(false);
+			}
+			physicsJustExecuted.store(false);
+			renderJustExecuted.store(false);
+			gameplayJustExecuted.store(true);
 		}
 	};
 };

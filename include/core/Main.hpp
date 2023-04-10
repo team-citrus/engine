@@ -31,7 +31,6 @@ namespace engine
 			NEVER_INLINE int vkDraw();
 		}
 
-		extern bool usingVulkan;
 		extern int frameRate;
 		extern jmp_buf buf;
 
