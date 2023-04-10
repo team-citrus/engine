@@ -13,6 +13,7 @@
 #include "core/extensions.h"
 #include "core/simd.h"
 #include "core/rustints.h"
+#include "core/hash.hpp"
 
 #define ROTL(x, b) (x << b) | (x >> (sizeof(x)*8 - b))
 #ifndef __x86_64__
@@ -92,17 +93,14 @@ namespace engine
 
 			uint8_t key[32];
 			xmm_memcpy(key, bytes, 1);
-			for(int i = 16; i < 32; i += 8)
-				_rdseed64_step((unsigned long long*)(key + i)); // Fuck, where else will we get more random numbers?
+			(uint64_t*)key[2] = hash(key, 16);
+			(uint64_t*)key[3] = hash(key, 24);
 
 			uint64_t unique[2] = {ctr / 16, nonce};
 			internals::AES(key, unique, bytes);
 
 			#endif
 		}
-
-		/* Currently this only uses ChaCha20 to generate numbers */
-		/* TODO: AES-CTR-256 on AMD64 machines */
 
 		public:
 
@@ -206,4 +204,4 @@ namespace engine
 	using RNG = RandomNumberGenerator;
 }
 
-#endif
+#endif/
