@@ -12,6 +12,9 @@
 #ifdef __x86_64__
 #include <x86intrin.h>
 
+#define ROTL(x, b) (x << b) | (x >> (sizeof(x)*8 - b))
+#define ROTR(x, b) (x >> b) | (x << (sizeof(x)*8 - b))
+
 // Create a shuffle mask for shuffling an xmmreg packed with 32 bit integers
 // a is xmmreg_i32[3], b is xmmreg_i32[2], etc.
 #define XMM_I32_CREATE_SHUFFLE_MASK(a, b, c, d) ((a & 3) << 6) | ((b & 3) << 4) | ((c & 3) << 2) | (d & 3)

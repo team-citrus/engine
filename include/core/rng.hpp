@@ -15,7 +15,6 @@
 #include "core/rustints.h"
 #include "core/hash.hpp"
 
-#define ROTL(x, b) (x << b) | (x >> (sizeof(x)*8 - b))
 #ifndef __x86_64__
 #define BYTES_MOD 64
 #else
@@ -31,6 +30,7 @@ namespace engine
 
 		#ifdef __x86_64__
 		void AES(uint8_t key[], uint64_t unique[], uint8_t output[]);
+		void SHA256(uint8_t input[], size_t inlen, uint8_t hash[]);
 		#endif
 	}
 
@@ -89,12 +89,8 @@ namespace engine
 			
 			#else
 
-			// TODO: Use SHA256 to generate the required key
-
 			uint8_t key[32];
-			xmm_memcpy(key, bytes, 1);
-			(uint64_t*)key[2] = hash(key, 16);
-			(uint64_t*)key[3] = hash(key, 24);
+			SHA256(matrix, BYTES_MOD, key);
 
 			uint64_t unique[2] = {ctr / 16, nonce};
 			internals::AES(key, unique, bytes);
@@ -204,4 +200,4 @@ namespace engine
 	using RNG = RandomNumberGenerator;
 }
 
-#endif/
+#endif
