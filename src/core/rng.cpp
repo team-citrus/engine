@@ -87,15 +87,14 @@ void engine::internals::getSeedBytes(uint32_t matrix[])
 
 	#ifndef __x86_64__
 
-	if((uintptr_t)matrix & 0x3F) zmm_memcpy(matrix, mainRNG.matrix, 1);
-	else if((uintptr_t)matrix & 0x1F) ymm_memcpy(matrix, mainRNG.matrix, 2);
+	if((uintptr_t)matrix & 0x3F == 0) zmm_memcpy(matrix, mainRNG.matrix, 1);
+	else if((uintptr_t)matrix & 0x1F == 0) ymm_memcpy(matrix, mainRNG.matrix, 2);
 	else xmm_memcpy(matrix, mainRNG.matrix, 4);
 	mainRNG.shuffle();
 
 	#else
 
-	if((uintptr_t)matrix & 0x1F) ymm_memcpy(matrix, &mainRNG, sizeof(mainRNG)/32);
-	else xmm_memcpy(matrix, &mainRNG, sizeof(mainRNG)/16);
+	xmm_memcpy(matrix, &mainRNG, sizeof(mainRNG)/16);
 	mainRNG.ctr += 16;
 	mainRNG.shuffle();
 
