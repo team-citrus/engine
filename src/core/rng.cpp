@@ -6,6 +6,8 @@
 *   license: LGPL-3.0-only
 */
 
+#define __CITRUS_ENGINE_SOURCE_FILE__
+
 #ifdef _WIN32
 
 #define WIN32_LEAN_AND_MEAN
@@ -194,6 +196,18 @@ void SHA256(uint8_t input[], size_t inlen, uint8_t hash[])
 			a = temp1 + temp2;
 		}
 
+		#ifdef __AVX2__
+
+		m256i_t ymm0;
+		m256i_t ymm1;
+
+		ymm0 = uload_i256({a, b, c, d, e, f, g, h});
+		ymm1 = uload_i256(digest);
+		ymm1 = add256_i32(ymm0, ymm1);
+		ustore_i256(digest, ymm1);
+
+		#else
+
 		digest[0] += a;
 		digest[1] += b;
 		digest[2] += c;
@@ -202,6 +216,8 @@ void SHA256(uint8_t input[], size_t inlen, uint8_t hash[])
 		digest[5] += f;
 		digest[6] += g;
     	digest[7] += h;
+
+		#endif
 	}
 
 	engine::memfree(buffer);

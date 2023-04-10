@@ -7,6 +7,7 @@
 */
 
 #define _INTERNALS_ENGINE_THREAD_MAIN_
+#define __CITRUS_ENGINE_SOURCE_FILE__
 
 #include "core/extensions.h"
 #include "core/errno.hpp"

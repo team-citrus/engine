@@ -9,6 +9,8 @@
 #ifndef CITRUS_ENGINE_SINGLE_INSRUCTION_MULTIPLE_DATA_H__
 #define CITRUS_ENGINE_SINGLE_INSRUCTION_MULTIPLE_DATA_H__
 
+#if defined(__CITRUS_ENGINE_SOURCE_FILE__) || defined(CITRUS_ENGINE_EXPOSE_SIMD)
+
 #ifdef __x86_64__
 #include <x86intrin.h>
 
@@ -606,6 +608,8 @@ OPERATOR void xmm_memset(void *ptr, unsigned char c, size_t b)
 #else
 
 #error Unsupported CPU architecture!
+
+#endif
 
 #endif
 

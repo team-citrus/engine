@@ -5,6 +5,7 @@
 *   author: https://github.com/ComradeYellowCitrusFruit
 *   license: LGPL-3.0-only
 */
+#define __CITRUS_ENGINE_SOURCE_FILE__
 
 #include <cstddef>
 #include <cstdint>

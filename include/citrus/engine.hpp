@@ -9,6 +9,8 @@
 #ifndef CITRUS_ENGINE_MAIN_API_HPP__
 #define CITRUS_ENGINE_MAIN_API_HPP__
 
+#define __CITRUS_ENGINE_SOURCE_FILE__
+
 #include "core/extensions.h"
 #include "core/mem.hpp"
 #include "core/object.hpp"
@@ -25,5 +27,7 @@
 #include "core/hash.hpp"
 #include "core/mesh.hpp"
 #include "physics/vectors.hpp"
+
+#undef __CITRUS_ENGINE_SOURCE_FILE__
 
 #endif
