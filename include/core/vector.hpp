@@ -34,13 +34,13 @@ namespace engine
 				using pointer = T*;
 				using reference = T&;
 
-				friend bool operator== (const Vector::iterator& a, const Vector::iterator& b) { return v == v; };
-				friend bool operator!= (const Vector::iterator& a, const Vector::iterator& b) { return v != v; };
+				friend bool operator== (const Vector::iterator& a, const Vector::iterator& b) { return a == b; };
+				friend bool operator!= (const Vector::iterator& a, const Vector::iterator& b) { return a != b; };
 
 				private:
 				Vector<T> &v;
 				ptrdiff_t diff;
-			}
+			};
 
 			OPERATOR T &operator[](size_t index)
 			{

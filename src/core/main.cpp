@@ -247,18 +247,13 @@ int MAIN
 			// If gameplay executes at the same time as render and mix bad things will happen
 
 			// TODO: Optimize this
+			// render will automatically create and join mix 
 
 			thrd_create(&internals::gameplay, internals::gameplayM, NULL);
 			thrd_create(&internals::render, internals::draw, NULL);
-			thrd_create(&internals::audio, internals::mix, NULL);
-
-			thrd_detach(internals::gameplay);
-			thrd_detach(internals::render);
-			thrd_detach(internals::audio);
 
 			thrd_join(internals::gameplay, NULL);
 			thrd_join(internals::render, NULL);
-			thrd_join(internals::audio, NULL);
 
 			if(internals::loadNecesary) break; // If a new scene needs to load, stop handling frames.
 
