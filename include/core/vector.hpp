@@ -116,6 +116,13 @@ namespace engine
 				return ptr;
 			}
 
+			OPERATOR bool search(T t)
+			{
+				for(size_t i = 0; i < count; i++)
+					if(ptr[i] == t) return true;
+				return false
+			}
+
 			Vector()
 			{
 				ptr = memalloc((capacity = 8) * sizeof(T));

@@ -26,6 +26,7 @@ namespace engine
 	class Job
 	{
 		JobPtr ptr;
+		bool prioritzed;
 
 		#ifdef __FILE_IS_JOBSYS_DOT_CPP__
 		friend void refreshJobSystem();
@@ -46,6 +47,11 @@ namespace engine
 			ptr = func;
 		}
 
+		OPERATOR bool operator==(Job b)
+		{
+			return ptr == b.ptr;
+		}
+
 		///	Schedule the job for execution. 
 		/// @param exclude Bit flags of which threads to block.
 		/// @return Error returns -1 and sets engine::errorcode. Success returns the index it is currently scheduled at.
@@ -54,6 +60,9 @@ namespace engine
 		/// Block this thread until the job completes or _JOB_BLOCK_UNTIL_ milliseconds has passed (default defined as 100). Also moves the job to a prioity list if it is not already executing.
 		/// @return Error returns -1 and sets engine::errorcode. Success returns 0.
 		int complete();
+
+		/// Prioritize this job
+		void prioritize();
 	};
 }
 
