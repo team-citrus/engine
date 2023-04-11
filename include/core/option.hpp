@@ -27,7 +27,7 @@ namespace engine
 		Option(Option<T> &&o)
 		{
 			some = o.some;
-			t = o.t;
+			t = o.t;a
 		}
 
 		OPERATOR bool isSome()
