@@ -35,7 +35,7 @@ As well, by making the engine free software, we hope to set a precident in the g
   - [x] `engine::Vector<T>`
     - [ ] `std::vector<T>` compatibility
   - [x] `engine::Pair<A, B>`
-    - [ ] `std::pair<T1, T2>` compatibility
+    - [x] `std::pair<T1, T2>` compatibility
   - [x] `engine::Map<A, B>`
     - [ ] `std::map<Key, T>` compatibilty
   - [x] `engine::hash()`
@@ -45,10 +45,10 @@ As well, by making the engine free software, we hope to set a precident in the g
 - [ ] Create the rendering pipeline
 - [ ] Create the main loop
   - [x] `main()`
-  - [ ] `gameplayMain()`/`gameplayM()`
-  - [ ] `physmain()`/`physics::physmain()`
+  - [ ] `gameplayMain()`
+  - [ ] `physmain()`
   - [ ] `draw()`/`Vulkan::vkDraw()`
-  - [ ] `mix()`/`sound::mix()`
+  - [ ] `mix()`
 
 ### Medium priority - Before the next full release
 
