@@ -63,6 +63,11 @@ namespace engine
 
 		/// Prioritize this job
 		void prioritize();
+
+		#if defined(CITRUS_ENGINE_FINE_TUNE) || defined(_INTERNALS_ENGINE_THREAD_MAIN_)
+		/// Set this job to be done ASAP
+		void ASAP();
+		#endif
 	};
 }
 

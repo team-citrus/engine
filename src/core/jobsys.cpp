@@ -34,6 +34,7 @@ namespace engine
 		std::atomic_bool jobsBeingAccessed;
 		Vector<Job> jobs;
 		Vector<Job> priority;
+		Vector<Job> asap;
 		Map<JobPtr, std::thread::id> executing;
 
 		// Used by the job system to determine how many threads to generate.
@@ -139,6 +140,43 @@ namespace engine
 		}
 	}
 
+	void Job::ASAP()
+	{
+		for(size_t i = 0; i < internals::jobs.getCount(); i++)
+		{
+			while(internals::jobsBeingAccessed.load()) spinlock_pause();
+			if(internals::jobs[i] == *this)
+			{
+				while(internals::jobsBeingAccessed.load()) spinlock_pause();
+				internals::jobsBeingAccessed.store(true);
+
+				internals::asap.push(*this);
+				internals::jobs.rm(i);
+				
+				refreshJobSystem();
+				internals::jobsBeingAccessed.store(false);
+				return;
+			}
+		}
+
+		for(size_t i = 0; i < internals::priority.getCount(); i++)
+		{
+			while(internals::jobsBeingAccessed.load()) spinlock_pause();
+			if(internals::jobs[i] == *this)
+			{
+				while(internals::jobsBeingAccessed.load()) spinlock_pause();
+				internals::jobsBeingAccessed.store(true);
+
+				internals::asap.push(*this);
+				internals::priority.rm(i);
+				
+				refreshJobSystem();
+				internals::jobsBeingAccessed.store(false);
+				return;
+			}
+		}
+	}
+
 	static inline void refreshJobSystem()
 	{
 		initJobSystem();
@@ -147,6 +185,11 @@ namespace engine
 			internals::threadsAvalible--;
 			Job j;
 
+			if(internals::asap.getCount() != 0)
+			{
+				j = internals::asap[0];
+				internals::asap.rm(0);
+			}
 			if(internals::priority.getCount() != 0)
 			{
 				j = internals::priority[0];
@@ -188,6 +231,11 @@ namespace engine
 			internals::executing.rm(job.ptr);
 		}
 
+		if(internals::asap.getCount() != 0)
+		{
+			job = internals::asap[0];
+			internals::asap.rm(0);
+		}
 		if(internals::priority.getCount() != 0)
 		{
 			job = internals::priority[0];
