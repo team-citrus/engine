@@ -37,6 +37,7 @@
 #include "core/errno.hpp"
 #include "core/crash.hpp"
 #include "core/rng.hpp"
+#include "core/jobsys.hpp"
 #include "graphics/vkInit.hpp"
 #include "graphics/initGL.hpp"
 
@@ -218,6 +219,11 @@ int MAIN
 	initLogging();
 	pool = Pool();
 	initSigs();
+
+	jobsBeingAccessed.store(false);
+	jobs = priority = asap = Vector<Job>();
+	executing = Map<JobPtr, std::thread::id>();
+	initJobSystem();
 
 	// TODO: Implement settings
 
