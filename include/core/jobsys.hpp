@@ -16,12 +16,7 @@
 #endif
 
 namespace engine
-{
-	#define CITRUS_ENGINE_BLOCK_RENDERING 0x1
-	#define CITRUS_ENGINE_BLOCK_MIXING 0x2
-	#define CITRUS_ENGINE_BLOCK_PHYSICS 0x4
-	#define CITRUS_ENGINE_BLOCK_GAMEPLAY 0x8
-	
+{	
 	typedef void (*JobPtr)();
 	class Job
 	{
@@ -69,6 +64,24 @@ namespace engine
 		void ASAP();
 		#endif
 	};
+
+	#ifdef _INTERNALS_ENGINE_THREAD_MAIN_
+	namespace internals
+	{
+		std::atomic_bool jobsBeingAccessed;
+		Vector<Job> jobs;
+		Vector<Job> priority;
+		Vector<Job> asap;
+		Map<JobPtr, std::thread::id> executing;
+
+		// Used by the job system to determine how many threads to generate.
+		size_t threadsAvalible = 0;
+		// Used by the job system to determine how many threads can be generated.
+		size_t coreCount = 0;
+		// The number of threads that can be generated
+		size_t possibleThreads = 0;
+	}
+	#endif
 }
 
 #endif
