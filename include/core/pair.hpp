@@ -466,6 +466,23 @@ namespace engine
 		using value_type = T;
 		using pointer = T*;
 		using reference = T&;
+		MapIterator(const MapIterator &cc)
+		{
+			map = cc.map;
+			depth = cc.depth;
+		}
+
+		MapIterator()
+		{
+			depth = 0;
+			map = NULL;
+		}
+
+		~MapIterator()
+		{
+			if((uinptr_t)map & 0x8000000000000000 != 0)
+				delete ((Map<K, T, Compare>*)((uintptr_t)map & (~0x8000000000000000)));
+		}
 
 		MapIterator& operator++()
 		{
@@ -483,7 +500,19 @@ namespace engine
 		{
 			if(map != NULL)
 			{
+				if((uinptr_t)map & 0x8000000000000000 != 0)
+				{
+					engine::errorcode() = ENGINE_INVALID_ARG;
+					return ((Map<K, T, Compare>*)((uintptr_t)map & (~Map<K, T, Compare>*)))->forward(depth);
+				}
 				return map->forward(depth);
+			}
+			else
+			{
+				engine::errorcode() = ENGINE_INVALID_ARG;
+				map = new Map();
+				Node &r = map->forward(depth);
+				map = (Map<K, T, Compare>*)((uintptr_t)map | 0x8000000000000000);
 			}
 		}
 	};
