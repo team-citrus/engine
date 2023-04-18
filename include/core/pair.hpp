@@ -58,10 +58,42 @@ namespace engine
 				*this = Node(clr);
 				this->pair = p;
 			}
+			Node(const &Node cc)
+			{
+				color = cc.color;
+				pair = cc.pair;
+				parent = NULL;
+
+				if(cc.leafA != NULL)
+				{
+					leafA = new Node(cc.leafA);
+					leafA->parent = this;
+				}
+				if(cc.leafB != NULL)
+				{
+					leafB = new Node(cc.leafB);
+					leafB->parent = this;
+				}
+			}
 			~Node()
 			{
 				if(leafA != NULL) delete leafA;
 				if(leafB != NULL) delete leafB;
+			}
+
+			Node &traverse(size_t &depth)
+			{
+				Node &val;
+
+				if(leafB != NULL) val = leafB->traverse(depth);
+				if(depth == 0) return val;
+
+				val = *this;
+				depth--;
+				if(depth == 0) return val;
+
+				if(leafA != NULL) val = leafA->traverse(depth);
+				return val;
 			}
 
 			T &search(K key)
@@ -338,10 +370,15 @@ namespace engine
 			else { return memcmp(&k1, &k2, sizeof(K)) == 0; };
 		}
 
+		Node forward(size_t depth)
+		{
+			tree->traverse(depth);
+		}
+
 		public:
 		using key_type = K;
 		using mapped_type = T;
-		using value_type = Pair<const key_type, mapped_type;
+		using value_type = Pair<const key_type, mapped_type>;
 		using size_type = size_t;
 		using difference_type = ptrdiff_t;
 		using key_compare = std::less<K>;
@@ -351,11 +388,14 @@ namespace engine
 		{
 			tree = new Node();
 		}
+		Map(const Map &cc)
+		{
+			tree = new Node(*cc.tree);
+		}
 		~Map()
 		{
 			delete tree;
 		}
-
 		T &operator[](K key)
 		{
 			return tree->search(key);
@@ -402,9 +442,51 @@ namespace engine
 		{
 			tree->getNode(key).deleteNode();
 		}
+
+		MapIterator<K, T, Compare> begin()
+		{
+			return { 0, this };
+		}
+
+		MapIterator<K, T, Compare> end()
+		{
+			return { 0, NULL };
+		}
+
+		friend template <typename K, typename T> class MapIterator;
 	};
 
-	// TODO: iterators
+	template <typename K, typename T, typename Compare = std::less<K>>
+	class MapIterator
+	{
+		size_t depth;
+		Map<K, T, Compare> *map;
+		public:
+		using difference_type = ptrdiff_t;
+		using value_type = T;
+		using pointer = T*;
+		using reference = T&;
+
+		MapIterator& operator++()
+		{
+			depth++;
+			return *this;
+		}
+
+		MapIterator& operator--()
+		{
+			depth--;
+			return *this;
+		}
+
+		T& operator*()
+		{
+			if(map != NULL)
+			{
+				return map->forward(depth);
+			}
+		}
+	};
 };
 
 #endif
