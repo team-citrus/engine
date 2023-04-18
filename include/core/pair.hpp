@@ -101,6 +101,7 @@ namespace engine
 						return leafA->insert(key, obj);
 				}
 				else
+				{
 					if(leafB == NULL)
 					{
 						leafB = new Node(true, Pair<K, T>(key, obj)); // TODO: errors.
@@ -110,11 +111,56 @@ namespace engine
 					}
 					else
 						return leafB->insert(key, obj);
+				}
 			}
 
 			void deleteNode()
 			{
-				// TODO: This.
+				if(leafA == NULL && leafB == NULL)
+				{
+					if(this == parent->leafA)
+						parent->leafA = NULL;
+					else
+						parent->leafB = NULL;
+
+					Node esto = *this; // this in spanish, node is masculine in spanish hence esto not este
+					leafA->deleteFix(esto);
+					delete this;
+					return;
+				}
+
+				if(leafA != NULL && leafB == NULL)
+				{
+					if(this == parent->leafA)
+						parent->leafA = leafA;
+					else
+						parent->leafB = leafA;
+
+					leafA = NULL;
+					Node esto = *this; // this in spanish, node is masculine in spanish hence esto not este
+					leafA->deleteFix(esto);
+					delete this;
+					return;
+				}
+
+				if(leafA == NULL && leafB != NULL)
+				{
+					if(this == parent->leafA)
+						parent->leafA = leafB;
+					else
+						parent->leafB = leafB;
+
+					leafB = NULL;
+					Node esto = *this; // this in spanish, node is masculine in spanish hence esto not este
+					leafB->deleteFix(esto);
+					delete this;
+					return;
+				}
+
+				Node *successor = this->leafA;
+				while(successor->leafB != NULL) successor = successor->leafB;
+				pair = successor->pair;
+				successor->deleteNode();
 			}
 
 			void fix()
@@ -165,6 +211,81 @@ namespace engine
 				}
 			}
 
+			void deleteFix(Node padre) // why not continue the spanish variable names from deleteNode?
+			{
+				Node *esto = this;
+				while(esto != tree || (esto == NULL | color == false))
+				{
+					if(padre.parent->leafB == esto)
+					{
+						Node *hermano = padre.parent->leafA;
+						if(hermano->color)
+						{
+							hermano->color = false;
+							hermano->parent->color = true;
+							hermano->parent->leftRotate();
+							hermano = hermano->parent->leafA;
+						}
+
+						if((hermano->leafB == NULL || hermano->leafB->color == black) && (hermano->leafA == NULL || hermano->leafA->color == black))
+						{
+							hermano->color = true;
+							esto = hermano->parent;
+						}
+						else if(hermano->leafA->color == false)
+						{
+							hermano->leafB->color = false;
+							hermano->color = true;
+							hermano->rightRotate();
+							hermano = hermano->parent->leafA;
+						}
+						else if(hermano->color == false && hermano->leafA == true)
+						{
+							hermano->color = hermano->parent->color;
+							hermano->parent->color = false;
+							hermano->leafA->color = false;
+							hermano->parent->leftRotate();
+							esto = tree;
+
+						}
+					}
+					else
+					{
+						Node *hermano = padre.parent->leafB;
+						if(hermano->color)
+						{
+							hermano->color = false;
+							hermano->parent->color = true;
+							hermano->parent->leftRotate();
+							hermano = hermano->parent->leafB;
+						}
+
+						if((hermano->leafB == NULL || hermano->leafB->color == black) && (hermano->leafA == NULL || hermano->leafA->color == black))
+						{
+							hermano->color = true;
+							esto = hermano->parent;
+						}
+						else if(hermano->leafA->color == false)
+						{
+							hermano->leafB->color = false;
+							hermano->color = true;
+							hermano->rightRotate();
+							hermano = hermano->parent->leafA;
+						}
+						else if(hermano->color == false && hermano->leafA == true)
+						{
+							hermano->color = hermano->parent->color;
+							hermano->parent->color = false;
+							hermano->leafA->color = false;
+							hermano->parent->leftRotate();
+							esto = tree;
+						}
+					}
+				}
+
+				esto->color = false;
+			}
+
 			void leftRotate()
 			{
 				Node *x = this;
@@ -203,11 +324,11 @@ namespace engine
 				x->parent = y;
 			}
 
-			bool color; // false is black, true is red
 			Node *parent;
 			Node *leafA;
 			Node *leafB;
 			Pair<K, T> pair;
+			bool color; // false is black, true is red
 		};
 
 		Node *tree;
