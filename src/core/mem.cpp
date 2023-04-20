@@ -31,6 +31,11 @@
 
 engine::internals::Pool pool;
 
+OPERATOR bool validatePointer(uintptr_t ptr)
+{
+	return (ptr != NULL) && (ptr < (uintptr_t)(pool.start + pool.size)) && (ptr > (uintptr_t)(pool.start));
+}
+
 // Used to make the code in free() and reallocate() clearer
 OPERATOR void mergeBlocks(engine::internals::poolBlock *nptr)
 {
@@ -76,8 +81,12 @@ alloc_goto:
 				void *ptr = mmap((void*)((uintptr_t)engine::internals::pool.start + _POOL_SIZE_), 
 					_POOL_EXPANSION_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON | MAP_FIXED_NOREPLACE |
 					
-					#if _POOL_SIZE_ + _POOL_EXPANSION_SIZE_ % 1024 * 1024 * 1024 || _POOL_SIZE_ + _POOL_EXPANSION_SIZE_ % 1024 * 1024 * 2 && defined(_x86_64__)
-					MAP_HUGETLB | 0 << MAP_HUGE_SHIFT
+					#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 1024ull) == 0 || (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 2ull) == 0
+					MAP_HUGETLB | 
+					#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024 * 1024 * 1024) == 0
+					(30 << MAP_HUGE_SHIFT)
+					#else
+					(21 << MAP_HUGE_SHIFT)
 					#endif,
 					
 					0, 0);
@@ -181,10 +190,10 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 {
 	engine::internals::poolBlock *bptr = (engine::internals::poolBlock*)ptr - 1;
 	
-	if(ptr == NULL)
+	if(!validatePointer((uintptr_t)ptr))
 	{
 		engine::errorcode() = ENGINE_MEMREALLOC_INVALID_PTR;
-		return this->return this->allocate(blocks);
+		return this->allocate(blocks);
 	}
 	else if(bptr->amagic != POOL_ALLOC_BLOCK_MAGIC)
 	{
@@ -236,16 +245,14 @@ void engine::internals::Pool::free(engine::internals::poolBlock *bptr)
 {
 	lock();
 
-	// NOTE: Only some invlid pointers will be caught
-
-	if(bptr + 1 == NULL || !(((uintptr_t)(bptr + 1)) & (0xFFFF << 52)) /* check for NULL and invalid userland pointers. */
-	|| bptr + 1 == (void*)0xDEADBEEF || bptr + 1 == (void*)0xDEADC0DE || bptr + 1 == (void*)0xCAFEBABE) /* check for common mneumonic pointers */
+	if(!validatePointer((uintptr_t)bptr))
 	{
 		engine::errorcode() = ENGINE_MEMFREE_INVALID_PTR;
 		unlock();
 		return;
 	}
-	if(bptr->fmagic == POOL_FREE_BLOCK_MAGIC)
+	
+	if(bptr->amagic == POOL_ALLOC_BLOCK_MAGIC)
 	{
 		bptr->fsize = bptr->asize;
 		bptr->fmagic = POOL_FREE_BLOCK_MAGIC;

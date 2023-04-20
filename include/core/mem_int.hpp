@@ -26,7 +26,7 @@
 #define POOL_END -1ull
 
 #ifndef _POOL_SIZE_
-#define _POOL_SIZE_ 0x80000000ull // 1024 * 1024 * 2 
+#define _POOL_SIZE_ (1024ull * 1024ull * 1024ull * 2ull)
 #endif
 
 #ifndef _POOL_EXPANSION_SIZE_
@@ -129,13 +129,24 @@ namespace engine
 					#ifndef _WIN32
 					start = (engine::internals::poolBlock*)mmap(NULL, _POOL_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON |
 					
-					#if _POOL_SIZE_ + _POOL_EXPANSION_SIZE_ % 1024 * 1024 * 1024 || _POOL_SIZE_ + _POOL_EXPANSION_SIZE_ % 1024 * 1024 * 2 && defined(_x86_64__)
-					MAP_HUGETLB | 0 << MAP_HUGE_SHIFT
-					#endif,
-
-					0, 0);
+					#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 1024ull) == 0 || (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 2ull) == 0
+					MAP_HUGETLB | 
+					#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024 * 1024 * 1024) == 0
+					(30 << MAP_HUGE_SHIFT)
 					#else
-					start = (engine::internals::poolBlock*)VirtualAlloc(NULL, _POOL_SIZE_, MEM_COMMIT | MEM_RESERVE, 0);
+					(21 << MAP_HUGE_SHIFT)
+					#endif,
+					
+					0, 0);
+
+					#else
+					start = (engine::internals::poolBlock*)VirtualAlloc(NULL, _POOL_SIZE_, MEM_COMMIT | MEM_RESERVE
+					
+					#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 1024ull) == 0 || (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 2ull) == 0f
+					| MEM_LARGE_PAGES
+					#endif
+
+					, 0);
 					#endif
 
 					limit = ((uintptr_t)start) + _POOL_SIZE_;
