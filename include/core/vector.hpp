@@ -28,7 +28,6 @@ namespace engine
 		public:
 			struct iterator
 			{
-				using iterator_category = std::forward_iterator_tag;
 				using difference_type = ptrdiff_t;
 				using value_type = T;
 				using pointer = T*;

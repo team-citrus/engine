@@ -35,7 +35,8 @@ namespace engine
 		using Quat = glm::quat;
 		using Quaternion = Quat;
 
-		// TODO: Wrapper functions
+		// TODO: GLM wrappers.
+		// TODO: Internalize GLM
 	};
 };
 

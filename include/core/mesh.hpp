@@ -10,6 +10,7 @@
 #define CITRUS_ENGINE_MESH_HPP__
 
 #include <cstddef>
+#include "core/pair.hpp"
 #include "core/rustints.h"
 #include "core/transform.hpp"
 #include "core/component.hpp"
@@ -27,18 +28,24 @@ namespace engine
 			public:
 			meshBufferHandle(const char *meshName);
 
-			// Index buffer, useful for to save memory,
-			IndexBuffer indexBuffer;
-
-			// The actual vertices.
 			Vector<Vertex> verts;
+			Vector<int> indexBuffer;
 
-			// Vertex groups
-			IndexBuffer *vertexGroups;
-			size_t groupCount;
+			// TODO: Bones, Vertex Groups, etc.
 			
 			meshBufferHandle &getNew(const char *meshName, int flags);
 			meshBufferHandle &getNew(int flags);
+
+			Vector<Tri> constructFaceBuffer()
+			{
+				Vector<Tri> ret;
+				for(size_t i = 0; i < indexBuffer.getCount()/3; i++)
+				{
+					ret.push(Tri(verts[indexBuffer[i * 3]], verts[indexBuffer[(i * 3) + 1]], verts[indexBuffer[(i * 3) + 2]]));
+				}
+				return ret;
+			}
+
 			void removeRef();
 		};
 	}
@@ -48,9 +55,6 @@ namespace engine
 		public:
 		Float3 pos;
 		Float2 uv;
-
-		// TODO: Vertex normals?
-		// TODO: Methods... maybe?
 	}
 
 	class Face
@@ -59,9 +63,12 @@ namespace engine
 		Vertex &a;
 		Vertex &b;
 		Vertex &c;
-
-		// TODO: Face normals?
-		// TODO: Methods... maybe?
+		Face(Vertex &va, Vertex &vb, Vertex &vc)
+		{
+			a = va;
+			b = vb;
+			c = vc;
+		}
 	};
 
 	class Mesh
@@ -90,6 +97,7 @@ namespace engine
 		Mesh mesh;
 
 		// TODO: settings and materials and shaders
+		// TODO: Skeletons
 	}
 
 	using Tri = Face;
