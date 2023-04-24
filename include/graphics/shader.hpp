@@ -9,7 +9,7 @@
 #ifndef CITRUS_ENGINE_COMPUTE_SHADERS_HPP__
 #define CITRUS_ENGINE_COMPUTE_SHADERS_HPP__
 
-#include <vulkan.h>
+#include <cstddef>
 
 namespace engine
 {
@@ -17,10 +17,7 @@ namespace engine
 	{
 		class Shader
 		{
-			union
-			{
-				VkShaderModule vkMod;
-			};
+			size_t id;
 			public:
 			Shader(const char *shader);
 			~Shader();

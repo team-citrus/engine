@@ -9,7 +9,6 @@
 #ifndef CITRUS_ENGINE_COMPUTE_SHADERS_HPP__
 #define CITRUS_ENGINE_COMPUTE_SHADERS_HPP__
 
-#include <vulkan.h>
 #include "core/extensions.h"
 
 namespace engine
@@ -18,18 +17,15 @@ namespace engine
 	{
 		class ComputeShader
 		{
-			union
-			{
-				VkShaderModule vkMod;
-			};
+			size_t id;
 			public:
 			ComputeShader(const char *shader);
 			~ComputeShader();
-			OPERATOR void operator()()
+			OPERATOR void operator(int x, int y, int z)()
 			{
-				dispatch();
+				dispatch(x, y, z);
 			}
-			void dispatch();
+			void dispatch(int x, int y, int z);
 
 			// TODO: Args and stuff
 		};
