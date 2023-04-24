@@ -31,6 +31,10 @@ As well, by making the engine free software, we hope to set a precident in the g
   - [ ] Meshes, verts, etc
     - [ ] Write or otherwise adopt a FBX loader
     - [ ] Write or otherwise adopt a binary format glTF loader
+    - [ ] `engine::Mesh`
+      - [ ] Vertex groups
+      - [ ] Bones
+    - [ ] `engine::MeshRenderer`
 - [x] Write replacement functions and classes for some standard library functions and classes
   - [x] `engine::Vector<T>`
     - [ ] `std::vector<T>` compatibility
