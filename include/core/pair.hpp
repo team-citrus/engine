@@ -12,6 +12,8 @@
 #include <type_traits>
 #include <utility>
 #include <cstring>
+#include <cstdio>
+#include <iostream>
 #include "core/option.hpp"
 #include "core/vector.hpp"
 #include "core/extensions.h"
@@ -96,6 +98,12 @@ namespace engine
 				return val;
 			}
 
+			size_t count()
+			{
+				if(this == NULL) return 0;
+				return leafA->count() + leafB->count() + 1;
+			}
+
 			T &search(K key)
 			{
 				getNode(key).pair.second;
@@ -144,6 +152,46 @@ namespace engine
 					else
 						return leafB->insert(key, obj);
 				}
+			}
+
+			void serialize(std::ostream &stream, size_t offsetInFile)
+			{
+				Node esto = *this;
+				size_t pos = stream.tellp() - offsetInFile;
+				esto.leafA = (leafA != NULL) ? (Node*)(pos + sizeof(Node)) : 0 ;
+				esto.leafB = (leafB != NULL) ? (Node*)((uintptr_t)esto.leafA + sizeof(Node)) : 0 ;
+				stream.write(this, sizeof(Node));
+
+				if(leafA != NULL)
+					leafA->serialize(stream, offsetInFile);
+				if(leafB != NULL)
+					leafB->serialize(stream, offsetInFile);
+			}
+
+			void serialize(FILE *file, size_t offsetInFile)
+			{
+				Node esto = *this;
+				size_t pos = stream.tellp() - offsetInFile;
+				esto.leafA = (leafA != NULL) ? (Node*)(pos + sizeof(Node)) : 0 ;
+				esto.leafB = (leafB != NULL) ? (Node*)((uintptr_t)esto.leafA + sizeof(Node)) : 0 ;
+				fwrite(this, sizeof(Node), 1, file);
+
+				if(leafA != NULL)
+					leafA->serialize(stream, offsetInFile);
+				if(leafB != NULL)
+					leafB->serialize(stream, offsetInFile);
+			}
+
+			static Node *deserialize(Node *buffer, ptrdiff_t offset)
+			{
+				Node *us = new Node(*(buffer + (offset/sizeof(Node)))); // This calls the copy constructor.... right??
+				
+				us->leafA = (us->leafA != NULL) ? Node::deserialize(buffer, (ptrdiff_t)us->leafB) : NULL;
+				us->leafB = (us->leafB != NULL) ? Node::deserialize(buffer, (ptrdiff_t)us->leafB) : NULL;
+				us->leafA->parent = us;
+				us->leafB->parent = us;
+
+				return us;
 			}
 
 			void deleteNode()
@@ -453,6 +501,52 @@ namespace engine
 			return { 0, NULL };
 		}
 
+		void serialize(std::ostream &file)
+		{
+			size_t tmp = tree->count();
+			file.write(tmp, 8);
+			tree->serialize(file, file.tellp());
+		}
+
+		void serialize(FILE *file)
+		{
+			size_t tmp = tree->count() * sizeof(Node);
+			fwrite(&tmp, 8, 1, file);
+			tree->serialize(file, ftell(file));
+		}
+
+		static Map<K, T, Compare> deserialize(std::istream &file)
+		{
+			size_t size;
+			Map<FK, FT, FCompare> m;
+			file.read(&size, 8);
+			if(size => 0x2000)
+			{ /* TODO: Map file to memory and call deserialize */ }
+			Node *buffer = memalloc(size);
+			file.read(buffer, size);
+			m.tree = Node::deserialize(buffer);
+		}
+
+		static Map<K, T, Compare> deserialize(FILE *file)
+		{
+			size_t size;
+			Map<FK, FT, FCompare> m;
+			fread(&size, 8, 1, file);
+			if(size => 0x2000)
+			{ /* TODO: Map file to memory and call deserialize */ }
+			Node *buffer = memalloc(size);
+			fread(buffer, 1, size, file);
+			m.tree = Node::deserialize(buffer);
+			return m;
+		}
+
+		static Map<K, T, Compare> deserialize(void *buffer)
+		{
+			Map<FK, FT, FCompare> m;
+			m.tree = Node::deserialize(buffer);
+			return m;
+		}
+
 		friend template <typename K, typename T> class MapIterator;
 	};
 
@@ -505,7 +599,7 @@ namespace engine
 					engine::errorcode() = ENGINE_INVALID_ARG;
 					return ((Map<K, T, Compare>*)((uintptr_t)map & (~Map<K, T, Compare>*)))->forward(depth);
 				}
-				return map->forward(depth);
+				return map->forward(depth).pair.second;
 			}
 			else
 			{
@@ -515,6 +609,13 @@ namespace engine
 				map = (Map<K, T, Compare>*)((uintptr_t)map | 0x8000000000000000);
 			}
 		}
+
+		bool operator==(const MapIterator<K, T, Compare> &a, const MapIterator<K, T, Compare> &b)
+		{
+			return (a.depth == b.depth) && (a.map == b.map);
+		}
+		
+		friend class Map<K, T, Compare>;
 	};
 };
 
