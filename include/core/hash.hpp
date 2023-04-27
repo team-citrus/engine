@@ -1,7 +1,7 @@
 /*
 *   name: include/core/hash.hpp
 *   origin: Citrus Engine
-*   purpose: Provide the main hash function, and hashMap<K, T>
+*   purpose: Provide the main hash function, and HashMap<K, T>
 *   author: https://github.com/ComradeYellowCitrusFruit
 *   license: LGPL-3.0-only
 */
@@ -23,201 +23,48 @@ namespace engine
 {
 	typedef size_t hash_t;
 
-	// TODO: std::hash style struct
-
-	// A SlipHash implementation, the key is based off some addresses
-	// Implementation based on https://github.com/majek/csiphash/blob/master/csiphash.c
-	hash_t hash(void *data, size_t bytes);
+	template <class T>
+	hash_t hash(T *ptr, size_t len);
 
 	template<class KEY, class T>
-	class hashMap
+	class HashMap
 	{
-		size_t s;
-		size_t c;
-		Pair<hash_t, T> *ptr;
+		size_t empty;
+		Vector<Pair<hash_t, T>> vec;
 		public:
-		OPTIMIZE(3) hashMap(Pair<KEY, T> p[], size_t ss)
+		HashMap(Vector<Pair<KEY, T>> v)
 		{
-			*this = hashMap<KEY, T>(ss);
-			for(size_t i = 0; i < ss; i++)
+			vec = Vector((empty = v.getCount() * 2));
+			for(size_t i = 0; i < v.getCount(); i++)
 			{
-				hash_t h = hash(&p[i].first, sizeof(KEY));
-				if(ptr[h % c].first == h) // Ahhhh hash collision
+				hash_t h = hash(&v[i].first, 1);
+				size_t index = h % vec.getCount();
+				size_t tries;
+				while(vec[index].first != 0)
 				{
-					engine::errorcode() = ENGINE_HASH_COLLISION;
-					*this = hashMap<KEY, T>(ss);
-					break;
-				}
-				else if(ptr[h % c].first != 0)
-				{
-					size_t sc = ss;
-					
-					while(true)
+					if(vec[index].first == h)
 					{
-						*this = hashMap<KEY, T>((sc += 8));
-						s = ss;
-						
-						for(size_t i = 0; i < s; i++);
-						{
-							hash_t hh = hash(&p[i].first, sizeof(KEY));
-							if(ptr[hh % c].first == hh)
-							{
-								engine::errorcode() = ENGINE_HASH_COLLISION;
-								*this = hashMap(ss);
-								break;
-							}
-							else if(ptr[hh % c].first != 0)
-							{
-								memfree(ptr);
-								break;
-							}
-							else
-								ptr[hh % c] = p [i];
-						}
-					}
-				}
-				else
-				{
-					ptr[h % c] = p[i]
-				}
-			}
-		}
-
-		OPTIMIZE(3) hashMap(Vector<Pair<KEY, T>> p)
-		{
-			*this = hashMap<KEY, T>(p.data(), p.getCount());
-		}
-
-		OPTIMIZE(3) hashMap(size_t cc)
-		{
-			s = 0;
-			ptr = zmalloc(sizeof(Pair<hash_t,T>) * (c = cc));
-		}
-
-		OPTIMIZE(3) hashMap(hashMap<KEY, T> &cc)
-		{
-			c = cc.c;
-			s = cc.s;
-			ptr = memcalloc(sizeof(Pair<hash_t,T>) * c);
-			memcpy(ptr, cc.ptr, c); // TODO: Do some speed comparison against ymm_memcpy(ptr, cc.ptr, (size & 0x1F) ? (size >> 5) + 1 : size >> 5);
-		}
-
-		~hashMap()
-		{
-			memfree(ptr);
-		}
-
-		OPTIMIZE(3) 
-
-		#ifdef _FILE_IS_ERRNO_DOT_CPP_
-		OPERATOR
-		#endif
-
-		Option<T> add(KEY k, T t)
-		{
-			hash_t h = hash(&k, sizeof(KEY));
-			if(s + 1 >= c)
-			{
-				iCollision:
-				size_t cc = c + 8;
-
-				while(true)
-				{
-					Pair<hash_t, T> *nptr = memcalloc(sizeof(Pair<hash_t,T>) * cc);
-
-					for(size_t i = 0; i < c; i++)
-					{
-						hash_t in = ptr[i].first;
-						if(nptr[in % cc].first != 0)
-						{
-							memfree(nptr);
-							cc += 8;
-							continue;
-						}
-						else
-							nptr[in % cc] = ptr[i];
-					}
-
-					if(nptr[h % cc].first == h)
-					{
-						memfree(nptr);
-
+						vec.~Vector();
 						#ifndef _FILE_IS_ERRNO_DOT_CPP_
-						engine::errorcode() = ENGINE_HASH_COLLISION;
+						errorcode() = ENGINE_INVALID_ARG;
 						#endif
 
-						return none<T>(); 
+						return;
 					}
-					else if(nptr[h % cc].first != 0)
+					tries++;
+					if(tries > vec.getCount())
 					{
-						memfree(nptr);
-						cc += 8;
+						vec.resize(vec.getCount() + 10);
+						tries = 0;
 						continue;
 					}
-					else
-						nptr[h % cc] = Pair<hash_t,T>(h, t);
 
-					memfree(ptr);
-					ptr = nptr;
-					c = cc;
-					s++;
+					index = (h + ((tries + (tries * tries))/2)) % vec.getCount();
 				}
+
+				vec[index].first = h;
+				vec[index].second = v[i].second;
 			}
-			else
-			{
-				if(ptr[h % c].first == h) // Ahhhhh hash collision
-				{
-					#ifndef _FILE_IS_ERRNO_DOT_CPP_
-					engine::errorcode() = ENGINE_HASH_COLLISION;
-					#endif
-
-					return none<T>();
-				}
-				else if(ptr[h % c].first != 0)
-					goto iCollision;
-				else
-				{
-					ptr[h % c].first = h;
-					ptr[h % c].second = t;
-					s++;
-					return ptr[h % c].second;
-				}
-			}
-		}
-
-		OPERATOR size_t getCount()
-		{
-			return s;
-		}
-
-		OPTIMIZE(3) void rm(KEY k)
-		{
-			memset(this + k, 0, sizeof(Pair<hash_t, T>));
-			s--;
-
-			if(s <= c - 8)
-			{
-				Vector<Pair<KEY, T>> v;
-				for(size_t i = 0; i < c; i++)
-				{
-					if(ptr[i].first != 0)
-						v.push(ptr[i]);
-				}
-				
-				hashMap<KEY, T> tmp(v);
-				
-				*this = tmp;
-			}
-		}
-
-		OPERATOR T &operator[](KEY k)
-		{
-			return ptr[hash(&k, sizeof(KEY)) % c].second;
-		}
-
-		OPERATOR bool hasItem(KEY k)
-		{
-			return (ptr[hash(&k, sizeof(KEY)) % c].first != 0);
 		}
 	};
 	

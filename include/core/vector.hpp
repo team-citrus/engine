@@ -115,6 +115,11 @@ namespace engine
 				return ptr;
 			}
 
+			OPERATOR void resize(size_t size)
+			{
+				ptr = memrealloc(ptr, (capacity = (count = size) + 8) * sizeof(T));
+			}
+
 			OPERATOR bool search(T t)
 			{
 				for(size_t i = 0; i < count; i++)
@@ -126,6 +131,11 @@ namespace engine
 			{
 				ptr = memalloc((capacity = 8) * sizeof(T));
 				count = 0;
+			}
+
+			Vector(size_t c)
+			{
+				ptr = memalloc((capacity = (c % 8) ? c + c % 8 : c) * sizeof(T));
 			}
 		
 			Vector(T arr[], size_t c)

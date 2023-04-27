@@ -35,7 +35,7 @@
 
 #include "core/hash.hpp"
 
-extern engine::hashMap<thrd_t, unsigned int> errcodes;
+extern engine::HashMap<thrd_t, unsigned int> errcodes;
 
 #endif
 
