@@ -31,7 +31,7 @@ namespace engine
 			ptr = (uint8_t*)memalloc((capacity = 32));
 			length = 0;
 		}
-		String(const char *str)
+		String(const char *str) // TODO: errorcheck
 		{
 			ptr = (uint8_t*)memalloc((capacity = (length = strlen(str)) + 32));
 			strcpy((char*)ptr, str);
@@ -44,7 +44,7 @@ namespace engine
 			{
 				errorcode() = ENGINE_INVALID_ARG;
 				return *this << 0xFFFD;
-			}
+			}`
 
 			if(uchar <= 0x10000)
 			{
@@ -86,7 +86,7 @@ namespace engine
 		}
 		OPERATOR String &operator<<(const char *str) // this won't work with any encoding but ASCII/UTF-8
 		{	// TODO: Error check the resulting string
-			size_t oldLen = length; 
+			size_t oldLen = length;
 			if((length += strlen(str)) > capacity)
 			{
 				capacity = length + 32;
@@ -208,12 +208,62 @@ namespace engine
 			return *this;
 		}
 
-		OPERATOR size_t length()
+		OPERATOR String &operator<<(const String &str)
+		{
+			*this << str.data();
+		}
+
+		OPERATOR String &operator+=(const char *str)
+		{
+			return *this << str;
+		}
+
+		OPERATOR String &operator+=(const CHAR16 *str)
+		{
+			return *this << str;
+		}
+
+		OPERATOR String &operator+=(const CHAR32 *str)
+		{
+			return *this << str;
+		}
+
+		OPERATOR String &operator+=(const String &str)
+		{
+			return *this << str;
+		}
+
+		OPERATOR void append(const char *str)
+		{
+			*this << str;
+		}
+
+		OPERATOR void append(const CHAR16 *str)
+		{
+			*this << str;
+		}
+
+		OPERATOR void append(const CHAR32 *str)
+		{
+			*this << str;
+		}
+
+		OPERATOR void append(const String &str)
+		{
+			*this << str;
+		}
+
+		OPERATOR void append(const uint32_t c)
+		{
+			*this << c;
+		}
+
+		OPERATOR size_t length() const
 		{
 			return charCount;
 		}
 
-		OPERATOR uint32_t operator[](size_t index)
+		OPERATOR uint32_t operator[](size_t index) const
 		{
 			size_t offset = 0;
 			for(size_t i = 0; i < index; i++)
@@ -258,27 +308,43 @@ namespace engine
 					default:
 					code = 0xFFFD; // Used as a replacement character thing;
 				}
-				pos = index;
 				return code;
 			}
 			else
 			{
-				pos = index;
 				return ptr[offset];
 			}
 		}
+
+		OPERATOR uint32_t at(size_t index) const;
+		{
+			return *(this)[index];
+		}
+
+		OPERATOR void writeAt(size_t index, uint32_t ch);
+		OPERATOR void writeAt(size_t index, const String &str);
+		OPERATOR void writeAt(size_t index, const char *str);
+		OPERATOR void writeAt(size_t index, const CHAR16 *str);
+		OPERATOR void writeAt(size_t index, const CHAR32 *str);
 	
+		// TODO: More member functions
+
 		OPERATOR char *data()
 		{
 			return (char*)ptr;
 		}
 
-		OPERATOR size_t byteCount()
+		OPERATOR const char *data() const
+		{
+			return (char*)ptr;
+		}
+
+		OPERATOR size_t byteCount() const
 		{
 			return length;
 		}
 
-		OPERATOR void asUTF16LE(CHAR16 *str, size_t maxLen, bool BOM)
+		OPERATOR void asUTF16LE(CHAR16 *str, size_t maxLen, bool BOM) const
 		{
 			if(BOM)
 			{
@@ -325,5 +391,8 @@ namespace engine
 		}
 	};
 }
+
+#undef CHAR32
+#undef CHAR16
 
 #endif 
