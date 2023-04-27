@@ -27,14 +27,15 @@ namespace engine
 			size_t refs;
 			public:
 			meshBufferHandle(const char *meshName);
+			~meshBufferHandle();
 
 			Vector<Vertex> verts;
 			Vector<int> indexBuffer;
 
 			// TODO: Bones, Vertex Groups, etc.
 			
-			meshBufferHandle &getNew(const char *meshName, int flags);
-			meshBufferHandle &getNew(int flags);
+			static meshBufferHandle &getNew(const char *meshName, int flags);
+			static meshBufferHandle &getNew(int flags);
 
 			Vector<Tri> constructFaceBuffer()
 			{
@@ -46,7 +47,15 @@ namespace engine
 				return ret;
 			}
 
-			void removeRef();
+			void removeRef()
+			{
+				refs--;
+				if(refs == 0)
+				{
+
+					this->~meshBufferHandle();
+				}
+			}
 		};
 	}
 
