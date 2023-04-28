@@ -42,10 +42,10 @@ As well, by making the engine free software, we hope to set a precident in the g
     - [x] `std::pair<T1, T2>` compatibility
   - [x] `engine::Map<A, B>`
     - [ ] `std::map<Key, T>` compatibilty
-  - [x] `engine::hash()`
-    - [ ] `std::hash<>()` compatibility
-  - [x] `engine::HashMap<K, T>`
+  - [ ] `engine::HashMap<K, T>`
     - [ ] `std::unordered_map<Key, T>` compatibility
+  - [ ] `engine::String`
+    - [ ] `std::string` semi-compatibility
 - [ ] Create the rendering pipeline
 - [ ] Create the main loop
   - [x] `main()`
