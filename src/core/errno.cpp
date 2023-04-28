@@ -14,13 +14,13 @@
 #include "core/hash.hpp"
 #include "core/option.hpp"
 
-engine::HashMap<thrd_t, unsigned int> errcodes;
+engine::Map<thrd_t, unsigned int> errcodes;
 
 unsigned int &engine::errorcode()
 {
 	static bool inited = false;
 	if(!inited)
-		errcodes = engine::HashMap<thrd_t, unsigned int>(32);
+		errcodes = engine::Map<thrd_t, unsigned int>();
 
 	inited = true;
 	errcodes.add(thrd_current(), 0).isNone();

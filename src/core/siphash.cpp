@@ -2,7 +2,7 @@
 *   name: src/core/siphash.cpp
 *   origin: SipHash
 *   purpose: Provide the internals for hash<uint8_t>()
-*   author: https://github.com/ComradeYellowCitrusFruit
+*   author: Jean-Philippe Aumasson and Daniel J. Bernstein <djb@cr.yp.to>
 *   license: CC0-1.0
 */
 

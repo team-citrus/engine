@@ -14,6 +14,7 @@
 #include <cstring>
 #include <cstdio>
 #include <iostream>
+#include "core/errno.hpp"
 #include "core/option.hpp"
 #include "core/vector.hpp"
 #include "core/extensions.h"
@@ -154,13 +155,26 @@ namespace engine
 				}
 			}
 
+			void serialize(Node *buffer, ptrdiff_t off)
+			{
+				Node esto = *this;
+				esto.leafA = (leafA != NULL) ? (Node*)(off + sizeof(Node)) : 0 ;
+				esto.leafB = (leafB != NULL) ? (Node*)((uintptr_t)esto.leafA + sizeof(Node)) : 0 ;
+				buffer[off] = esto;
+
+				if(leafA != NULL)
+					leafA->serialize(buffer, esto.leafA);
+				if(leafB != NULL)
+					leafB->serialize(buffer, esto.leafB);
+			}
+
 			void serialize(std::ostream &stream, size_t offsetInFile)
 			{
 				Node esto = *this;
 				size_t pos = stream.tellp() - offsetInFile;
 				esto.leafA = (leafA != NULL) ? (Node*)(pos + sizeof(Node)) : 0 ;
 				esto.leafB = (leafB != NULL) ? (Node*)((uintptr_t)esto.leafA + sizeof(Node)) : 0 ;
-				stream.write(this, sizeof(Node));
+				stream.write(&esto, sizeof(Node));
 
 				if(leafA != NULL)
 					leafA->serialize(stream, offsetInFile);
@@ -183,7 +197,7 @@ namespace engine
 			}
 
 			static Node *deserialize(Node *buffer, ptrdiff_t offset)
-			{
+			{	// TODO: File mapped into memory deserialize
 				Node *us = new Node(*(buffer + (offset/sizeof(Node)))); // This calls the copy constructor.... right??
 				
 				us->leafA = (us->leafA != NULL) ? Node::deserialize(buffer, (ptrdiff_t)us->leafB) : NULL;
@@ -501,6 +515,17 @@ namespace engine
 			return { 0, NULL };
 		}
 
+		void serialize(void *mem, size_t len)
+		{
+			if(len < size())
+			{
+				errorcode() = ENGINE_INVALID_ARG;
+				return;
+			}
+
+			tree->serialize(mem, 0);
+		}
+
 		void serialize(std::ostream &file)
 		{
 			size_t tmp = tree->count();
@@ -518,7 +543,7 @@ namespace engine
 		static Map<K, T, Compare> deserialize(std::istream &file)
 		{
 			size_t size;
-			Map<FK, FT, FCompare> m;
+			Map<K, T, Compare> m;
 			file.read(&size, 8);
 			if(size => 0x2000)
 			{ /* TODO: Map file to memory and call deserialize */ }
@@ -530,7 +555,7 @@ namespace engine
 		static Map<K, T, Compare> deserialize(FILE *file)
 		{
 			size_t size;
-			Map<FK, FT, FCompare> m;
+			Map<K, T, Compare> m;
 			fread(&size, 8, 1, file);
 			if(size => 0x2000)
 			{ /* TODO: Map file to memory and call deserialize */ }
@@ -543,8 +568,13 @@ namespace engine
 		static Map<K, T, Compare> deserialize(void *buffer)
 		{
 			Map<FK, FT, FCompare> m;
-			m.tree = Node::deserialize(buffer);
+			m.tree = Node::deserialize(buffer, 0);
 			return m;
+		}
+
+		size_t size()
+		{
+			return tree->count() * sizeof(Node);
 		}
 
 		friend template <typename K, typename T> class MapIterator;
