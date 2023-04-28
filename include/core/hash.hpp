@@ -21,10 +21,29 @@
 
 namespace engine
 {
+	namespace internals { int siphash(const void *in, const size_t inlen, const void *k, uint8_t *out,
+            const size_t outlen); }
 	typedef size_t hash_t;
 
 	template <class T>
-	hash_t hash(T *ptr, size_t len);
+	hash_t hash(T *ptr, size_t len)
+	{
+		return hash(ptr, len, { 'a', 'd', 'd', ' ', 'k', 'e', 'y', '\0'} );
+	}
+
+	template <class T>
+	hash_t hash(T *ptr, size_t len, uint8_t *key)
+	{
+		return hash<uint8_t>((uint8_t*)ptr, len * sizeof(T), key);
+	}
+
+	template <>
+	hash_t hash<uint8_t>(uint8_t *ptr, size_t len, uint8_t *key)
+	{
+		hash_t h;
+		internals::siphash(ptr, len, key, (uint8_t*)&h, 8);
+		return h;
+	}
 
 	template<class KEY, class T>
 	class HashMap
