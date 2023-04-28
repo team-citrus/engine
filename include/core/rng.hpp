@@ -123,50 +123,75 @@ namespace engine
 		u64 genU64()
 		{
 			uint64_t ret = 0;
-			for(int i = 0; i < 8; i++)
+			if(ctr % BYTES_MOD <= 8)
 			{
-				if(ctr % BYTES_MOD == 0)
-				{
-					shuffle();
-				}
-
-				ret <<= 8;
-				ret |= bytes[ctr % BYTES_MOD];
-				ctr++;
+				ret = *(uint64_t*)(bytes + (ctr % BYTES_MOD));
+				ctr += 8;
 			}
-			
+			else
+			{
+				for(int i = 0; i < 8; i++)
+				{
+					if(ctr % BYTES_MOD == 0)
+					{
+						shuffle();
+					}
+
+					ret <<= 8;
+					ret |= bytes[ctr % BYTES_MOD];
+					ctr++;
+				}
+			}
 			return ret;
 		}
 		
 		u32 genU32()
 		{
 			uint32_t ret = 0;
-			for(int i = 0; i < 4; i++)
+			if(ctr % BYTES_MOD <= 4)
 			{
-				if(ctr % BYTES_MOD == 0)
-				{
-					shuffle();
-				}
-
-				ret <<= 8;
-				ret |= bytes[ctr % BYTES_MOD];
-				ctr++;
+				ret = *(uint64_t*)(bytes + (ctr % BYTES_MOD));
+				ctr += 4;
 			}
+			else
+			{
+				for(int i = 0; i < 4; i++)
+				{
+					if(ctr % BYTES_MOD == 0)
+					{
+						shuffle();
+					}
+
+					ret <<= 4;
+					ret |= bytes[ctr % BYTES_MOD];
+					ctr++;
+				}
+			}
+			return ret;
 		}
 		u16 genU16()
 		{
-			uint16_t ret = 0;
-			for(int i = 0; i < 2; i++)
+			uint64_t ret = 0;
+			if(ctr % BYTES_MOD <= 2)
 			{
-				if(ctr % BYTES_MOD == 0)
-				{
-					shuffle();
-				}
-
-				ret <<= 8;
-				ret |= bytes[ctr % BYTES_MOD];
-				ctr++;
+				ret = *(uint64_t*)(bytes + (ctr % BYTES_MOD));
+				ctr += 2;
 			}
+			else
+			{
+				for(int i = 0; i < 2; i++)
+				{
+					if(ctr % BYTES_MOD == 0)
+					{
+						shuffle();
+					}
+
+					ret <<= 8;
+					ret |= bytes[ctr % BYTES_MOD];
+					ctr++;
+				}
+			}
+			return ret;
 		}
 		u8 genU8()
 		{
@@ -180,16 +205,64 @@ namespace engine
 		
 		void genBytes(uint8_t *buffer, size_t len)
 		{
-			/* TODO: Optimize this with SIMD and stuff. */
-
-			for(int i = 0; i < len; i++)
+			if(len > BYTES_MOD)
 			{
-				if(ctr % BYTES_MOD == 0)
+				shuffle();
+				size_t i;
+				for(i = 0; i < len/BYTES_MOD; i++, shuffle())
 				{
-					shuffle();
+					memcpy(buffer + (i * BYTES_MOD), matrix, BYTES_MOD);
+					ctr += BYTES_MOD;
 				}
+				if(len % BYTES_MOD)
+					genBytes(buffer + (i * BYTES_MOD), len % BYTES_MOD);
+			}
+			#ifndef __x86_64__
+			else if(len > 16)
+			{
+				size_t i;
+				for(i = 0; i < len/16; i++, ctr += 16)
+				{
+					if(ctr % BYTES_MOD == 0)
+						shuffle();
 
-				buffer[i] = bytes[ctr++ % BYTES_MOD];
+					// TODO: Arm NEON optimization
+				}
+			}
+			#endif
+			else if(len > 8)
+			{
+				size_t i;
+				for(i = 0; i < len/8; i++, ctr += 8)
+				{
+					if(ctr % BYTES_MOD == 0)
+						shuffle();
+
+					((uint64_t*)buffer)[i] = *(uint64_t*)(matrix + (ctr % BYTES_MOD));
+				}
+				genBytes(buffer + (i * 8), len % 8);
+			}
+			else if(len > 4)
+			{
+				size_t i;
+				for(i = 0; i < len/4; i++, ctr += 4)
+				{
+					if(ctr % BYTES_MOD == 0)
+						shuffle();
+
+					((uint32_t*)buffer)[i] = *(uint32_t*)(matrix + (ctr % BYTES_MOD));
+				}
+				genBytes(buffer + (i * 4), len % 4);
+			}
+			else
+			{
+				for(size_t i = 0; i < len; i++, ctr++)
+				{
+					if(ctr % BYTES_MOD == 0)
+						shuffle();
+
+					buffer[i] = bytes[i];
+				}
 			}
 		}
 

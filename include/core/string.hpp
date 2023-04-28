@@ -316,16 +316,53 @@ namespace engine
 			}
 		}
 
-		OPERATOR uint32_t at(size_t index) const;
+		OPERATOR uint32_t at(size_t index) const
 		{
-			return *(this)[index];
+			return (*this)[index];
 		}
 
-		OPERATOR void writeAt(size_t index, uint32_t ch);
-		OPERATOR void writeAt(size_t index, const String &str);
-		OPERATOR void writeAt(size_t index, const char *str);
-		OPERATOR void writeAt(size_t index, const CHAR16 *str);
-		OPERATOR void writeAt(size_t index, const CHAR32 *str);
+
+		// Hacky solutions but whatever
+		OPERATOR void writeAt(size_t index, uint32_t ch)
+		{
+			String tmp;
+			tmp << (data() + index);
+			length -= tmp.length;
+			charCount -= tmp.charCount;
+			*this << ch << tmp;
+		}
+		OPERATOR void writeAt(size_t index, const String &str)
+		{
+			String tmp;
+			tmp << (data() + index);
+			length -= tmp.length;
+			charCount -= tmp.charCount;
+			*this << str << tmp;
+		}
+		OPERATOR void writeAt(size_t index, const char *str)
+		{
+			String tmp;
+			tmp << (data() + index);
+			length -= tmp.length;
+			charCount -= tmp.charCount;
+			*this << str << tmp;
+		}
+		OPERATOR void writeAt(size_t index, const CHAR16 *str)
+		{
+			String tmp;
+			tmp << (data() + index);
+			length -= tmp.length;
+			charCount -= tmp.charCount;
+			*this << str << tmp;
+		}
+		OPERATOR void writeAt(size_t index, const CHAR32 *str)
+		{
+			String tmp;
+			tmp << (data() + index);
+			length -= tmp.length;
+			charCount -= tmp.charCount;
+			*this << str << tmp;
+		}
 	
 		// TODO: More member functions
 
