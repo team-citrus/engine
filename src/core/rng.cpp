@@ -20,6 +20,7 @@
 #include <atomic>
 #include "core/rng.hpp"
 #include "core/mem.hpp"
+#include "core/extensions.h"
 
 engine::RNG mainRNG ALIGN(64);
 std::atomic_bool rngLock;
@@ -124,6 +125,8 @@ void engine::internals::AES(uint8_t key[], uint64_t unique[], uint8_t output[])
 	}
 }
 
+#endif
+
 void SHA256(uint8_t input[], size_t inlen, uint8_t hash[])
 {
 	uint32_t *digest = (uint32_t*)hash;
@@ -196,31 +199,70 @@ void SHA256(uint8_t input[], size_t inlen, uint8_t hash[])
 			a = temp1 + temp2;
 		}
 
+		#ifdef __x86_64__
+
 		#ifdef __AVX2__
 
 		m256i_t ymm0;
 		m256i_t ymm1;
 
 		ymm0 = uload_i256({a, b, c, d, e, f, g, h});
-		ymm1 = uload_i256(digest);
+		ymm1 = ((uintptr_t)digest % 32 == 0) ? load_i256(digest) : uload_i256(digest);
 		ymm1 = add256_i32(ymm0, ymm1);
-		ustore_i256(digest, ymm1);
+		if((uintptr_t)digest % 32 == 0)
+			store_i256(digest, ymm1);
+		else
+			ustore_i256(digest, ymm1);
 
 		#else
 
-		digest[0] += a;
-		digest[1] += b;
-		digest[2] += c;
-		digest[3] += d;
-		digest[4] += e;
-		digest[5] += f;
-		digest[6] += g;
-    	digest[7] += h;
+		m128i_t xmm0;
+		m128i_t xmm1;
+		m128i_t xmm2;
+		m128i_t xmm3;
+
+		xmm0 = uload_i128({a, b, c, d});
+		xmm1 = ((uintptr_t)digest % 16 == 0) ? load_i128(digest) : uload_i128(digest);
+		xmm2 = uload_i128({e, f, g, h});
+		xmm3 = ((uintptr_t)digest % 16 == 0) ? load_i128(digest + 4) : uload_i128(digest + 4);
+
+		xmm1 = add_i32(xmm0, xmm1);
+		xmm3 = add_i32(xmm2, xmm3);
+		
+		if((uintptr_t)digest % 16 == 0)
+		{
+			store_i128(digest, xmm1);
+			store_i128(digest + 4, xmm3);
+		}
+		else
+		{
+			ustore_i128(digest, xmm1);
+			ustore_i128(digest + 4, xmm3);
+		}
+
+		#endif
+
+		#else
+
+		uint32x4_t Q0;
+		uint32x4_t Q1;
+		uint32x4_t Q2;
+		uint32x4_t Q3;
+
+		Q0 = vld1q_u32({a, b, c, d});
+		Q1 = vld1q_u32(digest);
+		Q2 = vld1q_u32({e, f, g, h});
+		Q3 = vld1q_u32(digest + 4);
+
+		Q1 = vaddq_i32(Q0, Q1);
+		Q3 = vaddq_i32(Q2, Q3);
+		
+
+		vst1q_u32(digest, Q1);
+		vst1q_u32(digest + 4, Q3);
 
 		#endif
 	}
 
 	engine::memfree(buffer);
 }
-
-#endif

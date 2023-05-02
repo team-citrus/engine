@@ -30,9 +30,10 @@ namespace engine
 
 		#ifdef __x86_64__
 		void AES(uint8_t key[], uint64_t unique[], uint8_t output[]);
-		void SHA256(uint8_t input[], size_t inlen, uint8_t hash[]);
 		#endif
 	}
+
+	void SHA256(uint8_t input[], size_t inlen, uint8_t hash[]);
 
 	class RandomNumberGenerator
 	{
@@ -90,7 +91,7 @@ namespace engine
 			#else
 
 			uint8_t key[32];
-			SHA256(matrix, BYTES_MOD, key);
+			SHA256(bytes, BYTES_MOD, key);
 
 			uint64_t unique[2] = {ctr / 16, nonce};
 			internals::AES(key, unique, bytes);

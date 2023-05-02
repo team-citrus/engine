@@ -33,7 +33,93 @@ typedef _Bool __citrus_engine_vendor_bool;
 
 typedef struct __citrus_engine_vendor_file_t __citrus_engine_vendor_file_t;
 
-void *__citrus_engine_vendor_map_file_to_mem(char *name, size_t offset, size_t len, int perms);
+void *__citrus_engine_vendor_map_file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\\\\\\\\\\\\\\_to_mem(char *name, size_t offset, size_t len, int perms);
 void __citrus_engine_vendor_unmap_file_from_mem(void *f, size_t len);
 
 char *__citrus_engine_vendor_get_file_name(char *precompile_filename);
