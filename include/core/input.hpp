@@ -11,35 +11,35 @@
 
 namespace engine
 {
-	// Underlying class of the input system
-	class INPUT_SYSTEM
+	#ifdef _WIN32
+	namespace internals
 	{
-		public:
-		// TODO: Unicode-ify this
+		extern uint8_t currentInput[256];
+		extern uint8_t prevInput[256];
+	}
+	#endif
+	// TODO: Defines for each key value, different for windows and linux
 
-		// Returns true while a key is down
-		bool getKey(char key);
-		// Returns true the first frame a key is down
-		bool getKeyDown(char key);
-		// Returns true when a key is released
-		bool getKeyUp(char key);
+	// Returns true while a key is down
+	bool getKey(char key);
+	// Returns true the first frame a key is down
+	bool getKeyDown(char key);
+	// Returns true when a key is released
+	bool getKeyUp(char key);
 
-		// Returns true while a mouse button is down
-		bool getMouseButton(int button);
-		// Returns true the first frame a mouse button is down
-		bool getMouseButtonDown(int button);
-		// Returns true when a mouse button is released
-		bool getMouseButtonUp(int button);
+	// Returns true while a key is down
+	bool getMouseButton(int num);
+	// Returns true the first frame a key is down
+	bool getMouseButtonDown(int num);
+	// Returns true when a key is released
+	bool getMouseButtonUp(int num);
 
-		// Returns true if any key is down
-		bool anyKey();
-		
-		// TODO: Add controller functions
-	};
+	// Returns true if any key is down
+	bool anyKey();
 
-	INPUT_SYSTEM input;
+	// TODO: Add controller functions
 
-	// TODO: Rust interop class
+	// TODO: Rust interop
 };
 
 #endif

@@ -9,6 +9,12 @@
 #define _INTERNALS_ENGINE_THREAD_MAIN_
 #define __CITRUS_ENGINE_SOURCE_FILE__
 
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+
+#include <cstring>
+#include "core/input.hpp"
 #include "core/extensions.h"
 #include "core/errno.hpp"
 #include "core/scene.hpp"
@@ -35,6 +41,14 @@ namespace engine
 			while(isGameplayBlocked.load()) spinlock_pause();
 			
 			engine::clearErrorcode();
+
+			#ifdef _WIN32
+
+			// Input system stuff
+			memcpy(prevInput, currentInput, 256);
+			GetKeyboardState(currentInput);
+
+			#endif
 
 			// TODO: There is probably something we are missing here.
 
