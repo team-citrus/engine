@@ -45,9 +45,9 @@ namespace engine
 	OPERATOR void log(const char *module, const char *format, T... args)
 	{
 		time_t t = time(NULL);
-		tm T = *localtime(&t);
+		tm tmtime = *localtime(&t);
 
-		fprintf(internals::logfile, "[%d-%d-%d-%d-%d:%d] %s: ", T.tm_year + 1900, T.tm_mon + 1, T.tm_mday, T.tm_hour, T.tm_min, T.tm_sec, module);
+		fprintf(internals::logfile, "[%d-%d-%d %d:%d:%d] %s: ", tmtime.tm_year + 1900, tmtime.tm_mon + 1, tmtime.tm_mday, tmtime.tm_hour, tmtime.tm_min, tmtime.tm_sec, module); // ISO 8601 standard date format
 		fprintf(internals::logfile, format, args...);
 		putc('\n', internals::logfile);
 	}
