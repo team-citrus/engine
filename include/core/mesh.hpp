@@ -23,7 +23,6 @@ namespace engine
 	{
 		class meshBufferHandle
 		{
-			int flags;
 			size_t refs;
 			public:
 			meshBufferHandle(const char *meshName);
@@ -34,8 +33,7 @@ namespace engine
 
 			// TODO: Bones, Vertex Groups, etc.
 			
-			static meshBufferHandle &getNew(const char *meshName, int flags);
-			static meshBufferHandle &getNew(int flags);
+			static meshBufferHandle &getNew(const char *meshName);
 
 			Vector<Tri> constructFaceBuffer()
 			{
@@ -53,7 +51,7 @@ namespace engine
 				if(refs == 0)
 				{
 
-					this->~meshBufferHandle();
+					delete this;
 				}
 			}
 		};
@@ -89,7 +87,10 @@ namespace engine
 		// Creates an uninitalized mesh
 		Mesh(); 
 		// Loads mesh, and returns this class.
-		Mesh(const char *name); 
+		Mesh(const char *name)
+		{
+			buf = internals::meshBufferHandle::getNew(name);
+		}
 
 		Face &indexFace(size_t i);
 		Vertex &operator[](size_t i)

@@ -48,7 +48,7 @@ size_t Vulkan::physicalDeviceVRAM;
 static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperties *devP, Vector<VkQueueFamilyProperties> &queueP, VkPhysicalDeviceMemoryProperties &deviceMemoryProperties, size_t &vram)
 {
 	// Get the device properties
-	vkCall(vkGetPhysicalDeviceProperties, dev, &devP);
+	vkNullCall(vkGetPhysicalDeviceProperties, dev, &devP);
 
 	// Don't use a CPU
 	if(devP->deviceType == VK_PHYSICAL_DEVICE_TYPE_CPU)
@@ -58,9 +58,9 @@ static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperti
 
 	int qCount;
 	VkQueueFamilyProperties *qProperties;
-	vkCall(vkGetPhysicalDeviceQueueFamilyProperties, dev, &qCount, NULL);
+	vkNullCall(vkGetPhysicalDeviceQueueFamilyProperties, dev, &qCount, NULL);
 	qProperties = memalloc(sizeof(VkQueueFamilyProperties) * qCount);
-	vkCall(vkGetPhysicalDeviceQueueFamilyProperties, dev, &qCount, qProperties);
+	vkNullCall(vkGetPhysicalDeviceQueueFamilyProperties, dev, &qCount, qProperties);
 	for(int i = 0; i < qCount; i++)
 	{
 		queueP.push(qProperties[i]);
@@ -84,7 +84,7 @@ static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperti
 	// Perform memory filtering
 
 	vram = 0;
-	vkCall(vkGetPhysicalDeviceMemoryProperties, dev, &deviceMemoryProperties);
+	vkNullCall(vkGetPhysicalDeviceMemoryProperties, dev, &deviceMemoryProperties);
 	for(int i = 0; i < deviceMemoryProperties.memoryHeapCount; i++)
 		vram += deviceMemoryProperties.memoryHeaps[i].size;
 	
@@ -195,7 +195,7 @@ int Vulkan::vkLoad()
 	iInfo.ppEnabledExtensionNames = NULL;
 
 	// Initalize the instance
-	if(vkInstanceCall(vkCreateInstance, 0, &iInfo, NULL, &Vulkan::instance) != VK_SUCCESS)
+	if(vkNullCall(vkCreateInstance, 0, &iInfo, NULL, &Vulkan::instance) != VK_SUCCESS)
 	{
 		log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Failure to create Vulkan instance!");
 		exit(VK_LOAD_FAILURE);
@@ -208,7 +208,7 @@ int Vulkan::vkLoad()
 	// Get the count
 
 	int devCount = 0;
-	vkInstanceCall(vkEnumeratePhysicalDevices, Vulkan::instance, &devCount, NULL);
+	vkInstanceCall(vkEnumeratePhysicalDevices, Vulkan::instance, Vulkan::instance, &devCount, NULL);
 	if(devCount == 0) 
 	{
 		log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "No (Vulkan supporting) GPUs found!");
@@ -218,7 +218,7 @@ int Vulkan::vkLoad()
 	// Get the handles
 
 	VkPhysicalDevice *devices = memalloc(sizeof(VkPhysicalDevice) * devCount);
-	vkInstanceCall(vkEnumeratePhysicalDevices, Vulkan::instance, &devCount, devices);
+	vkInstanceCall(vkEnumeratePhysicalDevices, Vulkan::instance, Vulkan::instance, &devCount, devices);
 
 	// Filter out all of the eligible devices
 
@@ -335,7 +335,7 @@ int Vulkan::vkLoad()
 	// TODO: handle extensions and layers
 	// TODO: select device features
 
-	if(vkCall(vkCreateDevice, Vulkan::physicalDevice, &devInfo, &device) != VK_SUCCESS)
+	if(vkNullCall(vkCreateDevice, Vulkan::physicalDevice, &devInfo, &device) != VK_SUCCESS)
 	{
 		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "Failure to create the logical device");
 		exit(VK_LOAD_FAILURE);

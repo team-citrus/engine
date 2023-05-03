@@ -22,7 +22,7 @@ typedef void* dllptr_t;
 
 #endif
 
-#include "graphics/vkCall.hpp"
+#include "graphics/vkNullCall.hpp"
 
 namespace engine
 {

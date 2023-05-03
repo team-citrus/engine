@@ -18,16 +18,20 @@
 #define _LOG_FILE_ "game.log"
 #endif
 
+#ifndef _LOG_BUFFER_LENGTH_
+#define _LOG_BUFFER_LENGTH_ 4096
+#endif
+
 namespace engine
 {
 	namespace internals
 	{
 		FILE *logfile;
-		char buff[1024];
+		char buff[_LOG_BUFFER_LENGTH_];
 		OPTIMIZE(2) OPERATOR void initLogging()
 		{
 			logfile = fopen(_LOG_FILE_, "a+");
-			setvbuf(logfile, buff, _IOFBF, 1024);
+			setvbuf(logfile, buff, _IOFBF, _LOG_BUFFER_LENGTH_);
 		}
 		OPTIMIZE(2) OPERATOR void finiLogging()
 		{
