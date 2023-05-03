@@ -22,6 +22,7 @@ typedef void* dllptr_t;
 
 #endif
 
+#include "graphics/matrix.hpp"
 #include "graphics/vkCall.hpp"
 
 namespace engine
@@ -55,6 +56,11 @@ namespace internals
 		extern size_t physicalDeviceVRAM;
 		
 		// TODO: Add different Vulkan render functions based on different Vulkan versions and extensions
+
+		render::Matrix4x4 viewmat;
+		render::Camera &mainCamera;
+
+		// TODO: Framebuffer
 	};
 };
 };

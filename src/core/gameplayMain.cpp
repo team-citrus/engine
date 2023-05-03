@@ -39,6 +39,8 @@ namespace engine
 		{
 			// Physics and render lock gameplay
 			while(isGameplayBlocked.load()) spinlock_pause();
+			isRenderBlocked.store(true);
+			isPhysicsBlocked.store(true);
 			
 			engine::clearErrorcode();
 
@@ -47,6 +49,10 @@ namespace engine
 			// Input system stuff
 			memcpy(prevInput, currentInput, 256);
 			GetKeyboardState(currentInput);
+
+			#else
+
+			// TODO: XLib stuff.
 
 			#endif
 
@@ -64,13 +70,19 @@ namespace engine
 			
 			removeErrorcodeForThread();
 			
+			physicsJustExecuted.store(false);
+			renderJustExecuted.store(false);
+			gameplayJustExecuted.store(true);
+			isGameplayBlocked.store(true);
+			
 			if(renderJustExecuted.load())
 			{
 				isPhysicsBlocked.store(false);
 			}
-			physicsJustExecuted.store(false);
-			renderJustExecuted.store(false);
-			gameplayJustExecuted.store(true);
+			else
+			{
+				isRenderBlocked.store(false);
+			}
 		}
 	};
 };
