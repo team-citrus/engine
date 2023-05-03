@@ -9,6 +9,8 @@
 #ifndef CITRUS_ENGINE_INPUT_SYSTEM_HPP__
 #define CITRUS_ENGINE_INPUT_SYSTEM_HPP__
 
+#include <cstdint>
+
 namespace engine
 {
 	#ifdef _WIN32
@@ -16,6 +18,12 @@ namespace engine
 	{
 		extern uint8_t currentInput[256];
 		extern uint8_t prevInput[256];
+	}
+	#else
+	namespace internals
+	{
+		extern uint8_t currentInput[32];
+		extern uint8_t prevInput[32];
 	}
 	#endif
 	// TODO: Defines for each key value, different for windows and linux

@@ -79,8 +79,54 @@ bool getMouseButtonUp(int num)
 	}
 }
 
+bool engine::anyKey()
+{
+	for(int i = 0; i < 256; i++)
+	{
+		if(engine::internals::currentInput[i] >> 7 == 1)
+		{
+			return true;
+		}
+	}
+	return false
+}
+
 #else
 
 
+// gotta assume Xlib
+
+// TODO: Xlib globals
+
+uint8_t engine::internals::currentInput[32];
+uint8_t engine::internals::prevInput[32]; // Used for getKeyDown and getMouseButtonDown
+
+// Returns true while a key is down
+bool engine::getKey(char key)
+{
+	return (engine::internals::currentInput[key/8] >> (key % 8)) & 1;
+}
+
+bool engine::getKeyDown(char key)
+{
+	return ((engine::internals::currentInput[key/8] >> (key % 8)) & 1) && (((engine::internals::prevInput[key/8] >> (key % 8)) & 1) == 0);
+}
+
+bool engine::getKeyUp(char key)
+{
+	return (((engine::internals::currentInput[key/8] >> (key % 8)) & 1) == 0) && ((engine::internals::prevInput[key/8] >> (key % 8)) & 1);
+}
+
+bool engine::anyKey()
+{
+	for(int i = 0; i < 32; i++)
+	{
+		if(engine::internals::currentInput[i] != 0)
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 #endif
