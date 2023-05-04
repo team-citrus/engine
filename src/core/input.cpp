@@ -8,6 +8,8 @@
 #include "input.hpp"
 
 // Welcome to portability hell, population, us
+
+// TODO: Lucky me I get to rewrite this
 #ifdef _WIN32
 
 #include <Windows.h>
