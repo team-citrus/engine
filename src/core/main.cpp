@@ -27,6 +27,7 @@
 #include <csignal>
 #include <cstdio>
 #include <cpuid.h>
+#include <X11/Xlib.h>
 #include "core/mem.hpp"
 #include "core/mem_int.hpp"
 #include "core/Main.hpp"

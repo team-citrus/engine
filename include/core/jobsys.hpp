@@ -9,6 +9,7 @@
 #ifndef CITRUS_ENGINE_JOB_SYSTEM_HPP__
 #define CITRUS_ENGINE_JOB_SYSTEM_HPP__
 
+#include "core/hash.hpp"
 #include "core/extensions.h"
 
 #ifndef _JOB_BLOCK_UNTIL_
@@ -20,7 +21,6 @@ namespace engine
 	typedef void (*JobPtr)();
 	class Job
 	{
-		JobPtr ptr;
 		bool prioritzed;
 
 		#ifdef __FILE_IS_JOBSYS_DOT_CPP__
@@ -29,24 +29,6 @@ namespace engine
 		#endif
 
 		public:
-		OPERATOR Job()
-		{
-			return;
-		}
-		OPERATOR Job(JobPtr func)
-		{
-			ptr = func;
-		}
-		OPERATOR void setFunc(JobPtr func)
-		{
-			ptr = func;
-		}
-
-		OPERATOR bool operator==(Job b)
-		{
-			return ptr == b.ptr;
-		}
-
 		///	Schedule the job for execution. 
 		/// @param exclude Bit flags of which threads to block.
 		/// @return Error returns -1 and sets engine::errorcode. Success returns the index it is currently scheduled at.
@@ -59,6 +41,13 @@ namespace engine
 		/// Prioritize this job
 		void prioritize();
 
+		virtual void operator()()
+		{
+			return;
+		}
+
+		virtual bool operator==(Job otra);
+
 		#if defined(CITRUS_ENGINE_FINE_TUNE) || defined(_INTERNALS_ENGINE_THREAD_MAIN_)
 		/// Set this job to be done ASAP
 		void ASAP();
@@ -68,18 +57,18 @@ namespace engine
 	#ifdef _INTERNALS_ENGINE_THREAD_MAIN_
 	namespace internals
 	{
-		std::atomic_bool jobsBeingAccessed;
-		Vector<Job> jobs;
-		Vector<Job> priority;
-		Vector<Job> asap;
-		Map<JobPtr, std::thread::id> executing;
+		extern std::atomic_bool jobsBeingAccessed;
+		extern Vector<Job> jobs;
+		extern Vector<Job> priority;
+		extern Vector<Job> asap;
+		extern Map<hash_t, std::thread::id> executing;
 
 		// Used by the job system to determine how many threads to generate.
-		size_t threadsAvalible = 0;
+		extern size_t threadsAvalible = 0;
 		// Used by the job system to determine how many threads can be generated.
-		size_t coreCount = 0;
+		extern size_t coreCount = 0;
 		// The number of threads that can be generated
-		size_t possibleThreads = 0;
+		extern size_t possibleThreads = 0;
 	}
 	#endif
 }

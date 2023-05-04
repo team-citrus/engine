@@ -35,7 +35,7 @@ namespace engine
 		Vector<Job> jobs;
 		Vector<Job> priority;
 		Vector<Job> asap;
-		Map<JobPtr, std::thread::id> executing;
+		Map<hash_t, std::thread::id> executing;
 
 		// Used by the job system to determine how many threads to generate.
 		size_t threadsAvalible = 0;
@@ -51,7 +51,7 @@ namespace engine
 		if(inited) return;
 		inited = true;
 		internals::coreCount = std::thread::hardware_concurrency();
-		internals::threadsAvalible - 4;
+		internals::threadsAvalible = internals::coreCount - 4;
 	}
 
 	int Job::schedule()
@@ -73,16 +73,16 @@ namespace engine
 			spinlock_pause();
 		
 		internals::jobsBeingAccessed.store(true);
-		if(internals::executing.has(ptr))
+		if(internals::executing.has(hash(this, sizeof(*this))))
 		{
 			internals::jobsBeingAccessed.store(false);
 
 			startTime = getTimeInMils();
-			while((getTimeInMils() < startTime + 100 && internals::executing.has(ptr)) || internals::jobsBeingAccessed.load())
+			while((getTimeInMils() < startTime + _JOB_BLOCK_UNTIL_ && internals::executing.has(hash(this, sizeof(*this))) || internals::jobsBeingAccessed.load()))
 				spinlock_pause();
 
 			internals::jobsBeingAccessed.store(true);
-			if(getTimeInMils() >= startTime + 100 && internals::executing.has(ptr))
+			if(getTimeInMils() >= startTime + _JOB_BLOCK_UNTIL_ && internals::executing.has(hash(this, sizeof(*this))))
 			{
 				internals::jobsBeingAccessed.store(false);
 				engine::errorcode() = ENGINE_TIME_OUT;
@@ -99,9 +99,8 @@ namespace engine
 			if(prioritzed)
 			{
 			prioritized_code:
-				waitms(100);
 				internals::jobsBeingAccessed.store(true);
-				if(internals::executing.has(ptr) || internals::priority.search(*this))
+				if(internals::executing.has(hash(this, sizeof(*this))) || internals::priority.search(*this))
 				{
 					internals::jobsBeingAccessed.store(false);
 					engine::errorcode() = ENGINE_TIME_OUT;
@@ -214,21 +213,20 @@ namespace engine
 		while(internals::jobsBeingAccessed.load()) spinlock_pause();
 		internals::jobsBeingAccessed.store(true);
 
-		// Wait for everything that we block to stop
-
 		// Tell everyone we are executing
 		std::thread::id us = std::this_thread::get_id();
-		internals::executing.add(job.ptr, us);
+		internals::executing.add(hash(&job, sizeof(job)), us);
 		internals::jobsBeingAccessed.store(false);
 
-		job.ptr(); // Actually execute
+		job(); // Actually execute
 
 		while(internals::jobsBeingAccessed.load()) spinlock_pause();
 		internals::jobsBeingAccessed.store(true);
+
 		if(internals::threadsAvalible < internals::threadsAvalible)
 		{
 			refreshJobSystem();
-			internals::executing.rm(job.ptr);
+			internals::executing.rm(hash(&job, sizeof(job)));
 		}
 
 		if(internals::asap.getCount() != 0)

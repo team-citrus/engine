@@ -29,10 +29,7 @@ int engine::internals::Vulkan::vkDraw()
 	// Cleanup
 	// And the rendering for 2D:
 	// Exact same as 3D
-
-	// TODO: 2D
-	// TODO: Fork off into another thread for GUI
-	// TODO: Blit together GUI and render results
+	
 	// TODO: Frame buffer stuff
 	
 	removeErrorcodeForThread();
