@@ -5,7 +5,7 @@
 *   author: https://github.com/ComradeYellowCitrusFruit
 *   license: LGPL-3.0-only
 */
-#include "input.hpp"
+#include "core/input.hpp"
 
 // Welcome to portability hell, population, us
 
@@ -95,10 +95,7 @@ bool engine::anyKey()
 
 #else
 
-
-// gotta assume Xlib
-
-// TODO: Xlib globals
+#include "core/XLibglobals.hpp"
 
 uint8_t engine::internals::currentInput[32];
 uint8_t engine::internals::prevInput[32]; // Used for getKeyDown and getMouseButtonDown
@@ -117,6 +114,35 @@ bool engine::getKeyDown(char key)
 bool engine::getKeyUp(char key)
 {
 	return (((engine::internals::currentInput[key/8] >> (key % 8)) & 1) == 0) && ((engine::internals::prevInput[key/8] >> (key % 8)) & 1);
+}
+
+// Returns true while a key is down
+bool engine::getMouseButton(int num)
+{
+	XEvent in;
+	if(XCheckMaskEvent(engine::internals::display, ButtonPressMask, &in))
+	{
+		if((in.xbutton.button == num) && ((in.xbutton.time - engine::internals::gameStart) >= engine::internals::frameStart))
+			return true;
+	}
+	return false;
+}
+
+// Returns true the first frame a key is down
+bool engine::getMouseButtonDown(int num)
+{
+	// TODO: This
+}
+// Returns true when a key is released
+bool engine::getMouseButtonUp(int num)
+{
+	XEvent in;
+	if(XCheckMaskEvent(engine::internals::display, ButtonReleaseMask, &in))
+	{
+		if((in.xbutton.button == num) && ((in.xbutton.time - engine::internals::gameStart) >= engine::internals::frameStart))
+			return true;
+	}
+	return false;
 }
 
 bool engine::anyKey()

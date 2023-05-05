@@ -25,6 +25,7 @@
 #include "core/object.hpp"
 #include "core/sync.hpp"
 #include "core/simd.h"
+#include "core/XLibglobals.hpp"
 
 namespace engine
 {
@@ -52,7 +53,10 @@ namespace engine
 
 			#else
 
-			// TODO: XLib stuff.
+			// TODO: Get the start of the current frame
+			// TODO: Handle possibility of overflow
+			memcpy(prevInput, currentInput, 32);
+			XQueryKeymap(engine::internals::display, currentInput);
 
 			#endif
 

@@ -19,6 +19,8 @@ namespace engine
 		Display *display;
 		int screen;
 		Window window;
+		Time frameStart;
+		Time gameStart;
 	}
 }
 
