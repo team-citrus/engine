@@ -24,7 +24,7 @@ namespace engine
 	{
 		extern uint8_t currentInput[32];
 		extern uint8_t prevInput[32];
-	}
+	} 
 	#endif
 	// TODO: Defines for each key value, different for windows and linux
 
@@ -41,6 +41,12 @@ namespace engine
 	bool getMouseButtonDown(int num);
 	// Returns true when a key is released
 	bool getMouseButtonUp(int num);
+	// Returns the mouse X coord
+	int getMouseX();
+	// Returns the mouse Y coord
+	int getMouseY();
+	// Get mouse coords
+	void getMouseCoords(int &x, int &y);
 
 	// Returns true if any key is down
 	bool anyKey();
