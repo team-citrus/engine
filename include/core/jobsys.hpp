@@ -9,6 +9,7 @@
 #ifndef CITRUS_ENGINE_JOB_SYSTEM_HPP__
 #define CITRUS_ENGINE_JOB_SYSTEM_HPP__
 
+#include <typeinfo>
 #include "core/hash.hpp"
 #include "core/extensions.h"
 
@@ -46,7 +47,9 @@ namespace engine
 			return;
 		}
 
-		virtual bool operator==(Job otra);
+		virtual bool operator==(Job &otra);
+
+		virtual int getTypeSignature();
 
 		#if defined(CITRUS_ENGINE_FINE_TUNE) || defined(_INTERNALS_ENGINE_THREAD_MAIN_)
 		/// Set this job to be done ASAP
