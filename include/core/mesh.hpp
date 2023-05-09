@@ -19,44 +19,6 @@ namespace engine
 {   
 	using IndexBuffer = Vector<size_t>;
 
-	namespace internals
-	{
-		class meshBufferHandle
-		{
-			size_t refs;
-			public:
-			meshBufferHandle(const char *meshName);
-			~meshBufferHandle();
-
-			Vector<Vertex> verts;
-			Vector<int> indexBuffer;
-
-			// TODO: Bones, Vertex Groups, etc.
-			
-			static meshBufferHandle &getNew(const char *meshName);
-
-			Vector<Tri> constructFaceBuffer()
-			{
-				Vector<Tri> ret;
-				for(size_t i = 0; i < indexBuffer.getCount()/3; i++)
-				{
-					ret.push(Tri(verts[indexBuffer[i * 3]], verts[indexBuffer[(i * 3) + 1]], verts[indexBuffer[(i * 3) + 2]]));
-				}
-				return ret;
-			}
-
-			void removeRef()
-			{
-				refs--;
-				if(refs == 0)
-				{
-
-					delete this;
-				}
-			}
-		};
-	}
-
 	class Vertex
 	{
 		public:
@@ -80,23 +42,16 @@ namespace engine
 
 	class Mesh
 	{
-		internals::meshBufferHandle &buf; // Mesh buffers will be used to save memory by pointing them to the same buffer until a write/non-RO access occurs, then creating a new one.
-		
+		uintptr_t buf; // Secretly a pointer
 		public:
 
-		// Creates an uninitalized mesh
+		
+
+		Face &indexFace(size_t i);// Creates an uninitalized mesh
 		Mesh(); 
 		// Loads mesh, and returns this class.
-		Mesh(const char *name)
-		{
-			buf = internals::meshBufferHandle::getNew(name);
-		}
-
-		Face &indexFace(size_t i);
-		Vertex &operator[](size_t i)
-		{
-			return buf.verts[i];
-		}
+		Mesh(const char *name);
+		Vertex &operator[](size_t i);
 
 		// TODO: Stuff
 	};

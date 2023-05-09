@@ -25,9 +25,18 @@
 #include "core/transform.hpp"
 #include "core/time.hpp"
 #include "core/hash.hpp"
-#include "core/mesh.hpp"
 #include "physics/vectors.hpp"
 
+#ifndef CITRUS_ENGINE_FINE_TUNE
+
+#include "core/mesh.hpp"
+
 #undef __CITRUS_ENGINE_SOURCE_FILE__
+
+#else
+
+#include "core/mesh_int.hpp"
+
+#endif
 
 #endif
