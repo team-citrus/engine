@@ -22,8 +22,8 @@ typedef void* dllptr_t;
 
 #endif
 
-#include "graphics/matrix.hpp"
-#include "graphics/vkCall.hpp"
+#include "../graphics/matrix.hpp"
+#include "../graphics/vkCall.hpp"
 
 namespace engine
 {

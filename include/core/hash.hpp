@@ -12,12 +12,12 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
-#include "core/extensions.h"
-#include "core/vector.hpp"
-#include "core/pair.hpp"
-#include "core/mem.hpp"
-#include "core/simd.h"
-#include "core/errno.hpp"
+#include "../core/extensions.h"
+#include "../core/vector.hpp"
+#include "../core/pair.hpp"
+#include "../core/mem.hpp"
+#include "../core/simd.h"
+#include "../core/errno.hpp"
 
 namespace engine
 {

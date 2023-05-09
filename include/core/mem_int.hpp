@@ -18,8 +18,8 @@
 
 #include <cstdint>
 #include <atomic>
-#include "core/extensions.h"
-#include "core/simd.h"
+#include "../core/extensions.h"
+#include "../core/simd.h"
 
 #define POOL_FREE_BLOCK_MAGIC 0x465245454E554D00ull
 #define POOL_ALLOC_BLOCK_MAGIC 0x414C4C4F43454400ull

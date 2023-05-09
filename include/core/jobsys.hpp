@@ -10,8 +10,8 @@
 #define CITRUS_ENGINE_JOB_SYSTEM_HPP__
 
 #include <typeinfo>
-#include "core/hash.hpp"
-#include "core/extensions.h"
+#include "../core/hash.hpp"
+#include "../core/extensions.h"
 
 #ifndef _JOB_BLOCK_UNTIL_
 #define _JOB_BLOCK_UNTIL_ 100

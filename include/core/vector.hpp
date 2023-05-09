@@ -12,9 +12,9 @@
 #include <cstddef>
 #include <cstdlib>
 #include <iterator>
-#include "core/extensions.h"
-#include "core/mem.hpp"
-#include "core/option.hpp"
+#include "../core/extensions.h"
+#include "../core/mem.hpp"
+#include "../core/option.hpp"
 
 namespace engine
 {

@@ -9,9 +9,9 @@
 #ifndef CITRUS_ENGINE_TRANSFORM_HPP__
 #define CITRUS_ENGINE_TRANSFORM_HPP__
 
-#include "core/extensions.h"
-#include "core/component.hpp"
-#include "physics/vectors.hpp"
+#include "../core/extensions.h"
+#include "../core/component.hpp"
+#include "../physics/vectors.hpp"
 
 namespace engine
 {

@@ -12,7 +12,7 @@
 #include <cstdio>
 #include <ctime>
 #include <cstdarg>
-#include "core/extensions.h"
+#include "../core/extensions.h"
 
 #ifndef _LOG_FILE_
 #define _LOG_FILE_ "game.log"

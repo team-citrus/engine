@@ -9,9 +9,9 @@
 #ifndef CITRUS_ENGINE_SCENE_INTERNALS_HPP__
 #define CITRUS_ENGINE_SCENE_INTERNALS_HPP__
 
-#include "core/vector.hpp"
-#include "core/object.hpp"
-#include "core/pair.hpp"
+#include "../core/vector.hpp"
+#include "../core/object.hpp"
+#include "../core/pair.hpp"
 
 namespace engine
 {

@@ -11,9 +11,9 @@
 
 #include <btBulletDynamicsCommon.h>
 #include <box2d/box2d.h>
-#include "core/extensions.h"
-#include "physics/vectors.hpp"
-#include "physics/physobject.hpp"
+#include "../core/extensions.h"
+#include "../physics/vectors.hpp"
+#include "../physics/physobject.hpp"
 
 #define RB_FORCEMODE_IMPULSE 0
 #define RB_FORCEMODE_FORCE 1

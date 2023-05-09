@@ -10,9 +10,9 @@
 #define CITRUS_ENGINE_COMPONENTS_HPP__
 
 #include <typeinfo>
-#include "core/extensions.h"
-#include "core/object.hpp"
-#include "physics/collider.hpp"
+#include "../core/extensions.h"
+#include "../core/object.hpp"
+#include "../physics/collider.hpp"
 
 namespace engine // TODO: Internalize some of this stuff
 {

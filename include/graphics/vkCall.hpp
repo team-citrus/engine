@@ -11,7 +11,7 @@
 
 #include <vulkan.h>
 #include <cstdint>
-#include "graphics/vkGlobals.hpp"
+#include "../graphics/vkGlobals.hpp"
 
 
 namespace engine

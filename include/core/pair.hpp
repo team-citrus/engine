@@ -14,11 +14,11 @@
 #include <cstring>
 #include <cstdio>
 #include <iostream>
-#include "core/errno.hpp"
-#include "core/option.hpp"
-#include "core/vector.hpp"
-#include "core/extensions.h"
-#include "core/errno.hpp"
+#include "../core/errno.hpp"
+#include "../core/option.hpp"
+#include "../core/vector.hpp"
+#include "../core/extensions.h"
+#include "../core/errno.hpp"
 
 namespace engine
 {

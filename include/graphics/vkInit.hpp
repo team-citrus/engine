@@ -20,7 +20,7 @@
 #define ERR_VULKAN_INSTANCE_FAILURE -4
 
 #include <vulkan.h>
-#include "graphics/vkGlobals.hpp"
+#include "../graphics/vkGlobals.hpp"
 
 namespace engine
 {

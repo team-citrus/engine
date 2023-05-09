@@ -10,10 +10,10 @@
 #define CITRUS_ENGINE_INTERNALS_MESH_HPP__
 
 #include <cstddef>
-#include "core/pair.hpp"
-#include "core/rustints.h"
-#include "core/transform.hpp"
-#include "core/component.hpp"
+#include "../core/pair.hpp"
+#include "../core/rustints.h"
+#include "../core/transform.hpp"
+#include "../core/component.hpp"
 
 #define ENGINE_MESH_MEM (1 << 0) // Should be in addressable memory, not accessed via IO, MMIO is still on the table
 #define ENGINE_MESH_RENDER (1 << 1) // Used in the render process, insures it will be stored in RAM, and not stored as MMIO 

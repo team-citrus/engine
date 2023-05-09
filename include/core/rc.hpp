@@ -9,7 +9,7 @@
 #ifndef CITRUS_ENGINE_REFRENCE_COUNTER_HPP__
 #define CITRUS_ENGINE_REFRENCE_COUNTER_HPP__
 
-#include "core/mem.hpp"
+#include "../core/mem.hpp"
 
 namespace engine
 {

@@ -10,10 +10,10 @@
 #define CITRUS_ENGINE_MESH_HPP__
 
 #include <cstddef>
-#include "core/pair.hpp"
-#include "core/rustints.h"
-#include "core/transform.hpp"
-#include "core/component.hpp"
+#include "../core/pair.hpp"
+#include "../core/rustints.h"
+#include "../core/transform.hpp"
+#include "../core/component.hpp"
 
 namespace engine
 {   

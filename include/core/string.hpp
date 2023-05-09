@@ -10,9 +10,9 @@
 
 #include <cstring>
 #include <string>
-#include "core/mem.hpp"
-#include "core/vector.hpp"
-#include "core/errno.hpp"
+#include "../core/mem.hpp"
+#include "../core/vector.hpp"
+#include "../core/errno.hpp"
 
 namespace engine
 {

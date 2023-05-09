@@ -18,7 +18,7 @@
 #include <threads.h>
 #include <ctime>
 #include <csetjmp>
-#include "core/extensions.h"
+#include "../core/extensions.h"
 
 WEAK NO_INLINE void realMain();
 

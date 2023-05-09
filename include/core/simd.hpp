@@ -9,8 +9,8 @@
 #ifndef CITRUS_ENGINE_SINGLE_INSRUCTION_MULTIPLE_DATA_HPP__
 #define CITRUS_ENGINE_SINGLE_INSRUCTION_MULTIPLE_DATA_HPP__
 
-#include "core/rustints.h"
-#include "core/simd.h"
+#include "../core/rustints.h"
+#include "../core/simd.h"
 
 #ifdef __x86_64__
 

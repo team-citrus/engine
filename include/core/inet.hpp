@@ -26,12 +26,12 @@
 
 #include <cstdlib>
 #include <cstdint>
-#include "core/rc.hpp"
-#include "core/errno.hpp"
+#include "../coreore/rc.hpp"
+#include "../coreore/errno.hpp"
 
 #ifdef CITRUS_ENGINE_SERVER_SOCKETS
 
-#include "core/jobsys.hpp"
+#include "../coreore/jobsys.hpp"
 
 #endif
 

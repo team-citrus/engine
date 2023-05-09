@@ -11,8 +11,8 @@
 
 #include <box2d/box2d.h>
 #include <btBulletDynamicsCommon.h>
-#include "core/vector.hpp"
-#include "physics/physobject.hpp"
+#include "../core/vector.hpp"
+#include "../physics/physobject.hpp"
 
 #define INTERNALS_PHYSICS_DEQUEUE_ERR_NOT_FOUND -1
 #define INTERNALS_PHYSICS_QUEUE_ERR_ALREADY_QUEUED -1

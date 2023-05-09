@@ -9,8 +9,8 @@
 #ifndef CITRUS_ENGINE_CAMERA_HPP__
 #define CITRUS_ENGINE_CAMERA_HPP__
 
-#include "graphics/matrix.hpp"
-#include "core/component.hpp"
+#include "../graphics/matrix.hpp"
+#include "../core/component.hpp"
 
 namespace engine
 {

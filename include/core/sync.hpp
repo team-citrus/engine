@@ -10,7 +10,7 @@
 #define CITRUS_ENGINE_SYNCHRONIZATION_HPP__
 
 #include <atomic>
-#include "core/extensions.h"
+#include "../core/extensions.h"
 
 namespace engine
 {

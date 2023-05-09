@@ -9,8 +9,8 @@
 #define CITRUS_ENGINE_JSON_PARSER_HPP__
 
 #include <string>
-#include "core/vector.hpp"
-#include "core/pair.hpp"
+#include "../core/vector.hpp"
+#include "../core/pair.hpp"
 
 #define NLOHMANN_JSON_NAMESPACE_BEGIN                \
     namespace engine                                 \

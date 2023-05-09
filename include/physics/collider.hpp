@@ -10,10 +10,10 @@
 #define CITRUS_ENGINE_COLLIDER_HPP__
 
 #include <cstdint>
-#include "physics/physobject.hpp"
-#include "physics/vectors.hpp"
-#include "core/extensions.h"
-#include "core/component.hpp"
+#include "../physics/physobject.hpp"
+#include "../physics/vectors.hpp"
+#include "../core/extensions.h"
+#include "../core/component.hpp"
 
 // 3D Collider types
 

@@ -9,7 +9,7 @@
 #ifndef CITRUS_ENGINE_COMPUTE_SHADERS_HPP__
 #define CITRUS_ENGINE_COMPUTE_SHADERS_HPP__
 
-#include "core/extensions.h"
+#include "../core/extensions.h"
 
 namespace engine
 {

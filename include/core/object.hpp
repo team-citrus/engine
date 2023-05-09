@@ -11,12 +11,12 @@
 
 #include <cstdint>
 #include <cstring>
-#include "core/extensions.h"
-#include "core/component.hpp"
-#include "core/mem.hpp"
-#include "core/Main.hpp"
-#include "core/hash.hpp"
-#include "core/vector.hpp"
+#include "../core/extensions.h"
+#include "../core/component.hpp"
+#include "../core/mem.hpp"
+#include "../core/Main.hpp"
+#include "../core/hash.hpp"
+#include "../core/vector.hpp"
 
 namespace engine
 {

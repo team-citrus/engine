@@ -10,10 +10,10 @@
 #define CITRUS_ENGINE_CSPRNG_HPP__
 
 #include <cstring>
-#include "core/extensions.h"
-#include "core/simd.h"
-#include "core/rustints.h"
-#include "core/hash.hpp"
+#include "../core/extensions.h"
+#include "../core/simd.h"
+#include "../core/rustints.h"
+#include "../core/hash.hpp"
 
 #ifndef __x86_64__
 #define BYTES_MOD 64

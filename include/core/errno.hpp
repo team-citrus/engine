@@ -36,7 +36,7 @@
 
 #ifdef _INTERNALS_ENGINE_THREAD_MAIN_
 
-#include "core/hash.hpp"
+#include "../core/hash.hpp"
 
 extern engine::HashMap<thrd_t, unsigned int> errcodes;
 

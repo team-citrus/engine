@@ -10,11 +10,11 @@
 #define CITRUS_ENGINE_PHYSICS_OBJECTS_HPP__
 
 #include <cstdint>
-#include "physics/rigidbody.hpp"
-#include "physics/vectors.hpp"
-#include "physics/collider.hpp"
-#include "core/extensions.h"
-#include "core/component.hpp"
+#include "../physics/rigidbody.hpp"
+#include "../physics/vectors.hpp"
+#include "../physics/collider.hpp"
+#include "../core/extensions.h"
+#include "../core/component.hpp"
 
 namespace engine
 {
