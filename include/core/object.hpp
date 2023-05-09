@@ -17,6 +17,7 @@
 #include "../core/Main.hpp"
 #include "../core/hash.hpp"
 #include "../core/vector.hpp"
+#include "../vendor/prefab.h"
 
 namespace engine
 {
@@ -27,6 +28,11 @@ namespace engine
 			{
 				cCount = 0;
 				components = (component**)memalloc(sizeof(component*));
+			}
+
+			Object(const char *name)
+			{
+				__citrus_engine_vendor_prefab_to_object(__citrus_engine_vendor_get_prefab(name), this);
 			}
 
 			OPTIMIZE(3) ~Object()

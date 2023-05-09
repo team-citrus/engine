@@ -16,7 +16,7 @@ extern "C" {
 typedef struct __citrus_engine_vendor_prefab_t __citrus_engine_vendor_prefab_t;
 
 __citrus_engine_vendor_prefab_t *__citrus_engine_vendor_get_prefab(const char *name);
-void __citrus_engine_vendor_prefab_to_object(void *obj);
+void __citrus_engine_vendor_prefab_to_object(__citrus_engine_vendor_prefab_t *prefab, void *obj);
 
 #ifdef __cplusplus 
 }
