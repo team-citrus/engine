@@ -28,6 +28,7 @@ namespace engine
 			{
 				cCount = 0;
 				components = (component**)memalloc(sizeof(component*));
+				markedForDeath = false;
 			}
 
 			Object(const char *name)
@@ -39,7 +40,7 @@ namespace engine
 			{
 				for(size_t i = 0; i < cCount; i++)
 				{
-					components[i]->~component();
+					delete (components[i]);
 				}
 
 				memfree(components);
@@ -51,6 +52,7 @@ namespace engine
 			{
 				componentCount++;
 				components = memrealloc(components, sizeof(component*) * componentCount);
+				components[componentCount - 1] = memalloc(sizeof(T));
 				components[componentCount - 1]->awake();
 				return *components[componentCount - 1];
 			}
@@ -93,6 +95,11 @@ namespace engine
 				return cCount;
 			}
 
+			OPTIMIZE(3) OPERATOR void kill()
+			{
+				markedForDeath = true;
+			}
+
 			#ifdef _INTERNALS_ENGINE_THREAD_MAIN_
 
 			OPTIMIZE(3) OPERATOR Vector<component*> getComponents()
@@ -105,6 +112,7 @@ namespace engine
 			Vector<hash_t> tags;
 			int cCount;
 			Component **components;
+			bool markedForDeath;
 	};
 
 	// TODO: Rust interop class

@@ -18,7 +18,7 @@ namespace engine
 	namespace internals
 	{
 		typedef void (*sceneConstructorPtr_t(void));
-		class scene
+		class Scene
 		{
 			public:
 			int ID;
@@ -28,12 +28,12 @@ namespace engine
 
 			// TODO: Add a type for shaders and materials
 			// All objects in a scene
-			Vector<object> objects;
+			Vector<Object> objects;
 			bool is2D;
 		};
 		
-		extern scene *curScene;
-		extern Map<scene, int> scenes;
+		extern Scene *curScene;
+		extern Map<Scene, int> Scenes;
 		extern bool loadNecesary;
 		extern int currentScene; // Used with loadNecessary to load the next scene when timing lines up.d
 
