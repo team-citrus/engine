@@ -11,31 +11,31 @@
 
 #define __CITRUS_ENGINE_SOURCE_FILE__
 
-#include "core/extensions.h"
-#include "core/mem.hpp"
-#include "core/object.hpp"
-#include "core/component.hpp"
-#include "core/vector.hpp"
-#include "core/rustints.h"
-#include "core/pair.hpp"
-#include "core/input.hpp"
-#include "core/scene.hpp"
-#include "core/log.hpp"
-#include "core/option.hpp"
-#include "core/transform.hpp"
-#include "core/time.hpp"
-#include "core/hash.hpp"
-#include "physics/vectors.hpp"
+#include "../core/extensions.h"
+#include "../core/mem.hpp"
+#include "../core/object.hpp"
+#include "../core/component.hpp"
+#include "../core/vector.hpp"
+#include "../core/rustints.h"
+#include "../core/pair.hpp"
+#include "../core/input.hpp"
+#include "../core/scene.hpp"
+#include "../core/log.hpp"
+#include "../core/option.hpp"
+#include "../core/transform.hpp"
+#include "../core/time.hpp"
+#include "../core/hash.hpp"
+#include "../physics/vectors.hpp"
 
 #ifndef CITRUS_ENGINE_FINE_TUNE
 
-#include "core/mesh.hpp"
+#include "../core/mesh.hpp"
 
 #undef __CITRUS_ENGINE_SOURCE_FILE__
 
 #else
 
-#include "core/mesh_int.hpp"
+#include "../core/mesh_int.hpp"
 
 #endif
 

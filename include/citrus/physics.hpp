@@ -11,13 +11,13 @@
 
 #define __CITRUS_ENGINE_SOURCE_FILE__
 
-#include "core/extensions.h"
-#include "core/time.hpp"
-#include "physics/collider.hpp"
-#include "physics/physobject.hpp"
-#include "physics/rigidbody.hpp"
-#include "physics/vectors.hpp"
-#include "graphics/matrix.hpp"
+#include "../core/extensions.h"
+#include "../core/time.hpp"
+#include "../physics/collider.hpp"
+#include "../physics/physobject.hpp"
+#include "../physics/rigidbody.hpp"
+#include "../physics/vectors.hpp"
+#include "../graphics/matrix.hpp"
 
 #undef __CITRUS_ENGINE_SOURCE_FILE__
 

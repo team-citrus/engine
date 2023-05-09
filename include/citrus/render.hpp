@@ -11,10 +11,10 @@
 
 #define __CITRUS_ENGINE_SOURCE_FILE__
 
-#include "core/extensions.h"
-#include "graphics/shader.hpp"
-#include "graphics/compute.hpp"
-#include "graphics/matrix.hpp"
+#include "../core/extensions.h"
+#include "../graphics/shader.hpp"
+#include "../graphics/compute.hpp"
+#include "../graphics/matrix.hpp"
 
 #undef __CITRUS_ENGINE_SOURCE_FILE__
 
