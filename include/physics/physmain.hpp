@@ -23,8 +23,6 @@ namespace internals
 {
 	namespace physics
 	{
-		using namespace physics;
-
 		// Initalize physics
 		void Init(bool 2D);
 

@@ -23,42 +23,66 @@ extern void waitms(size_t mils);
 
 namespace engine
 {
-    namespace internals
-    {
-        int physmain()
-        {
-            engine::clearErrorcode();
-            while(!loadNecesary)
-            {
-                while(internals::physics::state.stepRate == 0) spinlock_pause();
-                while(isPhysicsBlocked.load()) spinlock_pause();
-                isRenderBlocked.store(true);
-				isGameplayBlocked.store(true);
-                size_t phystart = getTimeInMils();
-                
-                internals::physics::step();
-                
-                // TODO: Trigger stuff
+namespace internals
+{
 
-                isRenderBlocked.store(false);
-				isGameplayBlocked.store(false);
-				physicsJustExecuted.store(true);
-				renderJustExecuted.store(false);
-				gameplayJustExecuted.store(false);
-                internals::physics::physicsDur = getTimeInMils() - phystart;
-                waitms(
-                    (internals::physics::physicsDelta = (1000 - (internals::physics::physicsDur * internals::physics::state.stepRate))/internals::physics::state.stepRate)
-                );
-            }
+void handleObjects()
+{
+	for(int i = 0; i < curScene->objects.getCount(); i++)
+	{
+		vec<Component*> components = curScene->objects[i].getComponents();
+		for(int j = 0; j < components.getCount(); j++)
+		{
+			components[j]->fixedUpdate();
+			engine::clearErrorcode();
+		}
+	}
+}
 
-            for(int i = 0; i < internals::curScene->objects.getCount(); i++)
-            {
-                internals::curScene->objects[i].~object();
-            }
-            curScene->objects.~Vector();
+int physmain()
+{
+	engine::clearErrorcode();
+	while(!loadNecesary)
+	{
+		while(internals::physics::state.stepRate == 0) spinlock_pause();
+		while(isPhysicsBlocked.load()) spinlock_pause();
+		isRenderBlocked.store(true);
+		isGameplayBlocked.store(true);
+		size_t phystart = getTimeInMils();
+				
+		#ifdef CITRUS_ENGINE_FIXED_UPDATE_POST_STEP
 
-            curScene = &scenes.lookup(currentScene);
-            curScene->constructor();
-        }
-    }
+		internals::physics::step();
+		handleObjects();
+		
+		#else
+
+		handleObjects();
+		internals::physics::step();
+
+		#endif
+
+		// TODO: Trigger stuff
+
+		isRenderBlocked.store(false);
+		isGameplayBlocked.store(false);
+		physicsJustExecuted.store(true);
+		renderJustExecuted.store(false);
+		gameplayJustExecuted.store(false);
+		internals::physics::physicsDur = getTimeInMils() - phystart;
+		waitms(
+			(internals::physics::physicsDelta = (1000 - (internals::physics::physicsDur * internals::physics::state.stepRate))/internals::physics::state.stepRate)
+		);
+	}
+
+	for(int i = 0; i < internals::curScene->objects.getCount(); i++)
+	{
+		internals::curScene->objects[i].~object();
+	}
+	curScene->objects.~Vector();
+
+	curScene = &scenes.lookup(currentScene);
+	curScene->constructor();
+}
+}
 }
