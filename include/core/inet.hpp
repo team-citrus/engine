@@ -26,6 +26,7 @@
 
 #include <cstdlib>
 #include <cstdint>
+#include "core/rc.hpp"
 #include "core/errno.hpp"
 
 #ifdef CITRUS_ENGINE_SERVER_SOCKETS
@@ -33,6 +34,9 @@
 #include "core/jobsys.hpp"
 
 #endif
+
+#define UDP_SAFE_MAX 508
+#define UDP_HARD_LIMIT 65507
 
 namespace engine
 {
@@ -49,13 +53,15 @@ namespace engine
 
 		#ifdef _WIN32
 
-		SOCKET sock;
+		using SocketHandle = SOCKET;
 
 		#else
 
-		int sock;
+		using SocketHandle = int;
 
 		#endif
+
+		RefernceCounter<SocketHandle> *sock;
 
 		public:
 		Socket()
@@ -69,11 +75,11 @@ namespace engine
 		Socket(char *addr, uint16_t port, SocketTypes t)
 		{
 			type = t;
-			sock = socket((type & 0x80 != 0) ? AF_INET6 : AF_INET, type & 0xF, (type & 0xF == 1) ? IPPROTO_TCP : IPPROTO_UDP);
+			sock = &RefernceCounter<SocketHandle>::getNew(socket((type & 0x80 != 0) ? AF_INET6 : AF_INET, type & 0xF, (type & 0xF == 1) ? IPPROTO_TCP : IPPROTO_UDP));
 			
 			#ifdef __unix__
 			
-			fcntl(sock, F_SETFL, fcntl(sock, F_GETFL, 0) | O_NONBLOCK);
+			fcntl(sock->obj, F_SETFL, fcntl(sock->obj, F_GETFL, 0) | O_NONBLOCK);
 
 			#else
 
@@ -101,7 +107,7 @@ namespace engine
 
 				freeaddrinfo(res);
 
-				connect(sock, (sockaddr*)&din, sizeof(sockaddr_in6));
+				connect(sock->obj, (sockaddr*)&din, sizeof(sockaddr_in6));
 			}
 			else
 			{
@@ -120,12 +126,18 @@ namespace engine
 
 				freeaddrinfo(res);
 
-				connect(sock, (sockaddr*)&din, sizeof(sockaddr_in));
+				connect(sock->obj, (sockaddr*)&din, sizeof(sockaddr_in));
 			}
+		}
+		Socket(Socket &cc)
+		{
+			type = cc.type;
+			sock = cc.sock;
+			cc.sock->addReference();
 		}
 		~Socket()
 		{
-			close(sock);
+			sock->removeReference();
 		}
 
 		// TODO: Flags
@@ -141,7 +153,7 @@ namespace engine
 				return -1;
 			}
 
-			if(send(sock, packet, len, 0) == -1)
+			if(send(sock->obj, packet, len, 0) == -1)
 			{
 				errorcode() = ENGINE_CLIB_ERRNO_SET;
 				return -1;
@@ -153,7 +165,7 @@ namespace engine
 		// TODO: Actual flags
 		size_t read(void *buffer, size_t len, bool peek)
 		{
-			size_t res = recv(sock, buffer, len, (peek) ? MSG_PEEK  : 0 );
+			size_t res = recv(sock->obj, buffer, len, (peek) ? MSG_PEEK  : 0 );
 			if(res == -1)
 			{
 				errorcode() = ENGINE_CLIB_ERRNO_SET;
@@ -182,6 +194,7 @@ namespace engine
 		bool isConnected;
 
 		public:
+
 		typedef void (*JobPointer)(ServerSocket&, void*);
 		class ServerJob : public Job
 		{
@@ -291,11 +304,17 @@ namespace engine
 		// TODO: Flags
 		int write(void *packet, size_t len)
 		{
-			if(len > 508 && (type & 0xF == 2))
+			if(isConnected == false)
+			{
+				errorcode() = ENGINE_INVALID_ARG;
+				return -1;
+			}
+
+			if(len > UDP_SAFE_MAX && (type & 0xF == 2))
 			{
 				errorcode() = ENGINE_UNSAFE_UDP_SIZE;
-			}
-			if(len > 65507 && (type & 0xF == 2))
+			}/
+			if(len > UDP_HARD_LIMIT && (type & 0xF == 2))
 			{
 				errorcode() = ENGINE_TOO_BIG_UDP;
 				return -1;
@@ -313,6 +332,11 @@ namespace engine
 		// TODO: Actual flags
 		size_t read(void *buffer, size_t len, bool peek)
 		{
+			if(isConnected == false)
+			{
+				errorcode() = ENGINE_INVALID_ARG;
+				return -1;
+			}
 			size_t res = recv(sock, buffer, len, (peek) ? MSG_PEEK  : 0 );
 			if(res == -1)
 			{
@@ -331,8 +355,7 @@ namespace engine
 			return j;
 		}
 	};
-};
-
 #endif
+};
 
 #endif
