@@ -17,6 +17,7 @@
 
 #define ENGINE_MESH_MEM (1 << 0) // Should be in addressable memory, not accessed via IO, MMIO is still on the table
 #define ENGINE_MESH_RENDER (1 << 1) // Used in the render process, insures it will be stored in RAM, and not stored as MMIO 
+#define ENGINE_MESH_RAM ENGINE_MESH_RENDER // Should be stored in RAM
 #define ENGINE_MESH_MMIO (1 << 2) // Access using MMIO
 #define ENGINE_MESH_MMIO_BIG_PAGES ((1 << 3) | MESH_MMIO) // Access using MMIO + big pages
 #define ENGINE_MESH_WILL_BE_EDITED (1 << 4) // Will be edited, allocates new memory regardless of if a version of the mesh is currently in RAM
