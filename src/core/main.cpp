@@ -238,7 +238,6 @@ int MAIN
 	{
 		// Physics runs on it's own internal timings, and executes some gameplay code
 		thrd_create(&internals::phys, internals::physmain, NULL);
-		thrd_detach(internals::phys);
 
 		while(true) // Inner loop is run each frame
 		{
