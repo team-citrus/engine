@@ -27,16 +27,16 @@ extern void waitms(size_t mils);
 namespace engine
 {
 	static inline void refreshJobSystem();
-	static inline int jobWrapper(engine::Job ptr, bool isEngineThread);
+	static inline int jobWrapper(engine::Job *ptr, bool isEngineThread);
 
 	namespace internals
 	{
 		std::atomic_bool jobsBeingAccessed;
 		std::atomic_bool executingBeingAccessed;
-		Vector<Job> usr;
-		Vector<Job> priority;
-		Vector<Job> asap;
-		Vector<Job> engine;
+		Vector<Job*> usr;
+		Vector<Job*> priority;
+		Vector<Job*> asap;
+		Vector<Job*> engine;
 		Map<hash_t, std::thread::id> executing;
 
 		// number of engine threads
@@ -65,7 +65,7 @@ namespace engine
 		internals::jobsBeingAccessed.store(true);
 
 		ctr++;
-		internals::usr.push(*this);
+		internals::usr.push(this);
 		refreshJobSystem();
 
 		internals::jobsBeingAccessed.store(false);
@@ -85,7 +85,7 @@ namespace engine
 		return r;
 	}
 
-	int Job::complete()
+	int Job::complete() // TODO: rewrite
 	{
 		this->prioritize();
 		size_t targetTime = getTimeInMils() + _JOB_BLOCK_UNTIL_;
@@ -99,10 +99,10 @@ namespace engine
 			return -1;
 		}
 
-		while(internals::priority.search(*this) && getTimeInMils() != targetTime)
+		while(internals::priority.search(this) && getTimeInMils() != targetTime)
 			spinlock_pause();
 
-		if(internals::priority.search(*this) || internals::executing.has(this->hash()))
+		if(internals::priority.search(this) || internals::executing.has(this->hash()))
 		{
 			errorcode() = ENGINE_TIME_OUT;
 			return -1;
@@ -128,11 +128,11 @@ namespace engine
 
 		for(int i = 0; i < internals::usr.getCount(); i++)
 		{
-			if(internals::usr[i] == *this)
+			if(internals::usr[i]->hash() == hash())
 			{
 				internals::usr.rm(i);
 				this->prioritzed = true;
-				internals::priority.push(*this);
+				internals::priority.push(this);
 				return;
 			}
 		}
@@ -153,30 +153,30 @@ namespace engine
 
 		for(int i = 0; i < internals::usr.getCount(); i++)
 		{
-			if(internals::usr[i] == *this)
+			if(internals::usr[i]->hash() == hash())
 			{
 				internals::usr.rm(i);
-				internals::asap.push(*this);
+				internals::asap.push(this);
 				return;
 			}
 		}
 
 		for(int i = 0; i < internals::priority.getCount(); i++)
 		{
-			if(internals::priority[i] == *this)
+			if(internals::priority[i]->hash() == hash())
 			{
 				internals::priority.rm(i);
-				internals::asap.push(*this);
+				internals::asap.push(this);
 				return;
 			}
 		}
 
 		for(int i = 0; i < internals::engine.getCount(); i++)
 		{
-			if(internals::engine[i] == *this)
+			if(internals::engine[i]->hash() == hash())
 			{
 				internals::engine.rm(i);
-				internals::asap.push(*this);
+				internals::asap.push(this);
 				return;
 			}
 		}
@@ -218,14 +218,14 @@ namespace engine
 		}
 	}
 
-	static inline int jobWrapper(engine::Job ptr, bool isEngineThread)
+	static inline int jobWrapper(engine::Job *ptr, bool isEngineThread)
 	{
 		while(internals::jobsBeingAccessed.load()) spinlock_pause();
 		internals::jobsBeingAccessed.store(true);
 
 	execute:
 
-		hash_t h = ptr.hash();
+		hash_t h = ptr->hash();
 
 		while(internals::executingBeingAccessed.load()) spinlock_pause();
 		internals::executingBeingAccessed.store(true);
@@ -235,7 +235,7 @@ namespace engine
 		internals::executingBeingAccessed.store(false);
 		internals::jobsBeingAccessed.store(false);
 
-		ptr();
+		(*ptr)();
 
 		while(internals::jobsBeingAccessed.load()) spinlock_pause();
 		internals::jobsBeingAccessed.store(true);

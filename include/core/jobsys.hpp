@@ -27,7 +27,7 @@ namespace engine
 
 		#ifdef __FILE_IS_JOBSYS_DOT_CPP__
 		friend void refreshJobSystem();
-		friend int jobWrapper(engine::Job ptr, bool isEngineThread);
+		friend int jobWrapper(engine::Job *ptr, bool isEngineThread);
 		#endif
 
 		public:
@@ -72,9 +72,9 @@ namespace engine
 	namespace internals
 	{
 		extern std::atomic_bool jobsBeingAccessed;
-		extern Vector<Job> jobs;
-		extern Vector<Job> priority;
-		extern Vector<Job> asap;
+		extern Vector<Job*> jobs;
+		extern Vector<Job*> priority;
+		extern Vector<Job*> asap;
 		extern Map<hash_t, std::thread::id> executing;
 
 		// number of engine threads
