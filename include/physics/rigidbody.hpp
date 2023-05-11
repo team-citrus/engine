@@ -11,12 +11,15 @@
 
 #include "../core/extensions.h"
 #include "../physics/vectors.hpp"
-#include "../physics/physobject.hpp"
 
 #define RB_FORCEMODE_IMPULSE 0
 #define RB_FORCEMODE_FORCE 1
 #define RB_FORCEMODE_ACCELERATION 2
 #define RB_FORCEMODE_VELOCITY 3
+
+#define RB_KINEMATIC 0
+#define RB_STATIC 1
+#define RB_DYNAMIC 3
 
 #define RB_AWAKE true
 #define RB_ASLEEP false
@@ -31,52 +34,65 @@ namespace engine
 				// Box2d rigidbody representation
 				void *body2D;
 
-				Physobject2D *owner;
+				// stuff
 
-				// See if we should keep calculating it, or not. Useful for optimization
+				int type;
+				Transform2D trans; // rigidbodies take control of transform after being init'd
+				Vec2 velocity;
+				float angularVelocity;
+				float linearDamping;
+				float angularDamping;
 				bool awake;
+				bool allowSleep;
+				bool fixedRotation;
+				bool bullet;
+				bool enabled;
+				float gravityScale;
 			public:
-				
+				// Actually create the rigidbody
+				int init();
 
-				// Constructors
-				Rigidbody2D();
+				Vec2 getCenterOfMass() const;
+				Vec2 getCenterOfMassLocal() const;
 
-				// Rigidbody stuff
+				void setVelocity(Vec2 vel);
+				Vec2 getVelocity() const;
 
-				// Awakes the rigidbody if it's asleep
-				void awaken();
+				void setAngularVelocity(float omega);
+				float getAngularVelocity() const;
 
-				// Get sleep status
-				bool isAwake();
+				void applyForce(const Vec2 force, bool wake, int type);
+				void applyForce(const Vec2 force, const Vec2 point, bool wake, int type);
 
-				// Forces
+				float getMass() const;
+				// TODO: setter for mass
 
-				/*	Practically identical to Unity's Rigidbody.AddForce()
-				*	@param force The force to apply, based on coordinates
-				*	@param mode The mode of the force
-				*/
-				void applyForce(Vec2 force, int mode);
+				float getLinearDamping() const;
+				void setLinearDamping(float f);
 
-				void update() override;
-				void awake() override;
+				float getAngularDamping() const;
+				void setAngularDamping(float f);
 
-				// Velocity
+				float getScaleOfGravity() const;
+				void setScaleOfGravity(float s);
 
-				// Gets the velocity in the form of a Vec2
-				Vec2 getVelocity();
+				void setType(int type);
+				int getType() const;
 
-				/*	Sets the velocity
-				*	@param velocity The new velocity
-				*/
-				void setVelocity(Vec2 velocity);
+				void setBullet(bool b);
+				bool isBullet() const;
 
-				// Advanced physics stuff
-				
-				//	Gets the owner
-				OPERATOR Physobject2D &getPhysobject()
-				{
-					return *owner;
-				}
+				void sleep();
+				void wake();
+				bool isAwake() const;
+
+				void disable();
+				void enable();
+				bool isEnabled() const;
+
+				void lockRotation();
+				void unlockRotation();
+				bool isRotationLocked();
 		};
 
 		class Rigidbody3D : Component
@@ -84,48 +100,7 @@ namespace engine
 			private:
 				// Bullet rigidbody representation
 				void *body3D;
-
-				Physobject3D &owner;
-
-				// See if we should keep calculating it, or not. Useful for optimization
-				bool awake;
 			public:
-				// Constructors
-				Rigidbody3D();
-
-				// Rigidbody stuff
-
-				// Awakes the rigidbody if it's asleep
-				void awaken();
-
-				// Get sleep status
-				bool isAwake();
-
-				// Forces
-
-				/*	Practically identical to Unity's Rigidbody.AddForce()
-				*	@param force The force to apply, based on coordinates
-				*	@param mode The mode of the force
-				*/
-				void applyForce(Vec3 force, int mode);
-
-				// Velocity
-
-				// Gets the velocity in the form of aVec3
-				Vec3 getVelocity();
-
-				/*	Sets the velocity
-				*	@param velocity The new velocity
-				*/
-				void setVelocity(Vec3 velocity);
-
-				// Advanced physics stuff
-				
-				//	Gets the owner
-				OPERATOR Physobject3D &getPhysobject()
-				{
-					return *owner;
-				}
 		};
 	}
 }

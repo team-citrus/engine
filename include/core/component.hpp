@@ -12,7 +12,6 @@
 #include <typeinfo>
 #include "../core/extensions.h"
 #include "../core/object.hpp"
-#include "../physics/collider.hpp"
 
 namespace engine // TODO: Internalize some of this stuff
 {
