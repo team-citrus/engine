@@ -32,6 +32,7 @@ namespace engine
 	namespace internals
 	{
 		std::atomic_bool jobsBeingAccessed;
+		std::atomic_bool executingBeingAccessed;
 		Vector<Job> usr;
 		Vector<Job> priority;
 		Vector<Job> asap;
@@ -71,13 +72,25 @@ namespace engine
 		return 0;
 	}
 
+	// Ugly fix but a fix none the less
+	static inline bool executing_has(hash_t k)
+	{
+		while(internals::executingBeingAccessed.load()) spinlock_pause();
+		internals::executingBeingAccessed.store(true);
+
+		bool r = internals::executing.has(k);
+
+		internals::executingBeingAccessed.store(false);
+
+		return r;
+	}
+
 	int Job::complete()
 	{
 		this->prioritize();
 		size_t targetTime = getTimeInMils() + _JOB_BLOCK_UNTIL_;
 
-		// FIXME: possible race condition
-		while(internals::executing.has(this->hash()) && getTimeInMils() != targetTime)
+		while(executing_has(this->hash()) && getTimeInMils() != targetTime)
 			spinlock_pause();
 
 		if(internals::executing.has(this->hash()))
@@ -213,8 +226,13 @@ namespace engine
 	execute:
 
 		hash_t h = ptr.hash();
+
+		while(internals::executingBeingAccessed.load()) spinlock_pause();
+		internals::executingBeingAccessed.store(true);
+
 		internals::executing.add(h, std::this_thread::get_id());
 
+		internals::executingBeingAccessed.store(false);
 		internals::jobsBeingAccessed.store(false);
 
 		ptr();
@@ -222,7 +240,12 @@ namespace engine
 		while(internals::jobsBeingAccessed.load()) spinlock_pause();
 		internals::jobsBeingAccessed.store(true);
 
+		while(internals::executingBeingAccessed.load()) spinlock_pause();
+		internals::executingBeingAccessed.store(true);
+
 		internals::executing.rm(h);
+
+		internals::executingBeingAccessed.store(false);
 		refreshJobSystem();
 		
 		if((!isEngineThread || internals::usrThreads != 0) && internals::asap.getCount() > 0)
