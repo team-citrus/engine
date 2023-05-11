@@ -12,6 +12,7 @@
 #include <typeinfo>
 #include "../core/extensions.h"
 #include "../core/object.hpp"
+#include "../physics/collider.hpp"
 
 namespace engine // TODO: Internalize some of this stuff
 {
@@ -56,20 +57,21 @@ namespace engine // TODO: Internalize some of this stuff
 				return;
 			}
 			// Functions similar to Unity's onTriggerEnter()
-			virtual void onTriggerEnter(collider *offender, collider *victim)
+			virtual void onTriggerEnter2D(Collider2D *offender)
 			{
 				return;
 			}
 			// Functions similar to Unity's onTriggerStay()
-			virtual void onTriggerStay(collider *offender, collider *victim)
+			virtual void onTriggerStay2D(Collider2D *offender)
 			{
 				return;
 			}
 			// Functions similar to Unity's onTriggerExit()
-			virtual void onTriggerExit(collider *offender, collider *victim)
+			virtual void onTriggerExit2D(Collider2D *offender)
 			{
 				return;
 			}
+			// TODO: onColliderEnter, etc.
 			
 			// Exists for obvious reasons.
 			virtual ~component()
