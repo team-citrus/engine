@@ -27,7 +27,7 @@ namespace internals
 	namespace physics
 	{
 		// Initalize physics
-		void Init(bool 2D);
+		void Init(bool 2D, Vec3 gravity);
 
 		// Deconstruct physics
 		void Fini();
@@ -121,18 +121,21 @@ namespace internals
 			int stepRate;
 			union
 			{
+				Vec2 gravity2D;
+				Vec3 gravity3D;
+			};
+			
+			union
+			{
 				b2World world2D;
 				btDiscreteDynamicsWorld world3D;
 			};
-			union
-			{
-				Vector<engine::physics::physobject2D> objs2D;
-				Vector<engine::physics::physobject3D> objs3D;
-			};
 		}
 
+		extern b2Listener listener;
+
 		// The physics state
-		PHYS_STATE state;
+		extern PHYS_STATE state;
 	};
 };
 };

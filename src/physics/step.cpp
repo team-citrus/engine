@@ -17,6 +17,8 @@
 
 using namespace engine;
 
+internals::physics::b2Listener listener;
+
 int internals::physics::step()
 {
 	if(internals::physics::state.is2D)
