@@ -24,7 +24,7 @@ namespace engine
 		public:
 			Float2 position;
 
-			Float2 rotation;
+			float rotation;
 
 			Float2 scale;
 

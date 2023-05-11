@@ -14,7 +14,7 @@
 #include "../core/extensions.h"
 
 #ifndef _JOB_BLOCK_UNTIL_
-#define _JOB_BLOCK_UNTIL_ 100
+#define _JOB_BLOCK_UNTIL_ 8
 #endif
 
 namespace engine
@@ -23,10 +23,11 @@ namespace engine
 	class Job
 	{
 		bool prioritzed;
+		int ctr; // Neat trick to prevent hash-reuse
 
 		#ifdef __FILE_IS_JOBSYS_DOT_CPP__
 		friend void refreshJobSystem();
-		friend int jobWrapper(engine::Job ptr);
+		friend int jobWrapper(engine::Job ptr, bool isEngineThread);
 		#endif
 
 		public:
@@ -35,7 +36,7 @@ namespace engine
 		/// @return Error returns -1 and sets engine::errorcode. Success returns the index it is currently scheduled at.
 		int schedule();
 
-		/// Block this thread until the job completes or _JOB_BLOCK_UNTIL_ milliseconds has passed (default defined as 100). Also moves the job to a prioity list if it is not already executing.
+		/// Block this thread until the job completes or _JOB_BLOCK_UNTIL_ milliseconds has passed (default defined as 8). Also moves the job to a prioity list if it is not already executing.
 		/// @return Error returns -1 and sets engine::errorcode. Success returns 0.
 		int complete();
 
@@ -51,9 +52,19 @@ namespace engine
 
 		virtual int getTypeSignature();
 
+		virtual hash_t hash()
+		{
+			return engine::hash(this, sizeof(*this));
+		}
+
 		#if defined(CITRUS_ENGINE_FINE_TUNE) || defined(_INTERNALS_ENGINE_THREAD_MAIN_)
 		/// Set this job to be done ASAP
 		void ASAP();
+		#endif
+
+		#if defined(_INTERNALS_ENGINE_THREAD_MAIN_)
+		/// Schedule a system job
+		void sysSchedule();
 		#endif
 	};
 
@@ -66,12 +77,10 @@ namespace engine
 		extern Vector<Job> asap;
 		extern Map<hash_t, std::thread::id> executing;
 
-		// Used by the job system to determine how many threads to generate.
-		extern size_t threadsAvalible = 0;
-		// Used by the job system to determine how many threads can be generated.
-		extern size_t coreCount = 0;
-		// The number of threads that can be generated
-		extern size_t possibleThreads = 0;
+		// number of engine threads
+		extern int engineThreads;
+		// threads for user code
+		extern int usrThreads;
 	}
 	#endif
 }

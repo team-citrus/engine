@@ -9,8 +9,6 @@
 #ifndef CITRUS_ENGINE_RIGIDBODIES_HPP__
 #define CITRUS_ENGINE_RIGIDBODIES_HPP__
 
-#include <btBulletDynamicsCommon.h>
-#include <box2d/box2d.h>
 #include "../core/extensions.h"
 #include "../physics/vectors.hpp"
 #include "../physics/physobject.hpp"
@@ -31,13 +29,15 @@ namespace engine
 		{
 			private:
 				// Box2d rigidbody representation
-				b2Body *body2D;
+				void *body2D;
 
 				Physobject2D *owner;
 
 				// See if we should keep calculating it, or not. Useful for optimization
 				bool awake;
 			public:
+				
+
 				// Constructors
 				Rigidbody2D();
 
@@ -56,6 +56,9 @@ namespace engine
 				*	@param mode The mode of the force
 				*/
 				void applyForce(Vec2 force, int mode);
+
+				void update() override;
+				void awake() override;
 
 				// Velocity
 
@@ -79,8 +82,8 @@ namespace engine
 		class Rigidbody3D : Component
 		{
 			private:
-				// Box2d rigidbody representation
-				btRigidBody *body3D;
+				// Bullet rigidbody representation
+				void *body3D;
 
 				Physobject3D &owner;
 

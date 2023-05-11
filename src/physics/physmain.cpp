@@ -59,6 +59,7 @@ int physmain()
 
 		handleObjects();
 		internals::physics::step();
+		// TODO: Update all physics objects.
 
 		#endif
 

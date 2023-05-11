@@ -27,7 +27,7 @@ namespace engine
 				// Cordinates, right handed X coordinate
 				Vec2 position;
  
-				Vec2 rotation;
+				float rotation;
 
 				// Scale, like lens magnification, negative values invert the object on the axis
 				Vec2 scale;
@@ -35,6 +35,8 @@ namespace engine
 				Rigidbody2D &rb;
 
 				Vector<Collider2D> colliders;
+
+				// TODO: More stuff
 
 				bool usesRigidbody;
 
@@ -57,14 +59,14 @@ namespace engine
 					scale.x = 1;
 					scale.y = 1;
 				}
-				Physobject2D(Vec2 pos, Vec2 rot)
+				Physobject2D(Vec2 pos, float rot)
 				{
 					position = pos;
 					rotation = rot;
 					scale.x = 1;
 					scale.y = 1;
 				}
-				Physobject2D(Vec2 pos, Vec2 rot, Vec2 s)
+				Physobject2D(Vec2 pos, float rot, Vec2 s)
 				{
 					position = pos;
 					rotation = rot
@@ -94,19 +96,10 @@ namespace engine
 					position = pos;
 				}
 
-				/* Set the rotation
-				*	@param x Pitch
-				*	@param y Yaw
-				*/
-				OPERATOR void setRot(double x, double y)
-				{
-					setRot(Vec2(x, y));
-				}
-
 				/*	Set the rotation
 				*	@param pos The rotation
 				*/
-				OPERATOR void setRot(Vec2 rot)
+				OPERATOR void setRot(float rot)
 				{
 					rotation = rot;
 				}

@@ -31,5 +31,5 @@ elif BUILD_TYPE == "QUICK":
     env.Append(CPPDEFINES = { "_QUICK_" : None }) # TODO: Option for enabling quick build with AVX and AVX2
 
 Object('physmain.cpp')
-Object('rb_constructors.cpp')
-Object('setTransform.cpp')
+Object('step.cpp')
+Object('rb2d.cpp')
