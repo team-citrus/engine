@@ -79,6 +79,11 @@ namespace engine // TODO: Internalize some of this stuff
 				return;
 			}
 
+			virtual void destroy()
+			{
+				return;
+			}
+
 			OPERATOR Object &getObject()
 			{
 				return owner;
@@ -88,7 +93,7 @@ namespace engine // TODO: Internalize some of this stuff
 
 			// Use this to validate component type
 			std::type_info componentID;
-			friend class object;
+			friend class Object;
 	};
 
 	// Wrapper around Rust components, unfortunately C++ can't add or see into Rust components, not without copius amounts of Jerryrigging

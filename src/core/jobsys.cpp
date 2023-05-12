@@ -93,20 +93,13 @@ namespace engine
 		while(executing_has(this->hash()) && getTimeInMils() != targetTime)
 			spinlock_pause();
 
-		if(internals::executing.has(this->hash()))
+		if(executing_has(this->hash()))
 		{
 			errorcode() = ENGINE_TIME_OUT;
 			return -1;
 		}
 
-		while(internals::priority.search(this) && getTimeInMils() != targetTime)
-			spinlock_pause();
-
-		if(internals::priority.search(this) || internals::executing.has(this->hash()))
-		{
-			errorcode() = ENGINE_TIME_OUT;
-			return -1;
-		}
+		// TODO: search prioritized, engine, and asap
 
 		return 0;
 	}

@@ -11,6 +11,7 @@
 
 #include "../core/extensions.h"
 #include "../physics/vectors.hpp"
+#include "../physics/collider.hpp"
 
 #define RB_FORCEMODE_IMPULSE 0
 #define RB_FORCEMODE_FORCE 1
@@ -93,6 +94,13 @@ namespace engine
 				void lockRotation();
 				void unlockRotation();
 				bool isRotationLocked();
+				
+				Collider2D &addCollider()
+				{
+					Collider2D &r = getObject().addComponent<Collider2D>();
+					r.rb = *this;
+					return r;
+				} // TODO: shape
 		};
 
 		class Rigidbody3D : Component

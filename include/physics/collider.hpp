@@ -30,6 +30,7 @@ namespace engine
 
 		class Collider2D
 		{
+			friend class Rigidbody2D;
 			void *fixture; // Pointer to the Box2D version
 			Rigidbody2D &rb;
 

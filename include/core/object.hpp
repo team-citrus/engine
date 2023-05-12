@@ -100,6 +100,20 @@ namespace engine
 				markedForDeath = true;
 			}
 
+			template<classname T>
+			OPTIMIZE(3) OPERATOR void removeComponent(T &comp)
+			{
+				T *component = &comp;
+				for(int i = 0; i < cCount; i++)
+				{
+					if(components[i] == component)
+					{
+						delete (components[i]);
+						memcpy(components + i, components + i + 1, --cCount - i); // Works I think?
+					}
+				}
+			}
+
 			#ifdef _INTERNALS_ENGINE_THREAD_MAIN_
 
 			OPTIMIZE(3) OPERATOR Vector<component*> getComponents()
