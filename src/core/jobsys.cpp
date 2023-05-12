@@ -43,6 +43,8 @@ namespace engine
 		int engineThreads = 0;
 		// threads for user code
 		int usrThreads = 0;
+		// number of threads max
+		int maxThreads;
 	}
 
 	static inline void initJobSystem()
@@ -57,6 +59,8 @@ namespace engine
 		{
 			internals::usrThreads += std::thread::hardware_concurrency() - (internals::engineThreads = (internals::engineThreads-2)/2);
 		}
+
+		internals::maxThreads = internals::engineThreads + internals::usrThreads;
 	}
 
 	int Job::schedule()

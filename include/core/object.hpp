@@ -110,6 +110,7 @@ namespace engine
 					{
 						delete (components[i]);
 						memcpy(components + i, components + i + 1, --cCount - i); // Works I think?
+						return;
 					}
 				}
 			}

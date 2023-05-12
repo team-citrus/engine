@@ -36,7 +36,23 @@ void internals::physics::b2Listener::BeginContact(b2Contact *thingy) override
 	internals::physics::b2Listener::ContactJob cj;
 	cj.ptr = thingy;
 	cj.enterOrExit = true;
-	if(internals::usrThreads > internals::engineThreads)
+	if(internals::usrThreads > internals::engineThreads || (internals::usrThreads == internals::engineThreads && internals::maxThreads >= 8))
+	{
+		cj.schedule();
+		cj.ASAP();
+	}
+	else
+	{
+		cj.sysSchedule();
+	}
+}
+
+void internals::physics::b2Listener::EndContact(b2Contact *thingy) override
+{
+	internals::physics::b2Listener::ContactJob cj;
+	cj.ptr = thingy;
+	cj.enterOrExit = false;
+	if(internals::usrThreads > internals::engineThreads || (internals::usrThreads == internals::engineThreads && internals::maxThreads >= 8))
 	{
 		cj.schedule();
 		cj.ASAP();

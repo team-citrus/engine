@@ -81,6 +81,8 @@ namespace engine
 		extern int engineThreads;
 		// threads for user code
 		extern int usrThreads;
+		// number of threads max
+		extern int maxThreads;
 	}
 	#endif
 }
