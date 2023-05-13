@@ -10,13 +10,13 @@
 
 using namespace engine;
 
-void internals::physics::Init(bool is2D, Vec3 gravity)
+void internals::physics::Init(bool is2D, engine::physics::Vec3 gravity)
 {
 	if(is2D)
 	{
 		internals::physics::state.is2D = true;
 		internals::physics::state.stepRate = 30;
-		internals::physics::state.gravity2D = physics::Vec2(gravity.x, gravity.y);
+		internals::physics::state.gravity2D = engine::physics::Vec2(gravity.x, gravity.y);
 		b2Vec2 v(gravity.x, gravity.y);
 		
 		internals::physics::state.world2D = new b2World(v); // Unfortunately this is necessary

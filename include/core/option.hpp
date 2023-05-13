@@ -17,7 +17,7 @@ namespace engine
 	class Option
 	{
 		T t;
-		bool some;
+		bool isItSome;
 		public:
 		Option()
 		{
@@ -26,18 +26,18 @@ namespace engine
 
 		Option(Option<T> &&o)
 		{
-			some = o.some;
-			t = o.t;a
+			isItSome = o.isItSome;
+			t = o.t;
 		}
 
 		OPERATOR bool isSome()
 		{
-			return some;
+			return isItSome;
 		}
 
 		OPERATOR bool isNone()
 		{
-			return !some;
+			return !isItSome;
 		}
 
 		OPERATOR T unwrap()

@@ -19,10 +19,11 @@
 #include "../core/simd.h"
 #include "../core/errno.hpp"
 
+#define CALCULATE_POLYNOMIAL(h, tries, vec) = ((h + ((tries + (tries * tries))/2)) % vec.getCount())
+
 namespace engine
 {
-	namespace internals { int siphash(const void *in, const size_t inlen, const void *k, uint8_t *out,
-            const size_t outlen); }
+	namespace internals { int siphash(const void *in, const size_t inlen, const void *k, uint8_t *out, const size_t outlen); }
 	typedef size_t hash_t;
 
 	template <class T>
@@ -50,6 +51,125 @@ namespace engine
 	{
 		size_t empty;
 		Vector<Pair<hash_t, T>> vec;
+
+		bool has(hash_t h)
+		{
+			for(size_t i = 0; i < vec.getCount(); i++)
+			{
+				if(vec[i].first == h)
+					return true;
+			}
+
+			return false;
+		}
+
+		void recalculate(size_t newSize) // TODO: optimize this
+		{
+			Vector<Pair<hash_t, T>> newVec;
+			size_t newEmpty = newSize;
+			
+		Calculate:
+			for(size_t i = 0; i < vec.getCount(); i++)
+			{
+				if(vec[i].first == 0)
+					continue;
+
+				while(v[index].first != 0)
+				{
+					if(v[index].first == h)
+					{
+						#ifndef _FILE_IS_ERRNO_DOT_CPP_
+						errorcode() = ENGINE_INVALID_ARG;
+						#endif
+
+						return -1;
+					}
+					tries++; // TODO: Load factor
+					if(tries > vec.getCount())
+					{
+						v.resize(vec.getCount() + 10);
+						e += 10;
+						tries = 0;
+						goto Calculate;
+					}
+
+					index = CALCULATE_POLYNOMIAL(h, tries, vec);
+				}
+			}
+
+			vec.~Vector();
+			vec = newVec;
+			empty = newEmpty;
+		}
+
+		size_t append(hash_t h, T t)
+		{
+			size_t index = h % vec.getCount();
+			size_t tries = 0;
+
+			while(vec[index].first != 0)
+			{
+				if(vec[index].first == h)
+				{
+					#ifndef _FILE_IS_ERRNO_DOT_CPP_
+					errorcode() = ENGINE_INVALID_ARG;
+					#endif
+
+					return -1;
+				}
+
+				tries++;
+				if(tries > vec.getCount())
+				{
+					recalculate(vec.getCount() + 10);
+				}
+
+				index = CALCULATE_POLYNOMIAL(h, tries, vec);
+			}
+
+			vec[index].first = h;
+			vec[index].second = t;
+			empty--;
+			
+			while(((vec.getCount() - empty) * 100)/(vec.getCount() * 100) >= 75)
+			{
+				recalculate(vec.getCount() * 2);
+			}
+
+			return index;
+		}
+
+		size_t remove(hash_t h)
+		{
+			size_t index = h % vec.getCount();
+			size_t tries = 0;
+
+			while(vec[index].first != h)
+			{
+				if(tries == vec.getCount())
+				{
+					if(!has(h))
+					{
+						errorcode() = ENGINE_INVALID_ARG;
+						return -1
+					}
+				}
+
+				tries++;
+				index = CALCULATE_POLYNOMIAL(h, tries, vec);
+			}
+
+			vec[index].first = 0;
+			empty++;
+
+			while(((vec.getCount() - empty) * 100)/(vec.getCount() * 100) < 25)
+			{
+				recalculate(vec.getCount()/2);
+			}
+
+			return index;
+		}
+
 		public:
 		HashMap(Vector<Pair<KEY, T>> v)
 		{
@@ -57,33 +177,56 @@ namespace engine
 			for(size_t i = 0; i < v.getCount(); i++)
 			{
 				hash_t h = hash(&v[i].first, 1);
-				size_t index = h % vec.getCount();
-				size_t tries;
-				while(vec[index].first != 0)
+				if(append(h, v[i].second) == -1)
 				{
-					if(vec[index].first == h)
-					{
-						vec.~Vector();
-						#ifndef _FILE_IS_ERRNO_DOT_CPP_
-						errorcode() = ENGINE_INVALID_ARG;
-						#endif
+					vec.~Vector();
+					errorcode() = ENGINE_INVALID_ARG;
+					return;
+				}
+			}
+		}
 
-						return;
-					}
-					tries++;
-					if(tries > vec.getCount())
-					{
-						vec.resize(vec.getCount() + 10);
-						tries = 0;
-						continue;
-					}
+		// TODO: Other constructors
+		
+		Option<T&> add(KEY &k, T t)
+		{
+			size_t index = append(hash(&k, sizeof(KEY)), t);
 
-					index = (h + ((tries + (tries * tries))/2)) % vec.getCount();
+			if(index == -1)
+				return Option<T&>::none();
+			else
+				return Option<T&>::some(vec[index].second);
+		}
+
+		void rm(KEY &k)
+		{
+			size_t index = remove(hash(&k, 1));
+			vec[index].second.~T();
+		}
+
+		bool has(KEY &k)
+		{
+			return has(hash(&k, 1));
+		}
+
+		Option<T&> operator[](KEY &k)
+		{
+			size_t tries = 0;
+			hash_t h = hash(&k, 1);
+			size_t index = h % vec.getCount();
+
+			while(vec[index].first != h)
+			{
+				if(tries == vec.getCount())
+				{
+					if(!has(k))
+						return Option<T&>::none();
 				}
 
-				vec[index].first = h;
-				vec[index].second = v[i].second;
+				index = CALCULATE_POLYNOMIAL(h, tries, vec);
 			}
+
+			return vec[index].second;
 		}
 	};
 	
@@ -97,7 +240,6 @@ namespace engine
 	
 		return ret;
 	}
-
 }
 
 #endif
