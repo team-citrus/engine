@@ -7,6 +7,8 @@
 */
 #define _INTERNALS_ENGINE_THREAD_MAIN_
 #include "physics/physmain.hpp"
+#include "core/object.hpp"
+#include "core/transform.hpp"
 #include "core/scene.hpp"
 #include "core/scene_int.hpp"
 #include "core/component.hpp"
@@ -23,11 +25,27 @@ int internals::physics::step()
 {
 	if(internals::physics::state.is2D)
 	{
-		internals::physics::state.world2D.step(1.0f/(float)internals::physics::state.stepRate, 8, 3); // TODO: Configurable solvers
+		internals::physics::state.world2D->step(1.0f/(float)internals::physics::state.stepRate, 8, 3); // TODO: Configurable solvers
 	}
 	else
 	{
-		internals::physics::state.world3D.stepSimulation(btScalar(1.0f/(float)internals::physics::state.stepRate), 1, btScalar(1.0f/(float)internals::physics::state.stepRate));
+		internals::physics::state.world3D->stepSimulation(btScalar(1.0f/(float)internals::physics::state.stepRate), 1, btScalar(1.0f/(float)internals::physics::state.stepRate));
+	}
+}
+
+int internals::physics::updateObjects()
+{
+	if(internals::physics::state.is2D)
+	{
+		for(b2Body *body = internals::physics::state.world2D->GetBodyList; body != nullptr; body = body->GetNext())
+		{
+			Object *objecto = (Object*)(body->GetUserData().pointer);
+			Transform2D &pos = objecto.getComponent<engine::Transform2D>();
+			pos = engine::Transform2D(Vec2(body->GetPosition().x, body->GetPosition().y), body->GetAngle(), pos.scale);
+			
+			// We'll take the lazy approach to Rigidbodies, it saves time, we'll refresh as needed.
+			// TODO: error checks
+		}
 	}
 }
 

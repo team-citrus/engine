@@ -39,6 +39,13 @@ namespace internals
 		*/
 		int step();
 
+		/*	Updates all of the phyics objects after step
+		*   @warning THIS SHOULD ONLY BE CALLED WITHIN physmain()
+		*   DO NOT CALL IT ANYWHERE ELSE UNLESS YOU WANT TO SERIOUSLY MESS THINGS UP.
+		*	return Any error codes that might arrise 
+		*/
+		int updateObjects();
+
 		class b2Listener : public b2ContactListener
 		{
 			public:
@@ -127,8 +134,8 @@ namespace internals
 			
 			union
 			{
-				b2World world2D;
-				btDiscreteDynamicsWorld world3D;
+				b2World *world2D;
+				btDiscreteDynamicsWorld *world3D;
 			};
 		}
 

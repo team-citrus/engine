@@ -34,5 +34,5 @@ int engine::physics::Rigidbody2D::init() override
 	bodyDef.gravityScale = gravityScale;
 	bodyDef.userData.pointer = (uintptr_t)&getObject();
 
-	body2D = (void*)engine::internals::physics::state.CreateBody(&bodyDef);
+	body2D = (void*)engine::internals::physics::state->CreateBody(&bodyDef);
 }

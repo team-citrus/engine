@@ -17,6 +17,8 @@ void internals::physics::Init(bool is2D, Vec3 gravity)
 		internals::physics::state.is2D = true;
 		internals::physics::state.stepRate = 30;
 		internals::physics::state.gravity2D = physics::Vec2(gravity.x, gravity.y);
-		new(&internals::physics::state.world2D) b2World(b2Vec(gravity.x, gravity.y)); // Unfortunately this is necessary
+		b2Vec2 v(gravity.x, gravity.y);
+		
+		internals::physics::state.world2D = new b2World(v); // Unfortunately this is necessary
 	}
 }

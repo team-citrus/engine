@@ -28,6 +28,27 @@ namespace engine
 
 			Float2 scale;
 
+			Transform2D()
+			{
+				position = Float2(0, 0);
+				rotation = 0;
+				scale = Float2(1, 1);
+			}
+
+			Transform2D(Float2 p)
+			{
+				position = p;
+				rotation = 0;
+				scale = Float2(1, 1);
+			}
+
+			Transform2D(Float2 p, float r)
+			{
+				position = position;
+				rotation = r;
+				scale = Float2(1, 1);
+			}
+
 			virtual void awake()
 			{
 				return;

@@ -50,20 +50,9 @@ int physmain()
 		isGameplayBlocked.store(true);
 		size_t phystart = getTimeInMils();
 				
-		#ifdef CITRUS_ENGINE_FIXED_UPDATE_POST_STEP
-
-		internals::physics::step();
-		handleObjects();
-		
-		#else
-
 		handleObjects();
 		internals::physics::step();
-		// TODO: Update all physics objects.
-
-		#endif
-
-		// TODO: Trigger stuff
+		internals::physics::updateObjects();
 
 		isRenderBlocked.store(false);
 		isGameplayBlocked.store(false);
