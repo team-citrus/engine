@@ -21,12 +21,12 @@
 
 #include <stdlib.h>
 #include <vulkan.h>
+#include "core/errno.hpp"
 #include "core/crash.hpp"
 #include "core/log.hpp"
 #include "core/mem.hpp"
 #include "core/extensions.h"
 #include "core/vector.hpp"
-#include "graphics/initGL.hpp"
 #include "graphics/vkGlobals.hpp"
 #include "graphics/vkInit.hpp"
 
@@ -37,7 +37,6 @@ dllptr_t Vulkan::libvulkan;
 
 Vulkan::vkGIPA_t Vulkan::vkGetInstanceProcAddr;
 Vulkan::vkGDPA_t Vulkan::vkGetDeviceProcAddr;
-VkAllocationCallbacks Vulkan::vkAllocCallbacks;
 
 VkInstance Vulkan::instance;
 VkDevice Vulkan::device;
@@ -76,9 +75,9 @@ static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperti
 	int tSupportCount = 0;
 	for(int i = 0; i < qCount; i++;)
 	{
-		if(queueP[i].queueFlags & VkQueueFlagBits.VK_QUEUE_GRAPHICS_BIT) gSupportCount++;
-		if(queueP[i].queueFlags & VkQueueFlagBits.VK_QUEUE_COMPUTE_BIT) cSupportCount++;
-		if(queueP[i].queueFlags & VkQueueFlagBits.VK_QUEUE_TRANSFER_BIT) tSupportCount++;
+		if(queueP[i].queueFlags & VkQueueFlagBits::VK_QUEUE_GRAPHICS_BIT) gSupportCount++;
+		if(queueP[i].queueFlags & VkQueueFlagBits::VK_QUEUE_COMPUTE_BIT) cSupportCount++;
+		if(queueP[i].queueFlags & VkQueueFlagBits::VK_QUEUE_TRANSFER_BIT) tSupportCount++;
 	}
 
 	if(gSupportCount < 1 || cSupportCount < 1 || tSupportCount < 1) return false;
@@ -108,10 +107,10 @@ static inline int calcDeviceScore(VkPhysicalDeviceProperties devP, Vector<VkQueu
 {
 	int score = 0;
 	score += vram/(1024 * 1024);
-	score += (devP.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ) 1 : 0;
+	score += (devP.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ) ? 1 : 0;
 	
 	// Could be useful later
-	score += VK_API_VERSION_MAJOR(devP.apiVersion)
+	score += VK_API_VERSION_MAJOR(devP.apiVersion);
 	
 	// TODO: Add code that takes devP.limits into account
 	// TODO: Add code that takes queueP into account... somehow
@@ -128,11 +127,11 @@ static inline void countInferiors(Vector<int> &inferiors, Vector<int> deviceScor
 		{
 			if(j != i)
 			{
-				count = (deviceScore[i] => deviceScore[j]) ? count + 1 : count;
+				count = (deviceScore[i] >= deviceScore[j]) ? count + 1 : count;
 				count = (deviceScore[i] == deviceScore[j] && j < i) ? count - 1 : count;
 			}
 		}
-		deviceInferiorCount.push(count);
+		inferiors.push(count);
 	}
 }
 
@@ -148,8 +147,8 @@ int Vulkan::vkLoad()
 	}
 
 	// Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
-	Vulkan::vkGetInstanceProcAddr = (Vulkan::vkGIPA_t)dlsym(Vulkan::libvulkan, _STRINGIFY_(vkGetInstanceProcAddr));
-	Vulkan::vkGetDeviceProcAddr = (Vulkan::vkGIDA_t)dlsym(Vulkan::libvulkan, _STRINGIFY_(vkGetDeviceProcAddr));
+	Vulkan::vkGetInstanceProcAddr = (Vulkan::vkGIPA_t)dlsym(Vulkan::libvulkan, STRINGIFY(vkGetInstanceProcAddr));
+	Vulkan::vkGetDeviceProcAddr = (Vulkan::vkGIDA_t)dlsym(Vulkan::libvulkan, STRINGIFY(vkGetDeviceProcAddr));
 
 	#elif defined(_WIN32)
 
@@ -161,14 +160,14 @@ int Vulkan::vkLoad()
 	}
 
 	// Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
-	Vulkan::vkGetInstanceProcAddr = (Vulkan::vkGIPA_t)GetProcAddress(Vulkan::libvulkan, _STRINGIFY_(vkGetInstanceProcAddr));
-	Vulkan::vkGetDeviceProcAddr = (Vulkan::vkGDPA_t)GetProcAddress(Vulkan::libvulkan, _STRINGIFY_(vkGetDeviceProcAddr));
+	Vulkan::vkGetInstanceProcAddr = (Vulkan::vkGIPA_t)GetProcAddress(Vulkan::libvulkan, STRINGIFY(vkGetInstanceProcAddr));
+	Vulkan::vkGetDeviceProcAddr = (Vulkan::vkGDPA_t)GetProcAddress(Vulkan::libvulkan, STRINGIFY(vkGetDeviceProcAddr));
 
 	#endif
 
 	if(vkGetInstanceProcAddr == NULL || vkGetDeviceProcAddr == NULL)
 	{
-		log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Failure to load critical Vulkan functions!");
+		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "Failure to load critical Vulkan functions!");
 		exit(VK_LOAD_FAILURE);
 	}
 
@@ -177,15 +176,15 @@ int Vulkan::vkLoad()
 	// Vulkan application info
 
 	VkApplicationInfo aInfo;
-	info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+	aInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	// _APPLICATION_NAME_ defined during compilation
-	info.pApplicationName = _APPLICATION_NAME_;
-	info.applicationVersion = _GAME_VERSION_INT_;
-	info.pNext = NULL;
-	info.pEngineName = "Citrus Engine Builtin Vulkan Render Engine";
+	// TODO: info.pApplicationName = ;
+	// TODO: info.applicationVersion = ;
+	aInfo.pNext = NULL;
+	aInfo.pEngineName = "Citrus Engine Builtin Vulkan Render Engine";
 	// _CITRUS_ENGINE_VERSION_ defined during compilation
-	info.engineVersion = _CITRUS_ENGINE_VERSION_;
-	info.apiVersion = VK_VERSION_1_0;
+	aInfo.engineVersion = _CITRUS_ENGINE_VERSION_;
+	aInfo.apiVersion = VK_VERSION_1_0;
 
 	// Vulkan instance creation info
 
@@ -199,7 +198,7 @@ int Vulkan::vkLoad()
 	// Initalize the instance
 	if(vkNullCall(vkCreateInstance, 0, &iInfo, NULL, &Vulkan::instance) != VK_SUCCESS)
 	{
-		log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Failure to create Vulkan instance!");
+		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "Failure to create Vulkan instance!");
 		exit(VK_LOAD_FAILURE);
 	}
 
@@ -213,8 +212,8 @@ int Vulkan::vkLoad()
 	vkInstanceCall(vkEnumeratePhysicalDevices, Vulkan::instance, Vulkan::instance, &devCount, NULL);
 	if(devCount == 0) 
 	{
-		log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "No (Vulkan supporting) GPUs found!");
-		exit(COMPATIBLE_GPU_NOT_FOUND);
+		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "No (Vulkan supporting) GPUs found!");
+		exit(VK_COMPATIBLE_GPU_NOT_FOUND);
 	}
 
 	// Get the handles
@@ -250,8 +249,8 @@ int Vulkan::vkLoad()
 
 	if(!eligibleDevices.getCount())
 	{
-		engineLog.log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "No eligible GPUs found");
-		exit(COMPATIBLE_GPU_NOT_FOUND);
+		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "No eligible GPUs found");
+		exit(VK_COMPATIBLE_GPU_NOT_FOUND);
 	}
 
 	// Evaluate the devices
@@ -320,7 +319,7 @@ int Vulkan::vkLoad()
 
 	// Log the choice
 
-	log(_STRINGIFY_(engine::internals::Vulkan::vkLoad()), "Selected GPU: %s", deviceProperties[0].deviceName);
+	log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "Selected GPU: %s", deviceProperties[0].deviceName);
 
 	// TODO: Add code to update the version and select the Vulkan function
 

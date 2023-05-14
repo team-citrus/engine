@@ -10,7 +10,7 @@
 #define CITRUS_ENGINE_VULKAN_GLOBALS_HPP__
 
 #include <vulkan.h>
-#include "..core/os.h"
+#include "../core/os.h"
 
 #ifdef CITRUS_ENGINE_WINDOWS
 
@@ -59,7 +59,7 @@ namespace internals
 		// TODO: Add different Vulkan render functions based on different Vulkan versions and extensions
 
 		render::Matrix4x4 viewmat;
-		render::Camera &mainCamera;
+		// TODO: render::Camera &mainCamera;
 
 		// TODO: Framebuffer
 	};

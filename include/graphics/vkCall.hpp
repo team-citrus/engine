@@ -12,7 +12,7 @@
 #include <vulkan.h>
 #include <cstdint>
 #include "../graphics/vkGlobals.hpp"
-
+#include "../core/extensions.h"
 
 namespace engine
 {
@@ -21,6 +21,8 @@ namespace internals
 	namespace Vulkan
 	{
 		typedef VkResult (*vkFuncPtr_t)(...);
+
+		// TODO: Redo this cause apparently there are a fuck ton of errors
 
 		/*  Make a call to a Vulkan device function.
 		*   All of the arguments after func will be passed in order to the function being called
