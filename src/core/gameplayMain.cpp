@@ -9,7 +9,9 @@
 #define _INTERNALS_ENGINE_THREAD_MAIN_
 #define __CITRUS_ENGINE_SOURCE_FILE__
 
-#ifdef _WIN32
+#include "core/os.h"
+
+#ifdef CITRUS_ENGINE_WINDOWS
 #include <Windows.h>
 #endif
 
@@ -45,7 +47,7 @@ namespace engine
 			
 			engine::clearErrorcode();
 
-			#ifdef _WIN32
+			#ifdef CITRUS_ENGINE_WINDOWS
 
 			// Input system stuff
 			memcpy(prevInput, currentInput, 256);

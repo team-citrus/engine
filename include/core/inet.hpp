@@ -8,9 +8,12 @@
 #ifndef CITRUS_ENGINE_NEWORKING_HPP__
 #define CITRUS_ENGINE_NEWORKING_HPP__
 
-#ifdef _WIN32
+#include "../core/os.h"
+
+#ifdef CITRUS_ENGINE_WINDOWS
 
 #include <winsock2.h>
+#include <ws2tcpip.h>
 
 #else
 
@@ -26,12 +29,12 @@
 
 #include <cstdlib>
 #include <cstdint>
-#include "../coreore/rc.hpp"
-#include "../coreore/errno.hpp"
+#include "../core/rc.hpp"
+#include "../core/errno.hpp"
 
 #ifdef CITRUS_ENGINE_SERVER_SOCKETS
 
-#include "../coreore/jobsys.hpp"
+#include "../core/jobsys.hpp"
 
 #endif
 
@@ -51,7 +54,7 @@ namespace engine
 	{
 		SocketTypes type;
 
-		#ifdef _WIN32
+		#ifdef CITRUS_ENGINE_WINDOWS
 
 		using SocketHandle = SOCKET;
 
@@ -77,7 +80,7 @@ namespace engine
 			type = t;
 			sock = &RefernceCounter<SocketHandle>::getNew(socket((type & 0x80 != 0) ? AF_INET6 : AF_INET, type & 0xF, (type & 0xF == 1) ? IPPROTO_TCP : IPPROTO_UDP));
 			
-			#ifdef __unix__
+			#ifdef CITRUS_ENGINE_UNIX
 			
 			fcntl(sock->obj, F_SETFL, fcntl(sock->obj, F_GETFL, 0) | O_NONBLOCK);
 
@@ -181,7 +184,7 @@ namespace engine
 	{
 		SocketTypes type;
 
-		#ifdef _WIN32
+		#ifdef CITRUS_ENGINE_WINDOWS
 
 		SOCKET sock;
 

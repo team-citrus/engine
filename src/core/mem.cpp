@@ -5,8 +5,9 @@
 *   author: https://github.com/ComradeYellowCitrusFruit
 *   license: LGPL-3.0-only
 */
+#include "core/os.h"
 
-#ifdef __unix__
+#ifdef CITRUS_ENGINE_UNIX
 
 #include <unistd.h>
 #include <sys/mman.h>

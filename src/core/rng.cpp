@@ -8,7 +8,9 @@
 
 #define __CITRUS_ENGINE_SOURCE_FILE__
 
-#ifdef _WIN32
+#include "core/os.h"
+
+#ifdef CITRUS_ENGINE_WINDOWS
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>

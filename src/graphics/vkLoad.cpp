@@ -6,12 +6,14 @@
 *   license: LGPL-3.0-only
 */
 
-#ifdef __unix__
+#include "core/os.h"
+
+#ifdef CITRUS_ENGINE_UNIX
 
 #include <unistd.h>
 #include <dlfcn.h>
 
-#elif defined(_WIN32)
+#else
 
 #include <Windows.h>
 
@@ -136,7 +138,7 @@ static inline void countInferiors(Vector<int> &inferiors, Vector<int> deviceScor
 
 int Vulkan::vkLoad()
 {
-	#ifdef __unix__
+	#ifdef CITRUS_ENGINE_UNIX
 
 	Vulkan::libvulkan = dlopen("libvulkan.so.1", RTLD_NOW | RTLD_GLOBAL);
 	if(Vulkan::libvulkan == NULL)

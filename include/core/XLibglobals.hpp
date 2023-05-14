@@ -9,7 +9,10 @@
 #ifndef CITRUS_ENGINE_XLIB_GLOBAL_VARIABLES_HPP__
 #define CITRUS_ENGINE_XLIB_GLOBAL_VARIABLES_HPP__
 
-#ifdef __linux__
+#include "../core/os.h"
+
+#ifdef CITRUS_ENGINE_UNIX
+
 #include <X11/Xlib.h>
 
 namespace engine
@@ -24,7 +27,7 @@ namespace engine
 	}
 }
 
-#elif defined(_WIN32)
+#elif defined(CITRUS_ENGINE_WINDOWS)
 
 #warning Why is core/XLibglobals included in Windows code exactly?
 

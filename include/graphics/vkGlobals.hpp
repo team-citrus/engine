@@ -1,7 +1,7 @@
 /*
 *   name: include/graphics/vkGlobals.hpp
 *   origin: Citrus Engine
-*   purpose: {PURPOSE FOR THE FILE}
+*   purpose: Vulkan global variables
 *   author: https://github.com/ComradeYellowCitrusFruit
 *   license: LGPL-3.0-only
 */
@@ -10,13 +10,14 @@
 #define CITRUS_ENGINE_VULKAN_GLOBALS_HPP__
 
 #include <vulkan.h>
+#include "..core/os.h"
 
-#ifdef _WIN32
+#ifdef CITRUS_ENGINE_WINDOWS
 
 #include <Windows.h>
 typedef HMODULE dllptr_t;
 
-#elif defined(__unix__)
+#else
 
 typedef void* dllptr_t;
 

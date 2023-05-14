@@ -10,7 +10,7 @@
 // Welcome to portability hell, population, us
 
 // TODO: Lucky me I get to rewrite this
-#ifdef _WIN32
+#ifdef CITRUS_ENGINE_WINDOWS
 
 #include <Windows.h>
 

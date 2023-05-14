@@ -13,7 +13,7 @@
 
 namespace engine
 {
-	#ifdef _WIN32
+	#ifdef CITRUS_ENGINE_WINDOWS
 	namespace internals
 	{
 		extern uint8_t currentInput[256];
