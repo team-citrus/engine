@@ -30,7 +30,11 @@ namespace internals
 		*   @param device Device to call the function on
 		*   @return Returns the function's return value
 		*/
-		#define vkDeviceCall(func, device, ...)  __VA_ARGS_FIX__((*(vkFuncPtr_t)vkGetDeviceProcAddr(__STRINGIFY_(func)))(__VA_ARGS__))
+		template<typename... A>
+		VkResult vkDeviceCall(const char *func, A... parameters)
+		{
+			return ((vkGetDeviceProcAddr(device, func))(parameters...));
+		}
 
 		/*  Make a call to a Vulkan instance function.
 		*   All of the arguments after func will be passed in order to the function being called
@@ -38,15 +42,24 @@ namespace internals
 		*   @param instance Instance to call the function on
 		*   @return Returns the function's return value
 		*/
-		#define vkInstanceCall(func, instance, ...) __VA_ARGS_FIX__((*(vkFuncPtr_t)vkGetInstanceProcAddr(instance, __STRINGIFY_(func)))(__VA_ARGS__))
+		template<typename... A>
+		VkResult vkInstanceCall(const char *func, A... parameters)
+		{
+			return ((vkGetInstanceProcAddr(instance, func))(parameters...));
+		}
+		
 
 		/*  Make a call to a Vulkan function that doesn't take an instance or device in the function call.
 		*   All of the arguments after func will be passed in order to the function being called
 		*   @param func Function to call
 		*   @return Returns the function's return value
 		*/
-		#define vkNullCall(func, ...) __VA_ARGS_FIX__((*(vkFuncPtr_t)vkGetInstanceProcAddr(VK_NULL_HANDLE, __STRINGIFY__(func))(__VA_ARGS__)))
-	};
+		template<typename... A>
+		VkResult vkNullCall(const char *func, A... parameters)
+		{
+			return ((vkGetInstanceProcAddr(NULL, func))(parameters...));
+		}
+	}
 };
 };
 

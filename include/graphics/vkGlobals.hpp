@@ -32,8 +32,8 @@ namespace internals
 {
 	namespace Vulkan
 	{
-		typedef PFN_vkVoidFunction (vkGIPA_t)(VkInstance, const char*);
-		typedef PFN_vkVoidFunction (vkGDPA_t)(VkDevice, const char*);
+		typedef PFN_vkVoidFunction (*vkGIPA_t)(VkInstance, const char*);
+		typedef PFN_vkVoidFunction (*vkGDPA_t)(VkDevice, const char*);
 
 		// The address of the Vulkan library
 		extern dllptr_t libvulkan;
