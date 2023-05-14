@@ -9,6 +9,9 @@
 #ifndef CITRUS_ENGINE_RIGIDBODIES_HPP__
 #define CITRUS_ENGINE_RIGIDBODIES_HPP__
 
+#include "../core/object.hpp"
+#include "../core/transform.hpp"
+#include "../core/transform.hpp"
 #include "../core/extensions.h"
 #include "../physics/vectors.hpp"
 #include "../physics/collider.hpp"
@@ -34,6 +37,7 @@ namespace engine
 			private:
 				// Box2d rigidbody representation
 				void *body2D;
+				friend class Collider2D;
 
 				// stuff
 
@@ -98,7 +102,7 @@ namespace engine
 				Collider2D &addCollider()
 				{
 					Collider2D &r = getObject().addComponent<Collider2D>();
-					r.rb = *this;
+					r.rb = this;
 					return r;
 				} // TODO: shape
 		};

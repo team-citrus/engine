@@ -12,8 +12,10 @@
 void engine::physics::Collider2D::init()
 {
 	b2FixtureDef def;
+
 	// TODO: SHAPE
-	def.userData.pointer = &getObject();
+
+	def.userData.pointer = (uintptr_t)&getObject();
 
 	def.friction = friction;
 	def.restitution = resitituion;
@@ -21,5 +23,5 @@ void engine::physics::Collider2D::init()
 	def.density = density;
 	def.isSensor = isTrigger;
 	// TODO: Filter
-	fixture = ((b2Body*)rb.body2D)->CreateFixture(&def);
+	fixture = ((b2Body*)rb->body2D)->CreateFixture(&def);
 }

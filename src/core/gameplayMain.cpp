@@ -71,7 +71,7 @@ namespace engine
 					continue;
 				}
 				
-				vec<Component*> components = curScene->objects[i].getComponents();
+				Vec<Component*> components = curScene->objects[i].getComponents();
 				for(int j = 0; j < components.getCount(); j++)
 				{
 					components[j]->update();

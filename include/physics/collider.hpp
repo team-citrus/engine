@@ -9,6 +9,8 @@
 #ifndef CITRUS_ENGINE_PHYSICS_COLLIDIERS_HPP__
 #define CITRUS_ENGINE_PHYSICS_COLLIDIERS_HPP__
 
+#include "../core/component.hpp"
+#include "../core/object.hpp"
 #include "../physics/rigidbody.hpp"
 
 namespace engine
@@ -20,19 +22,19 @@ namespace engine
 			struct Collider2DTouple
 			{
 				Object *o;
-				Collider2D *c;
-			}
+				engine::physics::Collider2D *c;
+			};
 		}
 	}
 	namespace physics
 	{
 		// TODO: engine::"physics::"shape
 
-		class Collider2D
+		class Collider2D : Component
 		{
 			friend class Rigidbody2D;
 			void *fixture; // Pointer to the Box2D version
-			Rigidbody2D &rb;
+			Rigidbody2D *rb;
 
 			internals::physics::Collider2DTouple t;
 			bool isTrigger;
@@ -59,7 +61,7 @@ namespace engine
 
 			void setRestitutionThreshold(float t);
 			float getRestitutionThreshold();
-		}
+		};
 	}
 }
 

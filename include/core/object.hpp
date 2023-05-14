@@ -27,7 +27,7 @@ namespace engine
 			OPTIMIZE(3) Object()
 			{
 				cCount = 0;
-				components = (component**)memalloc(sizeof(component*));
+				components = (Component**)memalloc(sizeof(Component*));
 				markedForDeath = false;
 			}
 
@@ -47,7 +47,7 @@ namespace engine
 			}
 
 			// Functions like Unity's AddComponent<T>()
-			OPTIMIZE(3) template<typename T>
+			template<typename T>
 			T &addComponent()
 			{
 				componentCount++;
@@ -58,7 +58,7 @@ namespace engine
 			}
 
 			// Functions like Unity's GetComponent<T>()
-			OPTIMIZE(3) template<typename T>
+			template<typename T>
 			T &getComponent()
 			{
 				for(int i = 0; i < componentCount; i++)
@@ -67,7 +67,7 @@ namespace engine
 			}
 
 			// Functions like Unity's hasComponent<T>()
-			OPTIMIZE(3) template<typename T>
+			template<typename T>
 			OPERATOR bool hasComponent()
 			{
 				for(int i = 0; i < componentCount; i++)
@@ -76,32 +76,32 @@ namespace engine
 				return false;
 			}
 
-			OPTIMIZE(3) OPERATOR bool hasTag(const char *tag)
+			OPERATOR bool hasTag(const char *tag)
 			{
 				hash_t h = hash(tag, strlen(tag));
 				for(int i = 0; i < tags.getCount(); i++)
-					if(tags[i] == tag)
+					if(tags[i] == h)
 						return true;
 				return false;
 			}
 
-			OPTIMIZE(3) OPERATOR void addTag(const char *tag)
+			OPERATOR void addTag(const char *tag)
 			{
 				tags.push(hash(tag, strlen(tag)));
 			}
 
-			OPTIMIZE(3) OPERATOR int componentCount()
+			OPERATOR int componentCount()
 			{
 				return cCount;
 			}
 
-			OPTIMIZE(3) OPERATOR void kill()
+			OPERATOR void kill()
 			{
 				markedForDeath = true;
 			}
 
-			template<classname T>
-			OPTIMIZE(3) OPERATOR void removeComponent(T &comp)
+			template<typename T>
+			OPERATOR void removeComponent(T &comp)
 			{
 				T *component = &comp;
 				for(int i = 0; i < cCount; i++)
@@ -117,9 +117,9 @@ namespace engine
 
 			#ifdef _INTERNALS_ENGINE_THREAD_MAIN_
 
-			OPTIMIZE(3) OPERATOR Vector<component*> getComponents()
+			OPTIMIZE(3) OPERATOR Vector<Component*> getComponents()
 			{
-				return Vector<component*>(components, cCount);
+				return Vector<Component*>(components, cCount);
 			}
 
 			#endif
@@ -127,6 +127,9 @@ namespace engine
 			Vector<hash_t> tags;
 			int cCount;
 			Component **components;
+		#ifdef _INTERNALS_ENGINE_THREAD_MAIN_
+		public:
+		#endif
 			bool markedForDeath;
 	};
 
