@@ -1,5 +1,8 @@
-#ifndef _WIN32
+#include "core/os.h"
 
+#ifdef CITRUS_ENGINE_UNIX // TODO: wayland and xlib
+
+#include <X11/Xlib.h>
 #include <unistd.h>
 #define MAIN main(int argc, char const **argv)
 
@@ -20,6 +23,8 @@
 
 #endif
 
+#define _INTERNALS_ENGINE_THREAD_MAIN_
+
 #include <threads.h>
 #include <ctime>
 #include <csetjmp>
@@ -27,7 +32,6 @@
 #include <csignal>
 #include <cstdio>
 #include <cpuid.h>
-#include <X11/Xlib.h>
 #include "core/mem.hpp"
 #include "core/mem_int.hpp"
 #include "core/Main.hpp"
@@ -40,16 +44,14 @@
 #include "core/rng.hpp"
 #include "core/jobsys.hpp"
 #include "graphics/vkInit.hpp"
-#include "graphics/initGL.hpp"
 
 #define getTimeInMils() std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count()
 
 using namespace engine;
 using namespace internals;
 
-bool internals::usingVulkan;
 int internals::frameRate;
-jmp_buf internals::buf
+jmp_buf internals::buf;
 
 size_t internals::frameDelta;
 size_t internals::frameDur;
@@ -67,7 +69,7 @@ WEAK NO_INLINE extern void crashHandler();
 
 void waitms(size_t mils)
 {
-	#ifndef _WIN32
+	#ifdef CITRUS_ENGINE_UNIX
 
 	timespec t = { 0, (long)(mils * 1000000l) };
 	nanosleep(&t, NULL); // Doesn't matter if we don't sleep long enough, waitms() is only to make sure we yield to the OS
@@ -79,7 +81,7 @@ void waitms(size_t mils)
 	#endif
 }
 
-#ifndef _WIN32
+#ifdef CITRUS_ENGINE_UNIX
 
 #define SIGARGS int sig, siginfo_t *info, void *ucontext
 
@@ -91,7 +93,7 @@ void waitms(size_t mils)
 
 void sigsev(SIGARGS)
 {
-	#ifndef _WIN32
+	#ifdef CITRUS_ENGINE_UNIX
 
 	#ifdef _DEBUG_
 
@@ -116,6 +118,8 @@ void sigsev(SIGARGS)
 
 	engine::log(STRINGIFY(Segfault handler), "Segmentation fault!");
 	exit(SEGFAULT);
+
+	#endif
 
 	#else
 
@@ -144,12 +148,15 @@ void sigsev(SIGARGS)
 	exit(SEGFAULT);
 
 	#endif
+
+	#endif
 }
 
 void sigill(SIGARGS)
 {
 	engine::log(STRINGIFY(Illegal instruction handler), "An illegal instruction has been triggered!");
-	#if defined(_DEBUG_) && !defined(_WIN32)
+
+	#if defined(_DEBUG_) && defined(CITRUS_ENGINE_UNIX)
 
 	engine::log(STRINGIFY(Illegal instruction handler), "Offending address: %p", info->si_addr);
 
@@ -185,7 +192,7 @@ void sigill(SIGARGS)
 // Initialize signals, very different depending on build types and operating systems
 static inline void initSigs()
 {
-	#ifndef _WIN32
+	#ifdef CITRUS_ENGINE_UNIX
 
 	sigaction ssigsev;
 	sigaction ssigill;
@@ -218,13 +225,12 @@ int MAIN
 	initMainRNG();
 
 	initLogging();
-	pool = Pool();
+	pool.init();
 	initSigs();
 
 	jobsBeingAccessed.store(false);
-	jobs = priority = asap = Vector<Job>();
-	executing = Map<JobPtr, std::thread::id>();
-	initJobSystem();
+	jobs = priority = asap = internals::engine = Vector<Job*>();
+	executing = Map<hash_t, std::thread::id>();
 
 	// TODO: Implement settings
 
@@ -237,7 +243,7 @@ int MAIN
 	while(true) // Outer loop is run each scene
 	{
 		// Physics runs on it's own internal timings, and executes some gameplay code
-		thrd_create(&internals::phys, internals::physmain, NULL);
+		thrd_create(&internals::phys, (thrd_start_t)internals::physmain, NULL);
 
 		while(true) // Inner loop is run each frame
 		{
@@ -255,8 +261,8 @@ int MAIN
 			// TODO: Optimize this
 			// render will automatically create and join mix 
 
-			thrd_create(&internals::gameplay, internals::gameplayM, NULL);
-			thrd_create(&internals::render, internals::draw, NULL);
+			thrd_create(&internals::gameplay, (thrd_start_t)internals::gameplayMain, NULL);
+			thrd_create(&internals::render, (thrd_start_t)internals::draw, NULL);
 
 			thrd_join(internals::gameplay, NULL);
 			thrd_join(internals::render, NULL);

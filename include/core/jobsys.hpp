@@ -13,6 +13,12 @@
 #include "../core/hash.hpp"
 #include "../core/extensions.h"
 
+#ifdef _INTERNALS_ENGINE_THREAD_MAIN_
+
+#include <thread>
+
+#endif
+
 #ifndef _JOB_BLOCK_UNTIL_
 #define _JOB_BLOCK_UNTIL_ 8
 #endif
@@ -62,7 +68,7 @@ namespace engine
 		void ASAP();
 		#endif
 
-		#if defined(_INTERNALS_ENGINE_THREAD_MAIN_)
+		#ifdef _INTERNALS_ENGINE_THREAD_MAIN_
 		/// Schedule a system job
 		void sysSchedule();
 		#endif
@@ -75,6 +81,7 @@ namespace engine
 		extern Vector<Job*> jobs;
 		extern Vector<Job*> priority;
 		extern Vector<Job*> asap;
+		extern Vector<Job*> engine;
 		extern Map<hash_t, std::thread::id> executing;
 
 		// number of engine threads

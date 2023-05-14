@@ -106,14 +106,17 @@ namespace engine
 				{
 					while(locked.load())
 						spinlock_pause();
+
 					return;
 				}
 
 				// Lock it
 				OPERATOR void lock()
 				{
-					while(!locked.compare_exchange_strong(false, true))
+					while(locked.load())
 						spinlock_pause();
+					locked.store(true);
+
 					return;
 				}
 
@@ -124,9 +127,9 @@ namespace engine
 					return;
 				}
 
-				Pool()
+				void init()
 				{
-					#ifndef _WIN32
+					#ifdef CITRUS_ENGINE_UNIX
 					start = (engine::internals::poolBlock*)mmap(NULL, _POOL_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON |
 					
 					#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 1024ull) == 0 || (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 2ull) == 0
@@ -136,13 +139,15 @@ namespace engine
 					#else
 					(21 << MAP_HUGE_SHIFT)
 					#endif,
+					#endif
 					
 					0, 0);
 
 					#else
+
 					start = (engine::internals::poolBlock*)VirtualAlloc(NULL, _POOL_SIZE_, MEM_COMMIT | MEM_RESERVE
 					
-					#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 1024ull) == 0 || (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 2ull) == 0f
+					#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 1024ull) == 0 || (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 2ull) == 0
 					| MEM_LARGE_PAGES
 					#endif
 
@@ -153,25 +158,25 @@ namespace engine
 					limitExceeded = false;
 
 					start->fmagic = POOL_FREE_BLOCK_MAGIC;
-					start->next = POOL_END;
+					start->next = (poolBlock*)POOL_END;
 					start->fsize = size;
 					start->last = NULL;
 					head = start;
 				}
 				~Pool()
 				{
-					#ifndef _WIN32
+					#ifdef CITRUS_ENGINE_UNIX
 					munmap(start, size * 32); // Should work because Linux merges continguous mappings with the same permisions
 					#else
 					VirtualFree(start, _POOL_SIZE_, 0);
 					if(limitExceeded)
-						VirtualFree((void*)((uintptr_t)start + _POOL_SIZE_), _POOL_EXPANSION_SIZE, 0);
+						VirtualFree((void*)((uintptr_t)start + _POOL_SIZE_), _POOL_EXPANSION_SIZE_, 0);
 					#endif
 				}
 		};
 
 		// Main memory pool
-		extern volatile Pool pool;
+		extern Pool pool;
 	};
 };
 

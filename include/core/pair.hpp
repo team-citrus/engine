@@ -577,7 +577,7 @@ namespace engine
 			return tree->count() * sizeof(Node);
 		}
 
-		friend template <typename K, typename T> class MapIterator;
+		friend template <typename K, typename T, typename Compare = std::less<K>> class MapIterator;
 	};
 
 	template <typename K, typename T, typename Compare = std::less<K>>

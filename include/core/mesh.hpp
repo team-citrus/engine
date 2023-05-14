@@ -24,19 +24,19 @@ namespace engine
 		public:
 		Float3 pos;
 		Float2 uv;
-	}
+	};
 
 	class Face
 	{
 		public:
-		Vertex &a;
-		Vertex &b;
-		Vertex &c;
+		Vertex *a;
+		Vertex *b;
+		Vertex *c;
 		Face(Vertex &va, Vertex &vb, Vertex &vc)
 		{
-			a = va;
-			b = vb;
-			c = vc;
+			a = &va;
+			b = &vb;
+			c = &vc;
 		}
 	};
 
@@ -63,7 +63,7 @@ namespace engine
 
 		// TODO: settings and materials and shaders
 		// TODO: Skeletons
-	}
+	};
 
 	using Tri = Face;
 	using Vert = Vertex;
