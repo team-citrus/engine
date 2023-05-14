@@ -185,6 +185,11 @@ namespace engine
 				}
 			}
 		}
+	
+		HashMap(const HashMap &cc)
+		{
+			vec = Vector(cc.vec);
+		}
 
 		// TODO: Other constructors
 		
