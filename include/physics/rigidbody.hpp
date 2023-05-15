@@ -42,7 +42,7 @@ namespace engine
 				// stuff
 
 				int type;
-				Transform2D trans; // rigidbodies take control of transform after being init'd
+				Transform2D &trans; // rigidbodies take control of transform after being init'd
 				Vec2 velocity;
 				float angularVelocity;
 				float linearDamping;

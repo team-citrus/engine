@@ -41,7 +41,7 @@ int internals::physics::updateObjects()
 		{
 			Object *objecto = (Object*)(body->GetUserData().pointer);
 			Transform2D &pos = objecto.getComponent<engine::Transform2D>();
-			pos = engine::Transform2D(Vec2(body->GetPosition().x, body->GetPosition().y), body->GetAngle(), pos.scale);
+			pos = engine::Transform2D(*(Float2*)&body->GetPosition(), body->GetAngle(), pos.scale);
 			
 			// We'll take the lazy approach to Rigidbodies, it saves time, we'll refresh as needed.
 			// TODO: error checks

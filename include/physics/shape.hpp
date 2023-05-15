@@ -21,7 +21,6 @@ namespace engine
 		class Shape // TODO: Construct as like default shapes
 		{
 			Vector<Vec2> points;
-			Vector<size_t> indexes;
 
 			public:
 			Shape()
@@ -32,34 +31,29 @@ namespace engine
 
 			Shape(Vector<Vec2> &oPoints)
 			{
-				points = Vector<Vec2>(0);
-				indexes = Vector<size_t>(oPoints.getCount());
+				points = Vector<Vec2>(oPoints.getCount());
 				for(size_t i = 0; i < oPoints.getCount(); i++)
 				{
 					if(points.search(oPoints[i]) != -1)
 					{
-						indexes.push(points.search(oPoints[i]));
+						continue;
 					}
-					else
-					{
-						indexes.push(points.getCount());
-						points.push(oPoints[i]);
-					}
+					
+					points.push(oPoints[i]);
 				}
 			}
 
 			OPERATOR Vec2 &operator[](size_t index)
 			{
-				return points[indexes[index]];
+				return points[index];
 			}
 
 			OPERATOR size_t pointCount()
 			{
-				return indexes.getCount();
+				return points.getCount();
 			}
 
 			// TODO: more stuff
-			// TODO: triangulate
 		};
 	}
 }

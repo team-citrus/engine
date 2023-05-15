@@ -41,7 +41,7 @@ namespace engine
 			internals::physics::Collider2DTouple t;
 			bool isTrigger;
 			float friction;
-			float resitituion;
+			float restituion;
 			float restitutionThreshold;
 			float density;
 			// TODO: filter
