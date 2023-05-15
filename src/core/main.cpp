@@ -45,6 +45,8 @@
 #include "core/jobsys.hpp"
 #include "graphics/vkInit.hpp"
 
+#include "vendor/crash.h"
+
 #define getTimeInMils() std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count()
 
 using namespace engine;
@@ -64,8 +66,7 @@ thrd_t internals::phys;
 thrd_t internals::mix;
 thrd_t internals::gameplay;
 
-// Probably the most commonly overriden weak function.
-WEAK NO_INLINE extern void crashHandler();
+ALIAS(__citrus_engine_vendor_crash_handler) NO_INLINE extern "C" void crash_handler();
 
 void waitms(size_t mils)
 {
