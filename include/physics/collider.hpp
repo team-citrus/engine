@@ -12,6 +12,7 @@
 #include "../core/component.hpp"
 #include "../core/object.hpp"
 #include "../physics/rigidbody.hpp"
+#include "../physics/shape.hpp"
 
 namespace engine
 {
@@ -35,6 +36,7 @@ namespace engine
 			friend class Rigidbody2D;
 			void *fixture; // Pointer to the Box2D version
 			Rigidbody2D *rb;
+			engine::physics::Shape shape;
 
 			internals::physics::Collider2DTouple t;
 			bool isTrigger;
@@ -46,6 +48,7 @@ namespace engine
 
 			public:
 			void init();
+			void init(Shape s);
 
 			void setTriggerStatus(bool t);
 			bool getTriggerStatus() const;

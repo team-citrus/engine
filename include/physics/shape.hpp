@@ -16,7 +16,6 @@
 
 namespace engine
 {
-	
 	namespace physics
 	{
 		class Shape // TODO: Construct as like default shapes
@@ -47,9 +46,20 @@ namespace engine
 						points.push(oPoints[i]);
 					}
 				}
-			}	
+			}
+
+			OPERATOR Vec2 &operator[](size_t index)
+			{
+				return points[indexes[index]];
+			}
+
+			OPERATOR size_t pointCount()
+			{
+				return indexes.getCount();
+			}
 
 			// TODO: more stuff
+			// TODO: triangulate
 		};
 	}
 }
