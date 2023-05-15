@@ -12,7 +12,6 @@
 
 #ifdef CITRUS_ENGINE_WINDOWS
 
-#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
 #endif
@@ -33,24 +32,24 @@ std::atomic_bool rngLock;
 
 ALWAYS_INLINE void roundKey(uint8_t key[], uint8_t rkey[], int round)
 {
-	uint32_t *K = key;
-	uint32_t *W = rkey;
+	uint32_t *K = (uint32_t*)key;
+	uint32_t *W = (uint32_t*)rkey;
 
 	if(round * 4 < 8)
 	{
-		if((uintptr_t)K & 0xF && (uintptr_t)W & 0xF)
+		if(((uintptr_t)K) & 0xF && (uintptr_t)W & 0xF)
 		{
 			xmm_memcpy(W, K + (round * 4), 1);
 		}
 		else
 		{
-			ustore_i128(W, uload_i128(K + (round * 4)));
+			memcpy(W, K + (round * 4), 16);
 		}
 	}
 	else
 	{
 		// That's how it works right? We'll have to check later
-		ustore_i128((m128i_t*)W, _mm_aeskeygenassist_si128(uload_i128(K + ((round & 1) * 4)), rcon(round)));
+		ustore_i128((m128i_t*)(void*)W, _mm_aeskeygenassist_si128(uload_i128(K + ((round & 1) * 4)), rcon(round)));
 	}
 }
 
@@ -59,7 +58,7 @@ ALWAYS_INLINE void roundKey(uint8_t key[], uint8_t rkey[], int round)
 
 void engine::internals::initMainRNG()
 {
-	#ifndef _WIN32
+	#ifdef CITRUS_ENGINE_UNIX
 
 	FILE *urand = fopen("/dev/urandom", "r");
 	fread(&mainRNG, sizeof(engine::RNG), 1, urand);
@@ -67,7 +66,7 @@ void engine::internals::initMainRNG()
 
 	#else
 
-	BCryptGenRandom(NULL, &mainRNG, sizeof(engine::RNG), BCRYPT_USE_SYSTEM_PREFERRED_RNG);
+	BCryptGenRandom(NULL, (PUCHAR)&mainRNG, sizeof(engine::RNG), BCRYPT_USE_SYSTEM_PREFERRED_RNG);
 
 	#endif
 
@@ -114,16 +113,17 @@ void engine::internals::getSeedBytes(uint32_t matrix[])
 
 void engine::internals::AES(uint8_t key[], uint64_t unique[], uint8_t output[])
 {
-	ustore_i128(output, uload_i128(unique));
+	m128i_t *rOutput = (m128i_t*)output;
+	memcpy(rOutput, unique, 16);
 	for(int i = 0; i < 14; i++)
 	{
 		uint8_t keybuff[16];
 		roundKey(key, keybuff, i);
 		
 		if(i == 13)
-			ustore_i128(output, _mm_aesenclast_si128(uload_i128(output), uload_i128(keybuff)));
+			ustore_i128(rOutput, _mm_aesenclast_si128(uload_i128(rOutput), uload_i128(keybuff))); // TODO: alignment checks
 		else
-			ustore_i128(output, _mm_aesenc_si128(uload_i128(output), uload_i128(keybuff)));
+			ustore_i128(rOutput, _mm_aesenc_si128(uload_i128(rOutput), uload_i128(keybuff))); // TODO: alignment checks
 	}
 }
 
@@ -152,7 +152,7 @@ void SHA256(uint8_t input[], size_t inlen, uint8_t hash[])
 	};
 	size_t realLen;
 
-	uint8_t *buffer = engine::memalloc((realLen = inlen + ((inlen + 8) % 64) + 8));
+	uint8_t *buffer = (uint8_t*)engine::memalloc((realLen = inlen + ((inlen + 8) % 64) + 8));
 	if((uint64_t)input & 0xF == 0 && inlen % 16 == 0)
 		xmm_memcpy(buffer, input, inlen/16);
 	else
@@ -222,24 +222,26 @@ void SHA256(uint8_t input[], size_t inlen, uint8_t hash[])
 		m128i_t xmm1;
 		m128i_t xmm2;
 		m128i_t xmm3;
+		uint32_t arraya[] = {a, b, c, d};
+		uint32_t arrayb[] = {e, f, g, h};
 
-		xmm0 = uload_i128({a, b, c, d});
-		xmm1 = ((uintptr_t)digest % 16 == 0) ? load_i128(digest) : uload_i128(digest);
-		xmm2 = uload_i128({e, f, g, h});
-		xmm3 = ((uintptr_t)digest % 16 == 0) ? load_i128(digest + 4) : uload_i128(digest + 4);
+		xmm0 = _mm_setr_epi32(a, b, c, d);
+		xmm1 = ((uintptr_t)digest % 16 == 0) ? load_i128((m128i_t*)(void*)digest) : uload_i128((m128i_t*)(void*)digest);
+		xmm2 = _mm_setr_epi32(e, f, g, h);
+		xmm3 = ((uintptr_t)digest % 16 == 0) ? load_i128((m128i_t*)(void*)digest + 4) : uload_i128((m128i_t*)(void*)(digest + 4));
 
 		xmm1 = add_i32(xmm0, xmm1);
 		xmm3 = add_i32(xmm2, xmm3);
 		
 		if((uintptr_t)digest % 16 == 0)
 		{
-			store_i128(digest, xmm1);
-			store_i128(digest + 4, xmm3);
+			store_i128((m128i_t*)(void*)digest, xmm1);
+			store_i128((m128i_t*)(void*)(digest + 4), xmm3);
 		}
 		else
 		{
-			ustore_i128(digest, xmm1);
-			ustore_i128(digest + 4, xmm3);
+			ustore_i128((m128i_t*)(void*)digest, xmm1);
+			ustore_i128((m128i_t*)(void*)(digest + 4), xmm3);
 		}
 
 		#endif

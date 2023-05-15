@@ -120,11 +120,11 @@ namespace engine
 				ptr = memrealloc(ptr, (capacity = (count = size) + 8) * sizeof(T));
 			}
 
-			OPERATOR bool search(T t)
+			OPERATOR size_t search(T t)
 			{
 				for(size_t i = 0; i < count; i++)
-					if(ptr[i] == t) return true;
-				return false
+					if(ptr[i] == t) return i;
+				return -1;
 			}
 
 			Vector()
