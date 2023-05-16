@@ -23,7 +23,7 @@
 
 #define RB_KINEMATIC 0
 #define RB_STATIC 1
-#define RB_DYNAMIC 3
+#define RB_DYNAMIC 2
 
 #define RB_AWAKE true
 #define RB_ASLEEP false
@@ -47,8 +47,6 @@ namespace engine
 				float angularVelocity;
 				float linearDamping;
 				float angularDamping;
-				bool awake;
-				bool allowSleep;
 				bool fixedRotation;
 				bool bullet;
 				bool enabled;
@@ -69,6 +67,8 @@ namespace engine
 				void applyForce(const Vec2 force, bool wake, int type);
 				void applyForce(const Vec2 force, const Vec2 point, bool wake, int type);
 
+				// TODO: relativeForce() and forceAtPoint()
+
 				float getMass() const;
 				// TODO: setter for mass
 
@@ -76,7 +76,7 @@ namespace engine
 				void setLinearDamping(float f);
 
 				float getAngularDamping() const;
-				void setAngularDamping(float f);
+				void setAngularDamping(float f, );
 
 				float getScaleOfGravity() const;
 				void setScaleOfGravity(float s);

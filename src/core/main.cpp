@@ -66,8 +66,6 @@ thrd_t internals::phys;
 thrd_t internals::mix;
 thrd_t internals::gameplay;
 
-ALIAS(__citrus_engine_vendor_crash_handler) NO_INLINE extern "C" void crash_handler();
-
 void waitms(size_t mils)
 {
 	#ifdef CITRUS_ENGINE_UNIX
@@ -221,7 +219,7 @@ static inline void initSigs()
 int MAIN
 {
 	// Initalize everything
-	crashHandler();
+	__citrus_engine_vendor_crash_handler();
 
 	initMainRNG();
 
