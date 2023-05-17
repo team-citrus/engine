@@ -34,7 +34,7 @@ void engine::physics::Collider2D::init()
 	def.userData.pointer = (uintptr_t)&getObject();
 
 	def.friction = friction;
-	def.restitution = resitituion;
+	def.restitution = restituion;
 	def.restitutionThreshold = restitutionThreshold;
 	def.density = density;
 	def.isSensor = isTrigger;
@@ -47,11 +47,11 @@ void engine::physics::Collider2D::init(Shape s)
 	b2FixtureDef def;
 	b2PolygonShape b2S = convertShapeToB2Shape(s);
 
-	def.shape = b2S;
+	def.shape = &b2S;
 	def.userData.pointer = (uintptr_t)&getObject();
 
 	def.friction = friction;
-	def.restitution = resitituion;
+	def.restitution = restituion;
 	def.restitutionThreshold = restitutionThreshold;
 	def.density = density;
 	def.isSensor = isTrigger;
@@ -108,7 +108,7 @@ float engine::physics::Collider2D::getFriction() const
 
 void engine::physics::Collider2D::setRestitution(float r)
 {
-	restitution = r;
+	restituion = r;
 
 	if(fixture != NULL)
 	{
@@ -117,7 +117,7 @@ void engine::physics::Collider2D::setRestitution(float r)
 }
 float engine::physics::Collider2D::getRestitution() const
 {
-	return (fixture == NULL) ? restitution : BOX2D(fixture)->GetRestitution();
+	return (fixture == NULL) ? restituion : BOX2D(fixture)->GetRestitution();
 }
 
 void engine::physics::Collider2D::setRestitution(float t)

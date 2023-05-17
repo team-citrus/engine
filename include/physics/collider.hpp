@@ -63,7 +63,7 @@ namespace engine
 			float getRestitution() const;
 
 			void setRestitutionThreshold(float t);
-			float getRestitutionThreshold();
+			float getRestitutionThreshold() const;
 		};
 	}
 }

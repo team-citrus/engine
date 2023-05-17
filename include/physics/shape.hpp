@@ -26,7 +26,6 @@ namespace engine
 			Shape()
 			{
 				points = Vector<Vec2>(0);
-				indexes = Vector<size_t>(0);
 			}
 
 			Shape(Vector<Vec2> &oPoints)
@@ -34,11 +33,6 @@ namespace engine
 				points = Vector<Vec2>(oPoints.getCount());
 				for(size_t i = 0; i < oPoints.getCount(); i++)
 				{
-					if(points.search(oPoints[i]) != -1)
-					{
-						continue;
-					}
-					
 					points.push(oPoints[i]);
 				}
 			}
