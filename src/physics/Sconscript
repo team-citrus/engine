@@ -33,3 +33,5 @@ elif BUILD_TYPE == "QUICK":
 Object('physmain.cpp')
 Object('step.cpp')
 Object('rb2d.cpp')
+Object('collider2d.cpp')
+Object('init.cpp')
