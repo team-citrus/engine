@@ -27,7 +27,7 @@ namespace internals
 	namespace physics
 	{
 		// Initalize physics
-		void Init(bool 2D, Vec3 gravity);
+		void Init(bool is2D, engine::physics::Vec3 gravity);
 
 		// Deconstruct physics
 		void Fini();
@@ -49,7 +49,7 @@ namespace internals
 		class b2Listener : public b2ContactListener
 		{
 			public:
-			class ContactJob : Job
+			class ContactJob : public Job
 			{
 				public:
 				b2Contact *ptr;
@@ -61,7 +61,7 @@ namespace internals
 
 				bool operator==(Job &otra) override
 				{
-					if(job.getTypeSignature() == getTypeSignature())
+					if(otra.getTypeSignature() == getTypeSignature())
 					{
 						return *this == *(ContactJob*)&otra;
 					}
@@ -114,11 +114,11 @@ namespace internals
 						}
 					}
 				}
-			}
+			};
 
 			void BeginContact(b2Contact *thingy) override;
 			void EndContact(b2Contact *thingy) override;
-		}
+		};
 
 		// State of physics
 		class PHYS_STATE
@@ -128,8 +128,8 @@ namespace internals
 			int stepRate;
 			union
 			{
-				Vec2 gravity2D;
-				Vec3 gravity3D;
+				engine::physics::Vec2 gravity2D;
+				engine::physics::Vec3 gravity3D;
 			};
 			
 			union
@@ -137,7 +137,7 @@ namespace internals
 				b2World *world2D;
 				btDiscreteDynamicsWorld *world3D;
 			};
-		}
+		};
 
 		extern b2Listener listener;
 

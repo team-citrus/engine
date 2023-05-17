@@ -6,6 +6,7 @@
 *   license: LGPL-3.0-only
 */
 #define _INTERNALS_ENGINE_THREAD_MAIN_
+
 #include "physics/physmain.hpp"
 #include "core/object.hpp"
 #include "core/transform.hpp"
@@ -15,6 +16,7 @@
 #include "core/Main.hpp"
 #include "core/sync.hpp"
 #include "core/simd.h"
+
 #define __CITRUS_ENGINE_SOURCE_FILE__
 
 using namespace engine;
@@ -25,7 +27,7 @@ int internals::physics::step()
 {
 	if(internals::physics::state.is2D)
 	{
-		internals::physics::state.world2D->step(1.0f/(float)internals::physics::state.stepRate, 8, 3); // TODO: Configurable solvers
+		internals::physics::state.world2D->Step(1.0f/(float)internals::physics::state.stepRate, 8, 3); // TODO: Configurable solvers
 	}
 	else
 	{
@@ -37,10 +39,10 @@ int internals::physics::updateObjects()
 {
 	if(internals::physics::state.is2D)
 	{
-		for(b2Body *body = internals::physics::state.world2D->GetBodyList; body != nullptr; body = body->GetNext())
+		for(b2Body *body = internals::physics::state.world2D->GetBodyList(); body != nullptr; body = body->GetNext())
 		{
 			Object *objecto = (Object*)(body->GetUserData().pointer);
-			Transform2D &pos = objecto.getComponent<engine::Transform2D>();
+			Transform2D &pos = objecto->getComponent<engine::Transform2D>();
 			pos = engine::Transform2D(*(Float2*)&body->GetPosition(), body->GetAngle(), pos.scale);
 			
 			// We'll take the lazy approach to Rigidbodies, it saves time, we'll refresh as needed.
@@ -49,7 +51,7 @@ int internals::physics::updateObjects()
 	}
 }
 
-void internals::physics::b2Listener::BeginContact(b2Contact *thingy) override
+void internals::physics::b2Listener::BeginContact(b2Contact *thingy) 
 {
 	internals::physics::b2Listener::ContactJob cj;
 	cj.ptr = thingy;
@@ -65,7 +67,7 @@ void internals::physics::b2Listener::BeginContact(b2Contact *thingy) override
 	}
 }
 
-void internals::physics::b2Listener::EndContact(b2Contact *thingy) override
+void internals::physics::b2Listener::EndContact(b2Contact *thingy)
 {
 	internals::physics::b2Listener::ContactJob cj;
 	cj.ptr = thingy;

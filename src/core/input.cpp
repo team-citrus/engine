@@ -6,6 +6,7 @@
 *   license: LGPL-3.0-only
 */
 #include "core/input.hpp"
+#include "core/simd.h"
 
 // Welcome to portability hell, population, us
 
@@ -82,21 +83,52 @@ bool getMouseButtonUp(int num)
 
 bool engine::anyKey()
 {
-	for(int i = 0; i < 256; i++)
+	for(int i = 0; i < 8; i++)
 	{
-		if(engine::internals::currentInput[i] >> 7 == 1)
-		{
+		#if _MAVX_ == 2
+
+		m256i_t buffer = load_i256(engine::internals::currentInput  + (i * 32));
+		if(_mm256_movemask_epi8(_mm256_cmpeq_epi8(buffer, broadcast256_i64(0))) != 0)
 			return true;
-		}
+
+		#elif defined(__x86_64__)
+
+		m128i_t buffer = load_i128((const m128i_t*)(engine::internals::currentInput + (i * 32)));
+		if(extractbools_i8(equals_i8(buffer, broadcast_i8(0))) != 0)
+			return true;
+
+		buffer = load_i128((const m128i_t*)(engine::internals::currentInput + 16  + (i * 32)));
+		if(_mm_movemask_epi8(_mm_cmpeq_epi8(buffer, broadcast_i8(0))) != 0)
+			return true;
+
+		#else
+
+		int32_t zero = 0;	
+		int32x4_t buffer = vld1q_s32((uint32_t*)(engine::internals::currentInput  + (i * 32)));
+		int32x4_t bools = vceqq_s32(buffer, vld1q_dup_s32(&zero));
+	
+		if(vgetq_lane_u32(bools, 0) != 0) return true;
+		if(vgetq_lane_u32(bools, 1) != 0) return true;
+		if(vgetq_lane_u32(bools, 2) != 0) return true;
+		if(vgetq_lane_u32(bools, 3) != 0) return true;
+
+		buffer = vld1q_s32((uint32_t*)(engine::internals::currentInput + 16 + (i * 32)));
+		bools = vceqq_s32(buffer, vld1q_dup_s32(&zero));
+
+		if(vgetq_lane_u32(bools, 0) != 0) return true;
+		if(vgetq_lane_u32(bools, 1) != 0) return true;
+		if(vgetq_lane_u32(bools, 2) != 0) return true;
+		if(vgetq_lane_u32(bools, 3) != 0) return true;
+
+		#endif
 	}
-	return false
+	return false;
 }
 
 #else
 
 #include "core/XLibglobals.hpp"
 #include "core/extensions.h"
-#include "core/simd.h"
 
 ALIGN(32) uint8_t engine::internals::currentInput[32];
 ALIGN(32) uint8_t engine::internals::prevInput[32]; // Used for getKeyDown and getMouseButtonDown

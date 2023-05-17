@@ -10,6 +10,7 @@
 #define CITRUS_ENGINE_INPUT_SYSTEM_HPP__
 
 #include <cstdint>
+#include "../core/os.h"
 
 namespace engine
 {
