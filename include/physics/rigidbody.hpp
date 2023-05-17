@@ -76,7 +76,7 @@ namespace engine
 				void setLinearDamping(float f);
 
 				float getAngularDamping() const;
-				void setAngularDamping(float f, );
+				void setAngularDamping(float f);
 
 				float getScaleOfGravity() const;
 				void setScaleOfGravity(float s);

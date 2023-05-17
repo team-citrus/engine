@@ -6,8 +6,8 @@
 *   license: LGPL-3.0-only
 */
 
-#ifndef CITRUS_ENGINE_RIGIDBODIES_HPP__
-#define CITRUS_ENGINE_RIGIDBODIES_HPP__
+#ifndef CITRUS_ENGINE_JOINTS2D_HPP__
+#define CITRUS_ENGINE_JOINTS2D_HPP__
 
 #include "../core/component.hpp"
 #include "../physics/rigidbody.hpp"
@@ -57,7 +57,7 @@ namespace engine
 			virtual Vec2 getAnchorA() const = 0;
 			virtual Vec2 getAnchorB() const = 0;
 			virtual void setAnchorA(Vec2 a) = 0;
-			virtual void setAnchorB(vec2 b) = 0;
+			virtual void setAnchorB(Vec2 b) = 0;
 
 			Vec2 getReactionForce();
 			float getReactionTorque();
@@ -83,7 +83,7 @@ namespace engine
 			void setAnchorA(Vec2 anchor) override;
 			void setAnchorB(Vec2 anchor) override;
 			Vec2 getAnchorA() const override;
-			Vec2 getAnchorb() const override;
+			Vec2 getAnchorB() const override;
 
 			void setLength(float f);
 			float getLength() const;
@@ -113,7 +113,7 @@ namespace engine
 			void setAnchorA(Vec2 anchor) override;
 			void setAnchorB(Vec2 anchor) override;
 			Vec2 getAnchorA() const override;
-			Vec2 getAnchorb() const override;
+			Vec2 getAnchorB() const override;
 
 			void setMaxForce(float f);
 			float getMaxForce() const;
@@ -136,7 +136,7 @@ namespace engine
 			void setAnchorA(Vec2 anchor) override;
 			void setAnchorB(Vec2 anchor) override;
 			Vec2 getAnchorA() const override;
-			Vec2 getAnchorb() const override;
+			Vec2 getAnchorB() const override;
 
 			Vec2 getReactionForce() const;
 			float getReactionTorque() const;
@@ -160,8 +160,8 @@ namespace engine
 
 			void setAnchorA(Vec2 a) override;
 			void setAnchorB(Vec2 a) override;
-			Vec2 getAnchorA() override const;
-			Vec2 getAnchorb() override const;
+			Vec2 getAnchorA() const override;
+			Vec2 getAnchorB() const override;
 
 			void setLinearOffset(Vec2 v);
 			Vec2 getLinearOffset() const;
@@ -180,7 +180,7 @@ namespace engine
 
 			void setCorrectionFactor(float f);
 			float getCorrectionFactor() const;
-		}
+		};
 
 		class PrismaticJoint2D : Joint2D
 		{
@@ -199,8 +199,8 @@ namespace engine
 
 			void setAnchorA(Vec2 a) override;
 			void setAnchorB(Vec2 a) override;
-			Vec2 getAnchorA() override const;
-			Vec2 getAnchorb() override const;
+			Vec2 getAnchorA() const override;
+			Vec2 getAnchorB() const override;
 
 			Vec2 getReactionForce() const;
 			float getReactionTorque() const;
