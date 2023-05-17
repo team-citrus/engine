@@ -24,13 +24,13 @@ quick_flags.append("-mtune=" + TUNE)
 
 if BUILD_TYPE == "FINAL":
 	env.Append( CPPFLAGS = flags, CPPDEFINES = DEFINES )
-	env.Append(CPPDEFINES = { "_PRODUCTION_" : None, "_MAVX_" : 1 }) # TODO: Set _MAVX_ to 2 if AVX2 is in use, not define _MAVX_ if AVX isn't in use
+	env.Append(CPPDEFINES = { "_PRODUCTION_" : None })
 elif BUILD_TYPE == "DEBUG":
 	env.Append( CPPFLAGS = debug_flags, CPPDEFINES = DEFINES )
-	env.Append(CPPDEFINES = { "_DEBUG_" : None, "_MAVX_" : 1 })
+	env.Append(CPPDEFINES = { "_DEBUG_" : None })
 elif BUILD_TYPE == "QUICK":
 	env.Append( CPPFLAGS = quick_flags, CPPDEFINES = DEFINES )
-	env.Append(CPPDEFINES = { "_QUICK_" : None }) # TODO: Option for enabling quick build with AVX and AVX2
+	env.Append(CPPDEFINES = { "_QUICK_" : None })
 
 Object(target = 'cengine0.o', source = 'main.cpp') # Useful for modding purposes
 Object('mem.cpp')

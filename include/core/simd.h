@@ -12,6 +12,20 @@
 #ifdef __x86_64__
 #include <x86intrin.h>
 
+#ifdef __AVX512F__
+
+#define _MAVX_ 512
+
+#elif defined(__AVX2__)
+
+#define _MAVX_ 2
+
+#elif defined(__AVX__)
+
+#define _MAVX_ 1
+
+#endif
+
 #define ROTL(x, b) (x << b) | (x >> (sizeof(x)*8 - b))
 #define ROTR(x, b) (x >> b) | (x << (sizeof(x)*8 - b))
 
