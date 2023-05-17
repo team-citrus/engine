@@ -157,7 +157,7 @@ bool engine::anyKey()
 	#elif defined(__x86_64__)
 
 	m128i_t buffer = load_i128((const m128i_t*)engine::internals::currentInput);
-	if(_mm_movemask_epi8(_mm_cmpeq_epi8(buffer, broadcast_i8(0))) != 0)
+	if(extractbools_i8(equals_i8(buffer, broadcast_i8(0))) != 0)
 		return true;
 
 	buffer = load_i128((const m128i_t*)(engine::internals::currentInput + 16));

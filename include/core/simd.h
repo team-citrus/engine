@@ -176,6 +176,82 @@ typedef __m512i m512i_t;
 #define shuffle64_i16(a, m) _mm_shuffle_pi16(a, m)
 #define shuffle_i32(a, m) _mm_shuffle_epi32(a, m)
 
+#define equals_i8(a, b) _mm_cmpeq_epi8(a, b)
+#define equals_i16(a, b) _mm_cmpeq_epi16(a, b)
+#define equals_i32(a, b) _mm_cmpeq_epi32(a, b)
+#define equals_i64(a, b) _mm_cmpeq_epi64(a, b)
+#define equals_f32(a, b) _mm_cmpeq_ps(a, b)
+#define equals_f64(a, b) _mm_cmpeq_pd(a, b)
+
+#define greaterequal_i8(a, b) _mm_cmpge_epi8(a, b)
+#define greaterequal_i16(a, b) _mm_cmpge_epi16(a, b)
+#define greaterequal_i32(a, b) _mm_cmpge_epi32(a, b)
+#define greaterequal_i64(a, b) _mm_cmpge_epi64(a, b)
+#define greaterequal_f32(a, b) _mm_cmpge_ps(a, b)
+#define greaterequal_f64(a, b) _mm_cmpge_pd(a, b)
+
+#define greater_i8(a, b) _mm_cmpgt_epi8(a, b)
+#define greater_i16(a, b) _mm_cmpgt_epi16(a, b)
+#define greater_i32(a, b) _mm_cmpgt_epi32(a, b)
+#define greater_i64(a, b) _mm_cmpgt_epi64(a, b)
+#define greater_f32(a, b) _mm_cmpgt_ps(a, b)
+#define greater_f64(a, b) _mm_cmpgt_pd(a, b)
+
+#define lesserequal_i8(a, b) _mm_cmple_epi8(a, b)
+#define lesserequal_i16(a, b) _mm_cmple_epi16(a, b)
+#define lesserequal_i32(a, b) _mm_cmple_epi32(a, b)
+#define lesserequal_i64(a, b) _mm_cmple_epi64(a, b)
+#define lesserequal_f32(a, b) _mm_cmple_ps(a, b)
+#define lesserequal_f64(a, b) _mm_cmple_pd(a, b)
+
+#define lesser_i8(a, b) _mm_cmplt_epi8(a, b)
+#define lesser_i16(a, b) _mm_cmplt_epi16(a, b)
+#define lesser_i32(a, b) _mm_cmplt_epi32(a, b)
+#define lesser_i64(a, b) _mm_cmplt_epi64(a, b)
+#define lesser_f32(a, b) _mm_cmplt_ps(a, b)
+#define lesser_f64(a, b) _mm_cmplt_pd(a, b)
+
+
+#define notequal_i8(a, b) _mm_cmpenq_epi8(a, b)
+#define notequal_i16(a, b) _mm_cmpneq_epi16(a, b)
+#define notequal_i32(a, b) _mm_cmpneq_epi32(a, b)
+#define notequal_i64(a, b) _mm_cmpneq_epi64(a, b)
+#define notequal_f32(a, b) _mm_cmpneq_ps(a, b)
+#define notequal_f64(a, b) _mm_cmpneq_pd(a, b)
+
+#define notgreaterequal_i8(a, b) _mm_cmpnge_epi8(a, b)
+#define notgreaterequal_i16(a, b) _mm_cmpnge_epi16(a, b)
+#define notgreaterequal_i32(a, b) _mm_cmpnge_epi32(a, b)
+#define notgreaterequal_i64(a, b) _mm_cmpnge_epi64(a, b)
+#define notgreaterequal_f32(a, b) _mm_cmpnge_ps(a, b)
+#define notgreaterequal_f64(a, b) _mm_cmpnge_pd(a, b)
+
+#define notgreater_i8(a, b) _mm_cmpngt_epi8(a, b)
+#define notgreater_i16(a, b) _mm_cmpngt_epi16(a, b)
+#define notgreater_i32(a, b) _mm_cmpngt_epi32(a, b)
+#define notgreater_i64(a, b) _mm_cmpngt_epi64(a, b)
+#define notgreater_f32(a, b) _mm_cmpngt_ps(a, b)
+#define notgreater_f64(a, b) _mm_cmpngt_pd(a, b)
+ 
+#define notlessequal_i8(a, b) _mm_cmpnle_epi8(a, b)
+#define notlessequal_i16(a, b) _mm_cmpnle_epi16(a, b)
+#define notlessequal_i32(a, b) _mm_cmpnle_epi32(a, b)
+#define notlessequal_i64(a, b) _mm_cmpnle_epi64(a, b)
+#define notlessequal_f32(a, b) _mm_cmpnle_ps(a, b)
+#define notlessequal_f64(a, b) _mm_cmpnle_pd(a, b)
+
+#define notless_i8(a, b) _mm_cmpnlt_epi8(a, b)
+#define notless_i16(a, b) _mm_cmpnlt_epi16(a, b)
+#define notless_i32(a, b) _mm_cmpnlt_epi32(a, b)
+#define notless_i64(a, b) _mm_cmpnlt_epi64(a, b)
+#define notless_f32(a, b) _mm_cmpnlt_ps(a, b)
+#define notless_f64(a, b) _mm_cmpnlt_pd(a, b)
+
+#define extractbools_i8(a) _mm_movemask_epi8(a)
+#define movemask_f32(a) _mm_movemask_ps(a)
+#define movemask_f64(a) _mm_movemask_pd(a)
+
+
 #ifndef _MAVX_
 
 #define shuffle_f32(a, m) _mm_shuffle_ps(a, a, m)
