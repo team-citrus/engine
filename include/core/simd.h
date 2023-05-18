@@ -117,7 +117,7 @@ typedef __m512i m512i_t;
 
 // xmm/SSE intrinsics
 
-#define CMOV(cond, src, dest) \
+#define cmov(cond, src, dest) \
 	({ \
 		asm("cmp %1, 0;" \
 			"cmovne %2, %0;" \

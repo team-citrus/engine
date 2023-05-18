@@ -51,8 +51,10 @@ namespace engine
 
 			Rigidbody2D *getBodyA();
 			Rigidbody2D *getBodyB();
+
 			const Rigidbody2D *getBodyA() const;
 			const Rigidbody2D *getBodyB() const;
+			
 			void setBodyA(Rigidbody2D &bodyA);
 			void setBodyB(Rigidbody2D &bodyB);
 
@@ -61,8 +63,8 @@ namespace engine
 			virtual void setAnchorA(Vec2 a) = 0;
 			virtual void setAnchorB(Vec2 b) = 0;
 
-			Vec2 getReactionForce();
-			float getReactionTorque();
+			virtual Vec2 getReactionForce(float f) const = 0;
+			virtual float getReactionTorque(float f) const = 0;
 
 			void setCollideConnected(bool b);
 			bool getCollideConnected() const;
@@ -140,8 +142,8 @@ namespace engine
 			Vec2 getAnchorA() const override;
 			Vec2 getAnchorB() const override;
 
-			Vec2 getReactionForce() const;
-			float getReactionTorque() const;
+			Vec2 getReactionForce(float f) const override;
+			float getReactionTorque(float f) const override;
 
 			void setRatio(float r);
 			float getRatio() const;
@@ -171,8 +173,8 @@ namespace engine
 			void setAngularOffset(float o);
 			float getAngularOffset() const;
 
-			Vec2 getReactionForce() const;
-			float getReactionTorque() const;
+			Vec2 getReactionForce(float f) const override;
+			float getReactionTorque(float f) const override;
 
 			void setMaxForce(float f);
 			float getMaxForce() const;
@@ -204,8 +206,8 @@ namespace engine
 			Vec2 getAnchorA() const override;
 			Vec2 getAnchorB() const override;
 
-			Vec2 getReactionForce() const;
-			float getReactionTorque() const;
+			Vec2 getReactionForce(float f) const override;
+			float getReactionTorque(float f) const override;
 
 			Vec2 getAxisA() const;
 
@@ -259,12 +261,12 @@ namespace engine
 			Vec2 getAnchorA() const override;
 			Vec2 getAnchorB() const override;
 
-			Vec2 getReactionForce() const; 
-			float getReactionTorque() const;
+			Vec2 getReactionForce(float f) const override; 
+			float getReactionTorque(float f) const override;
 
 			Vec2 getGroundAnchorA() const;
 			Vec2 getGroundAnchorB() const;
-			void setGroundAnchorA(Vec2 a);
+	f		void setGroundAnchorA(Vec2 a);
 			void setGroundAnchorB(Vec2 b);
 
 			float getLengthA() const;
@@ -290,8 +292,8 @@ namespace engine
 			Vec2 getAnchorA() const override;
 			Vec2 getAnchorB() const override;
 
-			Vec2 getReactionForce() const;
-			float getReactionTorque() const;
+			Vec2 getReactionForce(float f) const override;
+			float getReactionTorque(float f) const override;
 
 			float getRefernceAngle() const;
 
@@ -300,6 +302,120 @@ namespace engine
 
 			void setDamping(float d);
 			float getDamping() const;
+		};
+
+		class WheelJoint2D : Joint2D
+		{
+			Vec2 anchorA;
+			Vec2 anchorB;
+			
+			Vec2 axis;
+
+			bool enableLimit;
+			float upperTranslation;
+			float lowerTranslation;
+
+			bool enableMotor;
+			float maxMotorTorque;
+			float motorSpeed;
+
+			float stiffness;
+			float damping;
+			public:
+			Vec2 getAnchorA() const override;
+			Vec2 getAnchorB() const override;
+			void setAnchorA(Vec2 a) override;
+			void setAnchorB(Vec2 b) override;
+
+			Vec2 getAxis() const;
+			void setAxis(Vec2 a);
+
+			Vec2 getReactionForce(float f) const override;
+			float getReactionTorque(float f) const override;
+
+			Vec2 getAnchorA() const override;
+			Vec2 getAnchorB() const override;
+			void setAnchorA(Vec2 a) override;
+			void setAnchorB(Vec2 a) override;
+
+			float getJointTranslation() const;
+			float getJointLinearSpeed() const;
+			float getJointAngle() const;
+			float getJointAngularSpeed() const;
+
+			bool isLimitEnabled() const;
+			void enableLimit();
+			void disableLimit();
+
+			float getLowerLimit() const;
+			float getUpperLimit() const;
+			void setLimits(float upper, float lower);
+
+			bool isMotorEnabled() const;
+			void disableMotor();
+			void enableMotor();
+
+			float getMotorSpeed() const;
+			void setMotorSpeed(float s);
+
+			float getMaxMotorTorque() const;
+			void setMaxMotorTorque(float t);
+
+			float getStiffness() const;
+			void setStiffness(float s);
+
+			float getDamping() const;
+			void setDamping(float d);
+		};
+
+		class RevoluteJoint2D : Joint2D
+		{
+			Vec2 anchorA;
+			Vec2 anchorB;
+
+			float referenceAngle;
+			bool enableLimit;
+
+			float lowerAngle;
+			float upperAngle;
+
+			bool enableMotor;
+			float motorSpeed;
+			float maxMotorTorque;
+			public:
+			void setAnchorA(Vec2 a) override;
+			void setAnchorB(Vec2 a) override;
+			Vec2 getAnchorA() const override;
+			Vec2 getAnchorB() const override;
+
+			float getReferenceAngle() const;
+			void setReferenceAngle(float a);
+			
+			float getJointAngle() const;
+			float getJointSpeed() const;
+
+			bool isLimitEnabled() const;
+			void enableLimit();
+			void disableLimit();
+
+			float getLowerLimit() const;
+			float getUpperLimit() const;
+			void setLimits(float upper, float lower);
+
+			bool isMotorEnabled() const;
+			void enableMotor();
+			void disableMotor();
+
+			float getMotorSpeed() const;
+			void setMotorSpeed(float s);
+
+			float getMaxMotorTorque() const;
+			void setMaxMotorTorque(float t);
+
+			Vec2 getReactionForce(float f) const override;
+			float getReactionTorque(float f) const override;
+
+			float getMotorTorque() const;
 		};
 	}
 }
