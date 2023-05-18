@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 
-#elif defined(_WIN32)
+#else
 
 #include <Windows.h>
 
@@ -41,11 +41,11 @@ OPERATOR bool validatePointer(uintptr_t ptr)
 OPERATOR void mergeBlocks(engine::internals::poolBlock *nptr)
 {
 	engine::internals::poolBlock *tptr = nptr->next;
-	if(nptr->next == POOL_END) return;
+	if((uintptr_t)nptr->next == POOL_END) return;
 
 	while(true) // An infinite loop is fine, when the time is right it will return
 	{
-		while(tptr->fmagic != POOL_FREE_BLOCK_MAGIC || tptr->amagic != POOL_ALLOC_BLOCK_MAGIC) tptr = tptr->next;
+		tptr = tptr->next;
 
 		if(tptr->amagic == POOL_ALLOC_BLOCK_MAGIC) return;
 
@@ -54,7 +54,6 @@ OPERATOR void mergeBlocks(engine::internals::poolBlock *nptr)
 
 		if(nptr->next != POOL_END)	tptr->next->last = nptr;
 		else return;
-		tptr->fmagic = 0;
 	}
 }
 
@@ -66,7 +65,7 @@ OPERATOR void *alloc(int blocks)
 alloc_goto:
 	if(bptr->next == POOL_END)
 	{
-		if(bptr.fsize + blocks + 1 > engine::internals::pool.limit)
+		if(bptr->fsize + blocks + 1 > engine::internals::pool.limit)
 		{
 			if(_POOL_LIMIT_IS_HARD_ || limitExceeded)
 			{
@@ -77,7 +76,8 @@ alloc_goto:
 			{
 				engine::errorcode() = ENGINE_SOFT_MEM_LIMIT_REACHED;
 				limitExceeded = true;
-				#ifndef _WIN32
+
+				#ifdef CITRUS_ENGINE_UNIX
 
 				void *ptr = mmap((void*)((uintptr_t)engine::internals::pool.start + _POOL_SIZE_), 
 					_POOL_EXPANSION_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON | MAP_FIXED_NOREPLACE |
@@ -128,11 +128,13 @@ alloc_goto:
 	{
 		bptr->amagic = POOL_ALLOC_BLOCK_MAGIC;
 		bptr->asize = blocks;
+
 		return (void*)(bptr+1);
 	}
 	else if(bptr->fsize > blocks + 4)
 	{
 		engine::internals::poolBlock *nptr = bptr + blocks + 1;
+
 		nptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 		nptr->fsize = bptr->fsize - blocks - 1;
 		nptr->last = bptr;
@@ -141,12 +143,14 @@ alloc_goto:
 		nptr->next->last = nptr;
 		bptr->amagic = POOL_ALLOC_BLOCK_MAGIC;
 		bptr->asize = blocks;
+
 		return (void*)(bptr+1);
 	}
 	else if(bptr->fsize + bptr->next->fsize + 1 > blocks + 4 && bptr->next->fmagic == POOL_FREE_BLOCK_MAGIC)
 	{
 		engine::internals::poolBlock *nptr = bptr + blocks + 1;
 		size_t totalSize = bptr->fsize + bptr->next->fsize + 1;
+
 		bptr->next = bptr->next->next;
 		bptr->next->last = nptr;
 		bptr->asize = blocks;
@@ -155,15 +159,18 @@ alloc_goto:
 		nptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 		nptr->next = bptr->next;
 		bptr->next = nptr;
+
 		return (void*)(bptr+1);
 	}
 	else if(bptr->fsize + bptr->next->fsize + 1 => blocks && bptr->next->fmagic == POOL_FREE_BLOCK_MAGIC)
 	{
 		size_t size = bptr->fsize + bptr->next->fsize + 1;
+
 		bptr->next = bptr->next->next;
 		bptr->next->last = bptr;
 		bptr->asize = size;
 		bptr->amagic POOL_ALLOC_BLOCK_MAGIC;
+		
 		return (void*)(bptr+1);
 	}
 	else
