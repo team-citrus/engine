@@ -53,6 +53,7 @@ namespace engine
 				componentCount++;
 				components = memrealloc(components, sizeof(component*) * componentCount);
 				components[componentCount - 1] = memalloc(sizeof(T));
+				components[componentCount - 1]->owner = this;
 				components[componentCount - 1]->awake();
 				return *components[componentCount - 1];
 			}
@@ -62,7 +63,7 @@ namespace engine
 			T &getComponent()
 			{
 				for(int i = 0; i < componentCount; i++)
-					if(components[i]->componentID == typeid(T))
+					if(components[i]->getComponentID() == typeid(T))
 						return *components[i];
 			}
 

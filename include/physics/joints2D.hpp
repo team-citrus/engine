@@ -26,9 +26,11 @@ namespace engine
 			PulleyJoint,
 			WeldJoint,
 			WheelJoint,
+			PrismaticJoint,
+			RevoluteJoint,
 		};
 
-		class Joint2D : Component
+		class Joint2D : public Component
 		{
 			internals::physics::Joint2DTuple tuple;
 			JointType2D type;
@@ -68,7 +70,7 @@ namespace engine
 			bool isEnabled() const;
 		};
 
-		class DistanceJoint2D : Joint2D
+		class DistanceJoint2D : public Joint2D
 		{
 			Vec2 anchorA;
 			Vec2 anchorB;
@@ -100,7 +102,7 @@ namespace engine
 			float getDamping() const;
 		};
 
-		class FrictionJoint2D : Joint2D
+		class FrictionJoint2D : public Joint2D
 		{
 			Vec2 anchorA;
 			Vec2 anchorB;
@@ -122,7 +124,7 @@ namespace engine
 			float getMaxTorque() const;
 		};
 
-		class GearJoint2D : Joint2D
+		class GearJoint2D : public Joint2D
 		{
 			Vec2 anchorA;
 			Vec2 anchorB;
@@ -145,7 +147,7 @@ namespace engine
 			float getRatio() const;
 		};
 
-		class MotorJoint2D : Joint2D
+		class MotorJoint2D : public Joint2D
 		{
 			Vec2 anchorA;
 			Vec2 anchorB;
@@ -182,7 +184,7 @@ namespace engine
 			float getCorrectionFactor() const;
 		};
 
-		class PrismaticJoint2D : Joint2D
+		class PrismaticJoint2D : public Joint2D
 		{
 			Vec2 anchorA;
 			Vec2 anchorB;
@@ -235,6 +237,69 @@ namespace engine
 			float getMaxMotorForce() const;
 			void setMaxMotorForce(float f);
 			float getMotorForce(float n) const;
+		};
+
+		class PulleyJoint2D : public Joint2D
+		{
+			Vec2 anchorA;
+			Vec2 anchorB;
+
+			Vec2 groundAnchorA;
+			Vec2 groundAnchorB;
+
+			float lengthA;
+			float lengthB;
+
+			float ratio;
+			public:
+			void init() override;
+
+			void setAnchorA(Vec2 a) override;
+			void setAnchorB(Vec2 b) override;
+			Vec2 getAnchorA() const override;
+			Vec2 getAnchorB() const override;
+
+			Vec2 getReactionForce() const; 
+			float getReactionTorque() const;
+
+			Vec2 getGroundAnchorA() const;
+			Vec2 getGroundAnchorB() const;
+			void setGroundAnchorA(Vec2 a);
+			void setGroundAnchorB(Vec2 b);
+
+			float getLengthA() const;
+			float getLengthB() const;
+			void setLengthA(float a);
+			void setLengthB(float b);
+
+			float getRatio() const;
+			void setRatio(float r);
+		};
+		
+		class WeldJoint2D : public Joint2D
+		{
+			Vec2 anchorA;
+			Vec2 anchorB;
+
+			float referenceAngle;
+			float stiffness;
+			float damping;
+			public:
+			void setAnchorA(Vec2 a) override;
+			void setAnchorB(Vec2 b) override;
+			Vec2 getAnchorA() const override;
+			Vec2 getAnchorB() const override;
+
+			Vec2 getReactionForce() const;
+			float getReactionTorque() const;
+
+			float getRefernceAngle() const;
+
+			void setStiffness(float s);
+			float gotStiffness() const;
+
+			void setDamping(float d);
+			float getDamping() const;
 		};
 	}
 }

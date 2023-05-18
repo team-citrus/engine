@@ -31,7 +31,7 @@ namespace engine
 	{
 		// TODO: engine::"physics::"shape
 
-		class Collider2D : Component
+		class Collider2D : public Component
 		{
 			friend class Rigidbody2D;
 			void *fixture; // Pointer to the Box2D version

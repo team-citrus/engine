@@ -21,7 +21,7 @@ namespace engine
 	using Quaternion = physics::Quaternion;
 	using Quat = physics::Quat;
 
-	class Transform2D : Component
+	class Transform2D : public Component
 	{
 	public:
 		Float2 position;
@@ -51,7 +51,7 @@ namespace engine
 			scale = Float2(1, 1);
 		}
 
-		Transform2D(Float2 p, float r, Float s)
+		Transform2D(Float2 p, float r, Float2 s)
 		{
 			position = p;
 			rotation = r;
@@ -69,9 +69,9 @@ namespace engine
 		{
 			return (position == otra.position) && (rotation == otra.rotation) && (scale == otra.scale);
 		}
-	}
+	};
 
-	class Transform3D : Component
+	class Transform3D : public Component
 	{
 	public:
 		Float3 position;
@@ -163,7 +163,7 @@ namespace engine
 		{
 			return;
 		}
-	}
+	};
 };
 
 #endif

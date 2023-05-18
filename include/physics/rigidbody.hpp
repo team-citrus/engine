@@ -32,7 +32,7 @@ namespace engine
 {
 	namespace physics
 	{
-		class Rigidbody2D : Component
+		class Rigidbody2D : public Component
 		{
 			private:
 				// Box2d rigidbody representation
@@ -107,7 +107,7 @@ namespace engine
 				} // TODO: shape
 		};
 
-		class Rigidbody3D : Component
+		class Rigidbody3D : public Component
 		{
 			private:
 				// Bullet rigidbody representation

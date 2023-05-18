@@ -28,7 +28,7 @@ namespace engine
 {
 	namespace internals
 	{
-		class Mesh : engine::Mesh
+		class Mesh : public engine::Mesh
 		{
 			public:
 			// Creates an uninitalized mesh

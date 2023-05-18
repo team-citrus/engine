@@ -16,7 +16,7 @@ namespace engine
 {
 	namespace render
 	{
-		class Camera : Component
+		class Camera : public Component
 		{
 			public:
 			Matrix4x4 getViewMatrix();
@@ -32,7 +32,7 @@ namespace engine
 			float orthographicSize;
 
 			// TODO: Stuff
-		}
+		};
 	}
 }
 
