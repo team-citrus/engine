@@ -14,8 +14,8 @@
 #ifdef CITRUS_ENGINE_WINDOWS
 
 #include <Windows.h>
-uint8_t engine::internals::currentInput[256];
-uint8_t engine::internals::prevInput[256]; // Used for getKeyDown and getMouseButtonDown
+ALIGN(64) uint8_t engine::internals::currentInput[256];
+ALIGN(64) uint8_t engine::internals::prevInput[256]; // Used for getKeyDown and getMouseButtonDown
 
 // Returns true while a key is down
 bool engine::getKey(char key)

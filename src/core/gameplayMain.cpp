@@ -50,14 +50,14 @@ namespace engine
 			#ifdef CITRUS_ENGINE_WINDOWS
 
 			// Input system stuff
-			memcpy(prevInput, currentInput, 256);
+			zmm_memcpy(prevInput, currentInput, 4);
 			GetKeyboardState(currentInput);
 
 			#else
 
 			// TODO: Get the start of the current frame
 			// TODO: Handle possibility of overflow
-			memcpy(prevInput, currentInput, 32);
+			ymm_memcpy(prevInput, currentInput, 1);
 			XQueryKeymap(engine::internals::display, currentInput);
 
 			#endif

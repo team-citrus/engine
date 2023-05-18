@@ -12,7 +12,7 @@
 
 #ifdef CITRUS_ENGINE_WINDOWS
 
-#include <Windows.h>
+#include <Bcrypt.h>
 
 #endif
 
@@ -207,11 +207,12 @@ void SHA256(uint8_t input[], size_t inlen, uint8_t hash[])
 
 		m256i_t ymm0;
 		m256i_t ymm1;
+		uint32_t array[] = {a, b, c, d, e, f, g, h};
 
-		ymm0 = uload_i256({a, b, c, d, e, f, g, h});
-		ymm1 = ((uintptr_t)digest % 32 == 0) ? load_i256(digest) : uload_i256(digest);
+		ymm0 = uload_i256(array);
+		ymm1 = ((uintptr_t)digest & 0x1F == 0) ? load_i256(digest) : uload_i256(digest);
 		ymm1 = add256_i32(ymm0, ymm1);
-		if((uintptr_t)digest % 32 == 0)
+		if((uintptr_t)digest & 0x1F == 0)
 			store_i256(digest, ymm1);
 		else
 			ustore_i256(digest, ymm1);
@@ -222,18 +223,16 @@ void SHA256(uint8_t input[], size_t inlen, uint8_t hash[])
 		m128i_t xmm1;
 		m128i_t xmm2;
 		m128i_t xmm3;
-		uint32_t arraya[] = {a, b, c, d};
-		uint32_t arrayb[] = {e, f, g, h};
 
-		xmm0 = _mm_setr_epi32(a, b, c, d);
-		xmm1 = ((uintptr_t)digest % 16 == 0) ? load_i128((m128i_t*)(void*)digest) : uload_i128((m128i_t*)(void*)digest);
-		xmm2 = _mm_setr_epi32(e, f, g, h);
-		xmm3 = ((uintptr_t)digest % 16 == 0) ? load_i128((m128i_t*)(void*)digest + 4) : uload_i128((m128i_t*)(void*)(digest + 4));
+		xmm0 = _mm_setr_epi32(d, c, b, a);
+		xmm1 = ((uintptr_t)digest & 0xF == 0) ? load_i128((m128i_t*)(void*)digest) : uload_i128((m128i_t*)(void*)digest);
+		xmm2 = _mm_setr_epi32(h, g, f, e);
+		xmm3 = ((uintptr_t)digest % 0xF == 0) ? load_i128((m128i_t*)(void*)digest + 4) : uload_i128((m128i_t*)(void*)(digest + 4));
 
 		xmm1 = add_i32(xmm0, xmm1);
 		xmm3 = add_i32(xmm2, xmm3);
 		
-		if((uintptr_t)digest % 16 == 0)
+		if((uintptr_t)digest & 0xF == 0)
 		{
 			store_i128((m128i_t*)(void*)digest, xmm1);
 			store_i128((m128i_t*)(void*)(digest + 4), xmm3);

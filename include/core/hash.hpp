@@ -21,6 +21,8 @@
 
 #define CALCULATE_POLYNOMIAL(h, tries, vec) = ((h + ((tries + (tries * tries))/2)) % vec.getCount())
 
+// TODO: Incredibly optimized hashmap
+
 namespace engine
 {
 	namespace internals { int siphash(const void *in, const size_t inlen, const void *k, uint8_t *out, const size_t outlen); }

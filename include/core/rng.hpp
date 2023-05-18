@@ -71,6 +71,7 @@ namespace engine
 			memcpy(omatrix, matrix, 64);
 			for(int i = 0; i < 10; i++)
 			{
+				// TODO: Assembly version with no load stores until the end
 				QR(0, 4, 8, 12);
 				QR(1, 5, 9, 13);
 				QR(2, 6, 10, 14);
@@ -78,7 +79,7 @@ namespace engine
 				QR(0, 5, 10, 15);
 				QR(1, 6, 11, 12);
 				QR(2, 7, 8, 13);
-				QR(3, 4, 9, 14);
+				QR(3, 4, 9, 14);	
 			}
 
 			// Use Neon on non-AMD64 systems
@@ -208,6 +209,7 @@ namespace engine
 		{
 			if(len > BYTES_MOD)
 			{
+				ctr = (ctr + (BYTES_MOD-1)) & ~(BYTES_MOD-1);
 				shuffle();
 				size_t i;
 				for(i = 0; i < len/BYTES_MOD; i++, shuffle())
@@ -215,45 +217,53 @@ namespace engine
 					memcpy(buffer + (i * BYTES_MOD), matrix, BYTES_MOD);
 					ctr += BYTES_MOD;
 				}
-				if(len % BYTES_MOD)
-					genBytes(buffer + (i * BYTES_MOD), len % BYTES_MOD);
+
+				if(len & BYTES_MOD)
+					genBytes(buffer + (i * BYTES_MOD), len & BYTES_MOD);
 			}
 			#ifndef __x86_64__
 			else if(len > 16)
 			{
 				size_t i;
-				for(i = 0; i < len/16; i++, ctr += 16)
+				ctr = ((ctr + (16-1)) & ~(16-1);
+				for(i = 0; i < len >> 4; i++, ctr += 16)
 				{
-					if(ctr % BYTES_MOD == 0)
+					if(ctr & (BYTES_MOD) == 0)
 						shuffle();
 
-					// TODO: Arm NEON optimization
+					vst1q_u64((buffer + (i << 4)), vld1q_u64(bytes + (ctr & BYTES_MOD)));
 				}
+
+				if(len & 0xF)
+					genBytes(buffer + (i << 4), len & 0xF);
 			}
 			#endif
+
 			else if(len > 8)
 			{
 				size_t i;
+				ctr = ((ctr + (8-1)) & ~(8-1));
 				for(i = 0; i < len/8; i++, ctr += 8)
 				{
-					if(ctr % BYTES_MOD == 0)
+					if(ctr & BYTES_MOD == 0)
 						shuffle();
 
-					((uint64_t*)buffer)[i] = *(uint64_t*)(matrix + (ctr % BYTES_MOD));
+					((uint64_t*)buffer)[i] = *(uint64_t*)(bytes + (ctr & BYTES_MOD));
 				}
-				genBytes(buffer + (i * 8), len % 8);
+				genBytes(buffer + (i << 3), len & 0x7);
 			}
 			else if(len > 4)
 			{
 				size_t i;
+				ctr = ((ctr + (4-1)) & ~(4-1)
 				for(i = 0; i < len/4; i++, ctr += 4)
 				{
-					if(ctr % BYTES_MOD == 0)
+					if(ctr & BYTES_MOD == 0)
 						shuffle();
 
-					((uint32_t*)buffer)[i] = *(uint32_t*)(matrix + (ctr % BYTES_MOD));
+					((uint32_t*)buffer)[i] = *(uint32_t*)(matrix + (ctr & BYTES_MOD));
 				}
-				genBytes(buffer + (i * 4), len % 4);
+				genBytes(buffer + (i << 2), len & 0x3);
 			}
 			else
 			{
@@ -269,7 +279,7 @@ namespace engine
 
 		friend void engine::internals::initMainRNG();
 		friend void engine::internals::getSeedBytes(uint32_t matrix[]);
-	} ALIGN(16);
+	} ALIGN(BYTES_MOD);
 
 	using RNG = RandomNumberGenerator;
 }
