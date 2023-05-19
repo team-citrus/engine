@@ -23,6 +23,9 @@ As well, by making the engine free software, we hope to set a precident in the g
 ### High priority - ASAP
 
 - [x] Integrate the Soloud sources into the engine
+- [ ] Document stuff
+  - [ ] Doxygen comments in the source code
+  - [ ] Documenetation of design choices and functionality.
 - [ ] Write the graphics API
   - [ ] Write the UI API
 - [ ] Write the phyics API
