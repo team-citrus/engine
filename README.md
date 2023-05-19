@@ -29,6 +29,8 @@ As well, by making the engine free software, we hope to set a precident in the g
 - [ ] Write the graphics API
   - [ ] Write the UI API
 - [ ] Write the phyics API
+  - [ ] Box2d
+  - [ ] Bullet3
 - [ ] Write the core API
   - [ ] Write the input system
   - [ ] Meshes, verts, etc
