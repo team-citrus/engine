@@ -23,9 +23,14 @@ As well, by making the engine free software, we hope to set a precident in the g
 ### High priority - ASAP
 
 - [x] Integrate the Soloud sources into the engine
+- [ ] Document stuff
+  - [ ] Doxygen comments in the source code
+  - [ ] Documenetation of design choices and functionality.
 - [ ] Write the graphics API
   - [ ] Write the UI API
 - [ ] Write the phyics API
+  - [ ] Box2d
+  - [ ] Bullet3
 - [ ] Write the core API
   - [ ] Write the input system
   - [ ] Meshes, verts, etc
@@ -44,6 +49,8 @@ As well, by making the engine free software, we hope to set a precident in the g
     - [ ] `std::map<Key, T>` compatibilty
   - [ ] `engine::HashMap<K, T>`
     - [ ] `std::unordered_map<Key, T>` compatibility
+    - [ ] Optimization
+      - [ ] Customization support
   - [ ] `engine::String`
     - [ ] `std::string` semi-compatibility
 - [ ] Create the rendering pipeline
@@ -68,6 +75,7 @@ As well, by making the engine free software, we hope to set a precident in the g
     - [ ] SVE
     - [ ] SVE2
     - [x] Neon
+    - [ ] C++ versions
   - [ ] AArch64 optimizations
   - [x] AMD64 optimizations
 - [ ] Mult-platoform support/Portability
@@ -86,6 +94,10 @@ As well, by making the engine free software, we hope to set a precident in the g
 - [ ] VR support
 - [ ] IR support
 - [ ] C# support
+
+### Should we somehow get the chance
+
+- [ ] Console support
 
 ## Disclaimers
 
