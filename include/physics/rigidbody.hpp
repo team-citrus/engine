@@ -15,6 +15,7 @@
 #include "../core/extensions.h"
 #include "../physics/vectors.hpp"
 #include "../physics/collider.hpp"
+#include "../physics/joints2D.hpp"
 
 #define RB_FORCEMODE_IMPULSE 0
 #define RB_FORCEMODE_FORCE 1
@@ -34,22 +35,33 @@ namespace engine
 	{
 		class Rigidbody2D : public Component
 		{
-			private:
-				// Box2d rigidbody representation
-				void *body2D;
 				friend class Collider2D;
-
-				// stuff
+				friend class Joint2D;
+				friend class DistanceJoint2D;
+				friend class FrictionJoint2D;
+				friend class GearJoint2D;
+				friend class MotorJoint2D;
+				friend class PrismaticJoint2D;
+				friend class PulleyJoint2D;
+				friend class WeldJoint2D;
+				friend class WheelJoint2D;
+			protected:
+				// Box2d rigidbody representation
+				void *body2D;				
 
 				int type;
 				Transform2D &trans; // rigidbodies take control of transform after being init'd
+
 				Vec2 velocity;
 				float angularVelocity;
+
 				float linearDamping;
 				float angularDamping;
+
 				bool fixedRotation;
 				bool bullet;
 				bool enabled;
+
 				float gravityScale;
 			public:
 				// Actually create the rigidbody

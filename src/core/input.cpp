@@ -98,7 +98,7 @@ bool engine::anyKey()
 			return true;
 
 		buffer = load_i128((const m128i_t*)(engine::internals::currentInput + 16  + (i * 32)));
-		if(_mm_movemask_epi8(_mm_cmpeq_epi8(buffer, broadcast_i8(0))) != 0)
+		if(extractbools_i8(equals_i8(buffer, broadcast_i8(0))) != 0)
 			return true;
 
 		#else
@@ -193,7 +193,7 @@ bool engine::anyKey()
 		return true;
 
 	buffer = load_i128((const m128i_t*)(engine::internals::currentInput + 16));
-	if(_mm_movemask_epi8(_mm_cmpeq_epi8(buffer, broadcast_i8(0))) != 0)
+	if(extractbools_i8(equals_i8(buffer, broadcast_i8(0))) != 0)
 		return true;
 
 	#else

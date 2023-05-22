@@ -19,7 +19,8 @@ namespace engine
 	{
 		enum JointType2D
 		{ 
-			DistanceJoint = 0,
+			UnknownJoint = 0,
+			DistanceJoint,
 			FrictionJoint,
 			GearJoint,
 			MotorJoint,
@@ -32,6 +33,7 @@ namespace engine
 
 		class Joint2D : public Component
 		{
+			protected:
 			internals::physics::Joint2DTuple tuple;
 			JointType2D type;
 			void *body2D;
@@ -43,7 +45,24 @@ namespace engine
 
 			Vec2 anchorA;
 			Vec2 anchorB;
+
+			friend class Rigidbody2D;
+			friend class DistanceJoint2D;
+			friend class PrismaticJoint2D;
+			friend class GearJoint2D;
+			friend class MotorJoint2D;
+			friend class PulleyJoint2D;
+			friend class WeldJoint2D;
+			friend class WheelJoint2D;
+			friend class RevoluteJoint2D;
+
 			public:
+			Joint2D()
+			{
+				type = UnknownJoint;
+				tuple.owner = &getObject();
+				tuple.Component = this;
+			}
 			virtual void init();
 
 			void setType();
@@ -76,11 +95,17 @@ namespace engine
 		{
 			Vec2 anchorA;
 			Vec2 anchorB;
+
 			float length;
+
 			float minLength;
 			float maxLength;
+
 			float stiffness;
+
 			float damping;
+
+			friend class Rigidbody2D;
 			public:
 			void init() override;
 
@@ -111,6 +136,9 @@ namespace engine
 
 			float maxFriction;
 			float maxTorque;
+			float maxForce;
+
+			friend class Rigidbody2D;
 			public:
 			void init() override;
 
@@ -132,8 +160,12 @@ namespace engine
 			Vec2 anchorB;
 
 			float ratio;
+
 			Joint2D *jointA;
 			Joint2D *jointB;
+			
+			friend class Rigidbody2D;
+			friend class Joint2D;
 			public:
 			void init() override;
 
@@ -147,6 +179,11 @@ namespace engine
 
 			void setRatio(float r);
 			float getRatio() const;
+
+			void setJointA(Joint2D *a);
+			void setJointB(Joint2D *b);
+			Joint2D *getJointA() const;
+			Joint2D *getJointB() const;
 		};
 
 		class MotorJoint2D : public Joint2D
@@ -156,9 +193,18 @@ namespace engine
 
 			float maxForce;
 			float maxTorque;
+
 			float correctionFactor;
+
 			float angularOffset;
 			Vec2 linearOffset;
+
+			Joint2D *jointA;
+			Joint2D *jointB;
+
+			float ratio;
+
+			friend class Rigidbody2D;
 			public:
 			void init() override;
 
@@ -184,6 +230,14 @@ namespace engine
 
 			void setCorrectionFactor(float f);
 			float getCorrectionFactor() const;
+
+			void setRatio(float r);
+			float getRatio() const;
+
+			void setJointA(Joint2D *a);
+			void setJointB(Joint2D *b);
+			Joint2D *getJointA() const;
+			Joint2D *getJointB() const;
 		};
 
 		class PrismaticJoint2D : public Joint2D
@@ -191,13 +245,22 @@ namespace engine
 			Vec2 anchorA;
 			Vec2 anchorB;
 
+			Vec2 axis;
+
 			float referenceAngle;
-			bool enableLimit;
+
+			bool limitEnabled;
+			bool motorEnabled;
+
 			float lowerTranslation;
 			float upperTranslation;
+
 			bool enableMotor;
 			float maxMotorForce;
 			float motorSpeed;
+
+			friend class Rigidbody2D;
+			friend class Joint2D;
 			public:
 			void init() override;
 
@@ -253,6 +316,8 @@ namespace engine
 			float lengthB;
 
 			float ratio;
+
+			friend class Rigidbody2D;
 			public:
 			void init() override;
 
@@ -266,7 +331,7 @@ namespace engine
 
 			Vec2 getGroundAnchorA() const;
 			Vec2 getGroundAnchorB() const;
-	f		void setGroundAnchorA(Vec2 a);
+			void setGroundAnchorA(Vec2 a);
 			void setGroundAnchorB(Vec2 b);
 
 			float getLengthA() const;
@@ -286,7 +351,11 @@ namespace engine
 			float referenceAngle;
 			float stiffness;
 			float damping;
+
+			friend class Rigidbody2D;
 			public:
+			void init() override;
+
 			void setAnchorA(Vec2 a) override;
 			void setAnchorB(Vec2 b) override;
 			Vec2 getAnchorA() const override;
@@ -321,7 +390,11 @@ namespace engine
 
 			float stiffness;
 			float damping;
+
+			friend class Rigidbody2D;
 			public:
+			void init() override;
+
 			Vec2 getAnchorA() const override;
 			Vec2 getAnchorB() const override;
 			void setAnchorA(Vec2 a) override;
@@ -382,7 +455,11 @@ namespace engine
 			bool enableMotor;
 			float motorSpeed;
 			float maxMotorTorque;
+
+			friend class Rigidbody2D;
 			public:
+			void init() override;
+
 			void setAnchorA(Vec2 a) override;
 			void setAnchorB(Vec2 a) override;
 			Vec2 getAnchorA() const override;
