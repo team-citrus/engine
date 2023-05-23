@@ -135,12 +135,12 @@ namespace engine
 
 			Vector(size_t c)
 			{
-				ptr = memalloc((capacity = (c % 8) ? c + c % 8 : c) * sizeof(T));
+				ptr = memalloc((capacity = (c & 7) ? c + (c & 7) : c) * sizeof(T));
 			}
 		
 			Vector(T arr[], size_t c)
 			{
-				ptr = memalloc((capacity = (c % 8) ? c + c % 8 : c) * sizeof(T));
+				ptr = memalloc((capacity = (c & 7) ? c + (c & 7) : c) * sizeof(T));
 				memcpy(ptr, arr, c * sizeof(T));
 			}
 		

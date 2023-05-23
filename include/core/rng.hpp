@@ -125,22 +125,22 @@ namespace engine
 		u64 genU64()
 		{
 			uint64_t ret = 0;
-			if(ctr % BYTES_MOD <= 8)
+			if(ctr & BYTES_MOD <= 8)
 			{
-				ret = *(uint64_t*)(bytes + (ctr % BYTES_MOD));
+				ret = *(uint64_t*)(bytes + (ctr & BYTES_MOD));
 				ctr += 8;
 			}
 			else
 			{
 				for(int i = 0; i < 8; i++)
 				{
-					if(ctr % BYTES_MOD == 0)
+					if(ctr & BYTES_MOD == 0)
 					{
 						shuffle();
 					}
 
 					ret <<= 8;
-					ret |= bytes[ctr % BYTES_MOD];
+					ret |= bytes[ctr & BYTES_MOD];
 					ctr++;
 				}
 			}
@@ -152,20 +152,20 @@ namespace engine
 			uint32_t ret = 0;
 			if(ctr % BYTES_MOD <= 4)
 			{
-				ret = *(uint64_t*)(bytes + (ctr % BYTES_MOD));
+				ret = *(uint64_t*)(bytes + (ctr & BYTES_MOD));
 				ctr += 4;
 			}
 			else
 			{
 				for(int i = 0; i < 4; i++)
 				{
-					if(ctr % BYTES_MOD == 0)
+					if(ctr & BYTES_MOD == 0)
 					{
 						shuffle();
 					}
 
 					ret <<= 4;
-					ret |= bytes[ctr % BYTES_MOD];
+					ret |= bytes[ctr & BYTES_MOD];
 					ctr++;
 				}
 			}
@@ -173,10 +173,10 @@ namespace engine
 		}
 		u16 genU16()
 		{
-			uint64_t ret = 0;
+			uint16_t ret = 0;
 			if(ctr % BYTES_MOD <= 2)
 			{
-				ret = *(uint64_t*)(bytes + (ctr % BYTES_MOD));
+				ret = *(uint16_t*)(bytes + (ctr & BYTES_MOD));
 				ctr += 2;
 			}
 			else
@@ -255,7 +255,7 @@ namespace engine
 			else if(len > 4)
 			{
 				size_t i;
-				ctr = ((ctr + (4-1)) & ~(4-1)
+				ctr = ((ctr + (4-1)) & ~(4-1));
 				for(i = 0; i < len/4; i++, ctr += 4)
 				{
 					if(ctr & BYTES_MOD == 0)
@@ -279,7 +279,7 @@ namespace engine
 
 		friend void engine::internals::initMainRNG();
 		friend void engine::internals::getSeedBytes(uint32_t matrix[]);
-	} ALIGN(BYTES_MOD);
+	} ALIGN(16);
 
 	using RNG = RandomNumberGenerator;
 }

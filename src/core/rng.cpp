@@ -49,7 +49,7 @@ ALWAYS_INLINE void roundKey(uint8_t key[], uint8_t rkey[], int round)
 	else
 	{
 		// That's how it works right? We'll have to check later
-		ustore_i128((m128i_t*)(void*)W, _mm_aeskeygenassist_si128(uload_i128(K + ((round & 1) * 4)), rcon(round)));
+		ustore_i128((m128i_t*)W, _mm_aeskeygenassist_si128(uload_i128((const m128i_t*)(K + ((round & 1) * 4))), rcon(round)));
 	}
 }
 
@@ -121,9 +121,9 @@ void engine::internals::AES(uint8_t key[], uint64_t unique[], uint8_t output[])
 		roundKey(key, keybuff, i);
 		
 		if(i == 13)
-			ustore_i128(rOutput, _mm_aesenclast_si128(uload_i128(rOutput), uload_i128(keybuff))); // TODO: alignment checks
+			ustore_i128((m128i_t*)rOutput, _mm_aesenclast_si128(uload_i128((const m128i_t*)rOutput), uload_i128((const m128i_t*)keybuff))); // TODO: alignment checks
 		else
-			ustore_i128(rOutput, _mm_aesenc_si128(uload_i128(rOutput), uload_i128(keybuff))); // TODO: alignment checks
+			ustore_i128((m128i_t*)rOutput, _mm_aesenc_si128(uload_i128((const m128i_t*)rOutput), uload_i128((const m128i_t*)keybuff))); // TODO: alignment checks
 	}
 }
 

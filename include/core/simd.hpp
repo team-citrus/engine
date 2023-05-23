@@ -415,12 +415,95 @@ class f64x2
 
 using xmm_f64 = f64x2;
 
+class i32x4
+{
+	public:
+	m128i_t packed;
+	i32x4(int a, int b, int c, int d)
+	{
+		packed = _mm_setr_epi32(d, b, c, a);
+	}
+
+	i32x4(int a)
+	{
+		packed = broadcast_i32(a);
+	}
+
+	i32x4(m128i_t a)
+	{
+		packed = a;
+	}
+
+	i32x4()
+	{
+		packed = xor_i128(packed, packed);
+	}
+
+	i32x4 operator+(uint32_t a)
+	{
+		return i32x4(add_i32(packed, _mm_set1_epi32(a)));
+	}
+
+	i32x4 operator+(m128i_t a)
+	{
+		return i32x4(add_i32(packed, a));
+	}
+
+	i32x4 operator+(i32x4 &a)
+	{
+		return i32x4(add_i32(packed, a.packed));
+	}
+
+	i32x4 operator-(uint32_t a)
+	{
+		return i32x4(sub_i32(packed, _mm_set1_epi32(a)));
+	}
+
+	i32x4 operator-(m128i_t a)
+	{
+		return i32x4(sub_i32(packed, a));
+	}
+
+	i32x4 operator-(i32x4 &a)
+	{
+		return i32x4(sub_i32(packed, a.packed));
+	}
+
+	i32x4 operator*(uint32_t a)
+	{
+		return i32x4(mul_i32(packed, _mm_set1_epi32(a)));
+	}
+
+	i32x4 operator*(m128i_t a)
+	{
+		return i32x4(mul_i32(packed, a));
+	}
+
+	i32x4 operator*(i32x4 &a)
+	{
+		return i32x4(mul_i32(packed, a.packed));
+	}
+
+	i32x4 operator&(uint32_t a)
+	{
+		return i32x4(and_i128(packed, _mm_set1_epi32(a)));
+	}
+
+	i32x4 operator&(m128i_t a)
+	{
+		return i32x4(and_i128(packed, a));
+	}
+
+	i32x4 operator&(i32x4 &a)
+	{
+		return i32x4(and_i128(packed, a.packed));
+	}
+};
+
 // TODO: Integer SIMD stuff
 // TODO: ymm stuff
 
 #elif defined(__aarch64__)
-
-#include <arm_neon.h>
 
 // TODO: Arm Neon code.
 

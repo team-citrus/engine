@@ -330,10 +330,10 @@ int engine::__memalloc_posix_memalign(void **memptr, size_t alignment, size_t si
 	// Unfortunately, we need to iterate through a bunch of different buffers, wasting a ton of memory.
 	while(
 		(uintptr_t)(ptrs[ptr - 1] = engine::memalloc(size)) % alignment
-		&& engine::errorcode != ENGINE_NO_MEM
+		&& engine::errorcode() != ENGINE_NO_MEM
 	) ptrs = engine::memrealloc(ptrs, ++ptr);
 
-	if(engine::errorcode != ENGINE_NO_MEM)
+	if(engine::errorcode() != ENGINE_NO_MEM)
 	{
 		for(size_t i = 0; i < ptr; i++)
 			engine::memfree(ptrs[i]);
