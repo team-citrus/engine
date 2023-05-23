@@ -29,8 +29,9 @@ As well, by making the engine free software, we hope to set a precident in the g
 - [ ] Write the graphics API
   - [ ] Write the UI API
 - [ ] Write the phyics API
-  - [ ] Box2d
+  - [x] Box2d
   - [ ] Bullet3
+  - [ ] Generalization of the physics API
 - [ ] Write the core API
   - [ ] Write the input system
   - [ ] Meshes, verts, etc
@@ -56,8 +57,8 @@ As well, by making the engine free software, we hope to set a precident in the g
 - [ ] Create the rendering pipeline
 - [ ] Create the main loop
   - [x] `main()`
-  - [ ] `gameplayMain()`
-  - [ ] `physmain()`
+  - [x] `gameplayMain()`
+  - [x] `physmain()`
   - [ ] `draw()`/`Vulkan::vkDraw()`
   - [ ] `mix()`
 

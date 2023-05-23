@@ -29,6 +29,8 @@
 #define RB_AWAKE true
 #define RB_ASLEEP false
 
+// TODO: Generalize physics
+
 namespace engine
 {
 	namespace physics
@@ -124,6 +126,11 @@ namespace engine
 			private:
 				// Bullet rigidbody representation
 				void *body3D;
+
+				float linearDamping;
+				float angularDamping;
+				
+				// TODO: rest
 			public:
 		};
 	}
