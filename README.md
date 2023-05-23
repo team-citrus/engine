@@ -33,7 +33,7 @@ As well, by making the engine free software, we hope to set a precident in the g
   - [ ] Bullet3
   - [ ] Generalization of the physics API
 - [ ] Write the core API
-  - [ ] Write the input system
+  - [x] Write the input system
   - [ ] Meshes, verts, etc
     - [ ] Write or otherwise adopt a FBX loader
     - [ ] Write or otherwise adopt a binary format glTF loader
@@ -41,6 +41,7 @@ As well, by making the engine free software, we hope to set a precident in the g
       - [ ] Vertex groups
       - [ ] Bones
     - [ ] `engine::MeshRenderer`
+      - [ ] Possibly `engine::SkinedMeshRenderer`
 - [x] Write replacement functions and classes for some standard library functions and classes
   - [x] `engine::Vector<T>`
     - [ ] `std::vector<T>` compatibility
@@ -66,7 +67,7 @@ As well, by making the engine free software, we hope to set a precident in the g
 
 - [ ] Write a proper readme
 - [ ] Multi-arch support/Portability (Should be considered between medium and high priority)
-  - [ ] Generic implementations of CPU specific code
+  - [ ] Generic implementations of CPU specific code (except AES)
   - [ ] More detailed build options for different platforms
   - [ ] Optimization headers/APIs for different platforms and extensions
     - [x] SSE4.2
@@ -76,6 +77,7 @@ As well, by making the engine free software, we hope to set a precident in the g
     - [ ] SVE
     - [ ] SVE2
     - [x] Neon
+      - [ ] SSE compatibility layer
     - [ ] C++ versions
   - [ ] AArch64 optimizations
   - [x] AMD64 optimizations
