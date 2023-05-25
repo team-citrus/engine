@@ -9,6 +9,8 @@
 #ifndef CITRUS_ENGINE_SINGLE_INSRUCTION_MULTIPLE_DATA_H__
 #define CITRUS_ENGINE_SINGLE_INSRUCTION_MULTIPLE_DATA_H_
 
+#define nop asm("nop")
+
 #ifdef __x86_64__
 #include <x86intrin.h>
 
