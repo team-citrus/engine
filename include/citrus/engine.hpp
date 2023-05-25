@@ -26,6 +26,7 @@
 #include "../core/time.hpp"
 #include "../core/hash.hpp"
 #include "../core/stack.hpp"
+#include "../core/math.hpp"
 #include "../physics/vectors.hpp"
 
 #ifndef CITRUS_ENGINE_FINE_TUNE

@@ -1,5 +1,5 @@
 /*
-*   name: include/core/stack.h
+*   name: include/core/stack.hpp
 *   origin: Citrus Engine
 *   purpose: Provide a stack data structure
 *   author: https://github.com/ComradeYellowCitrusFruit
