@@ -50,6 +50,11 @@ class StaticSizedStack
 	{
 		return arr;
 	}
+	
+	OPERATOR size_t height()
+	{
+		return offset;
+	}
 };
 
 #endif
