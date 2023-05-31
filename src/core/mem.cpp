@@ -354,6 +354,38 @@ int engine::__memalloc_posix_memalign(void **memptr, size_t alignment, size_t si
 	}
 }
 
+size_t engine::allocated()
+{
+	size_t ret;
+	engine::internals::poolBlock *ptr = pool.start;
+
+	while(ptr != POOL_END)
+	{
+		if(ptr->amagic == POOL_ALLOC_BLOCK_MAGIC)
+			ret += ptr->asize;
+
+		ptr = ptr->next;
+	}
+
+	return ret << 5;
+}
+
+size_t engine::freed()
+{
+	size_t ret;
+	engine::internals::poolBlock *ptr = pool.start;
+
+	while(ptr != POOL_END)
+	{
+		if(ptr->amagic == POOL_FREE_BLOCK_MAGIC)
+			ret += ptr->asize;
+			
+		ptr = ptr->next;
+	}
+
+	return ret << 5;
+}
+
 // b2Alloc_Default and b2Free_Default overrides
 B2_API void* b2Alloc_Default(int32_t size)
 {

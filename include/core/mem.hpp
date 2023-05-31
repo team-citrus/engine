@@ -18,6 +18,12 @@
 
 namespace engine
 {
+	/// Counts the memory currently allocated.
+	size_t allocated();
+
+	/// Counts the current free memory.
+	size_t freed();
+	
 	/**	Allocate memory using our custom block allocator
 	*	@param size Size in bytes
 	*	@param flags Flags
