@@ -59,7 +59,7 @@ static ALWAYS_INLINE void waste100CPUCycles()
 		// 100 cycles wasted
 		"mov %r8, %r9;"
 		"mov %r10, %r11;"
-	)
+	);
 }
 
 NEVER_INLINE

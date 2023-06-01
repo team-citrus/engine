@@ -1,6 +1,6 @@
 # The Ecosystem Citrus Engine
 
-The Ecosystem Varient of the Citrus Engine, created for the Citrus Engine.
+The Ecosystem Variant of the Citrus Engine, created for the Citrus Engine.
 This will be used in the Citrus Game itself, and is highly optimized for it.
 As a bonus, it also demonstrates how the Citrus Engine can be adapted for your needs.
 

@@ -48,7 +48,7 @@ static ALWAYS_INLINE void waste50CPUCycles()
 		"mov %rax, %rcx;"
 		// 50 cycles wasted
 		"mov %r8, %rdx;"
-	)
+	);
 }
 
 namespace engine
