@@ -27,39 +27,67 @@ void waitms(size_t mils)
 	#endif
 }
 
-static ALWAYS_INLINE void waste100CPUCycles()
-{
-	asm volatile(
-		// Wastes 15 cycles a piece, ideally
-
-		// 15 cycles wasted
-		"mov %r8, %r9;"
-		"mov %r10, %r11;"
-		"mov %rax, %rcx;"
-		// 30 cycles wasted
-		"mov %r8, %r9;"
-		"mov %r10, %r11;"
-		"mov %rax, %rcx;"
-		// 45 cycles wasted
-		"mov %r8, %r9;"
-		"mov %r10, %r11;"
-		"mov %rax, %rcx;"
+#define WASTE_60_CPU_CYCLES asm volatile( \
+		// Wasted 3 + 1 = 4 cycles
+		"xor %r8, %r8;" \
+		// Wastes 2(3 + 1) = 8 cycles a piece
+		// 12 cycles wasted.
+		"shl $1, %r8;" \
+		"shr $1, %r8;" \
+		// 20 cycles wasted.
+		"shl $1, %r8;" \
+		"shr $1, %r8;" \
+		// 28 cycles wasted
+		"shl $1, %r8;" \
+		"shr $1, %r8;" \
+		// 36 cycles wasted
+		"shl $1, %r8;" \
+		"shr $1, %r8;" \
+		// 44 cycles wasted
+		"shl $1, %r8;" \
+		"shr $1, %r8;" \
+		// 52 cycles wasted
+		"shl $1, %r8;" \
+		"shr $1, %r8;" \
 		// 60 cycles wasted
-		"mov %r8, %r9;"
-		"mov %r10, %r11;"
-		"mov %rax, %rcx;"
-		// 75 cycles wasted
-		"mov %r8, %r9;"
-		"mov %r10, %r11;"
-		"mov %rax, %rcx;"
-		// 90 cycles wasted
-		"mov %r8, %r9;"
-		"mov %r10, %r11;"
-		"mov %rax, %rcx;"
-		// 100 cycles wasted
-		"mov %r8, %r9;"
-		"mov %r10, %r11;"
-	);
+		"shl $1, %r8;" \
+		"shr $1, %r8;" \
+	)
+
+static ALWAYS_INLINE void waste1920CPUCycles()
+{
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
+	WASTE_60_CPU_CYCLES;
 }
 
 NEVER_INLINE
@@ -92,6 +120,6 @@ int engine::internals::Vulkan::vkDraw()
 		// TODO: Frame buffer stuff
 
 		isRenderExecuting.store(false);
-		waste100CPUCycles();
+		waste2000CPUCycles();
 	}
 }

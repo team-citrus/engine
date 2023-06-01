@@ -29,25 +29,33 @@
 #include "core/simd.h"
 #include "core/XLibglobals.hpp"
 
-static ALWAYS_INLINE void waste50CPUCycles()
+static ALWAYS_INLINE void waste60CPUCycles()
 {
 	asm volatile(
-		// Wastes 15 cycles a piece, ideally
-
-		// 15 cycles wasted
-		"mov %r8, %r9;"
-		"mov %r10, %r11;"
-		"mov %rax, %rcx;"
-		// 30 cycles wasted
-		"mov %r8, %r9;"
-		"mov %r10, %r11;"
-		"mov %rax, %rcx;"
-		// 45 cycles wasted
-		"mov %r8, %r9;"
-		"mov %r10, %r11;"
-		"mov %rax, %rcx;"
-		// 50 cycles wasted
-		"mov %r8, %rdx;"
+		// Wasted 3 + 1 = 4 cycles
+		"xor %r8, %r8;"
+		// Wastes 2(3 + 1) = 8 cycles a piece
+		// 12 cycles wasted.
+		"shl $1, %r8;"
+		"shr $1, %r8;"
+		// 20 cycles wasted.
+		"shl $1, %r8;"
+		"shr $1, %r8;"
+		// 28 cycles wasted
+		"shl $1, %r8;"
+		"shr $1, %r8;"
+		// 36 cycles wasted
+		"shl $1, %r8;"
+		"shr $1, %r8;"
+		// 44 cycles wasted
+		"shl $1, %r8;"
+		"shr $1, %r8;"
+		// 52 cycles wasted
+		"shl $1, %r8;"
+		"shr $1, %r8;"
+		// 60 cycles wasted
+		"shl $1, %r8;"
+		"shr $1, %r8;"
 	);
 }
 
@@ -113,7 +121,7 @@ namespace engine
 				}
 
 				isGameplayExecuting.store(false);
-				waste50CPUCycles();
+				waste60CPUCycles();
 			}
 		}
 	};
