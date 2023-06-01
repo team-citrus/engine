@@ -56,6 +56,7 @@ void waitms(size_t mils)
 
 static ALWAYS_INLINE void waste1920CPUCycles()
 {
+	// TODO: More code efficient cpu cycle wastage
 	WASTE_60_CPU_CYCLES;
 	WASTE_60_CPU_CYCLES;
 	WASTE_60_CPU_CYCLES;
@@ -120,6 +121,6 @@ int engine::internals::Vulkan::vkDraw()
 		// TODO: Frame buffer stuff
 
 		isRenderExecuting.store(false);
-		waste2000CPUCycles();
+		waste1920CPUCycles();
 	}
 }
