@@ -29,6 +29,28 @@
 #include "core/simd.h"
 #include "core/XLibglobals.hpp"
 
+static ALWAYS_INLINE void waste50CPUCycles()
+{
+	asm volatile(
+		// Wastes 15 cycles a piece, ideally
+
+		// 15 cycles wasted
+		"mov %r8, %r9;"
+		"mov %r10, %r11;"
+		"mov %rax, %rcx;"
+		// 30 cycles wasted
+		"mov %r8, %r9;"
+		"mov %r10, %r11;"
+		"mov %rax, %rcx;"
+		// 45 cycles wasted
+		"mov %r8, %r9;"
+		"mov %r10, %r11;"
+		"mov %rax, %rcx;"
+		// 50 cycles wasted
+		"mov %r8, %rdx;"
+	)
+}
+
 namespace engine
 {
 	namespace internals
@@ -37,64 +59,61 @@ namespace engine
 		Scene *curScene;
 		Map<Scene, int> scenes;
 
+		MUTEX std::atomic_uint32_t objectCtr;
+		MUTEX std::atomic_uint32_t objectCnt;
+
 		// Run the gameplay code
 		NEVER_INLINE int gameplayMain()
 		{
-			// Physics and render lock gameplay
-			while(isGameplayBlocked.load()) spinlock_pause();
-			isRenderBlocked.store(true);
-			isPhysicsBlocked.store(true);
-			
-			engine::clearErrorcode();
-
-			#ifdef CITRUS_ENGINE_WINDOWS
-
-			// Input system stuff
-			zmm_memcpy(prevInput, currentInput, 4);
-			GetKeyboardState(currentInput);
-
-			#else
-
-			// TODO: Get the start of the current frame
-			// TODO: Handle possibility of overflow
-			ymm_memcpy(prevInput, currentInput, 1);
-			XQueryKeymap(engine::internals::display, currentInput);
-
-			#endif
-
-			// TODO: There is probably something we are missing here.
-
-			for(int i = 0; i < curScene->objects.getCount(); i++)
+			while(true)
 			{
-				if(curScene->objects[i].markedForDeath)
+				// TODO: Cordinate with render to yield to the OS temporarily.
+				while(isRenderExecuting.load())
+					spinlock_pause();
+				isGameplayExecuting.store(true);
+
+				engine::clearErrorcode();
+				objectCtr.store(0);
+
+				#ifdef CITRUS_ENGINE_WINDOWS
+
+				// Input system stuff
+				zmm_memcpy(prevInput, currentInput, 4);
+				GetKeyboardState(currentInput);
+
+				#else
+
+				// TODO: Get the start of the current frame
+				// TODO: Handle possibility of overflow
+				ymm_memcpy(prevInput, currentInput, 1);
+				XQueryKeymap(engine::internals::display, currentInput);
+
+				#endif
+
+				// We count the number of objects executed compared to the number of objects.
+				// Render can use that to determine when to yield to the OS and for how long.
+
+				objectCnt.store(objects.getCount());
+				for(int i = 0; i < curScene->objects.getCount(); i++)
 				{
-					curScene->objects[i].~Object();
-					curScene->objects.rm(i);
-					continue;
+					if(curScene->objects[i].markedForDeath)
+					{
+						curScene->objects[i].~Object();
+						curScene->objects.rm(i);
+						continue;
+					}
+
+					Vec<Component*> components = curScene->objects[i].getComponents();
+					for(int j = 0; j < components.getCount(); j++)
+					{
+						components[j]->update();
+						engine::clearErrorcode();
+					}
+					objectCtr++;
 				}
-				
-				Vec<Component*> components = curScene->objects[i].getComponents();
-				for(int j = 0; j < components.getCount(); j++)
-				{
-					components[j]->update();
-					engine::clearErrorcode();
-				}
-			}
-			
-			removeErrorcodeForThread();
-			
-			physicsJustExecuted.store(false);
-			renderJustExecuted.store(false);
-			gameplayJustExecuted.store(true);
-			isGameplayBlocked.store(true);
-			
-			if(renderJustExecuted.load())
-			{
-				isPhysicsBlocked.store(false);
-			}
-			else
-			{
-				isRenderBlocked.store(false);
+
+				isGameplayExecuting.store(false);
+				waste50CPUCycles();
 			}
 		}
 	};

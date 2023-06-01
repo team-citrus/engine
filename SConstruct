@@ -39,7 +39,6 @@ if BUILD_TYPE == "DEBUG" or BUILD_TYPE == "FINAL":
     print("Configuration: ", CONFIG)
 
 SConscript('src/core/SConscript')
-SConscript('src/physics/SConscript')
 SConscript('src/graphics/SConscript')
 SConscript('soloud/src/SConscript')
 

@@ -57,7 +57,7 @@ namespace engine
 		
 		if(internals::engineThreads >= 8)
 		{
-			internals::usrThreads += std::thread::hardware_concurrency() - (internals::engineThreads = (internals::engineThreads-2)/2);
+			internals::usrThreads += std::thread::hardware_concurrency() - (internals::engineThreads /= 2);
 		}
 
 		internals::maxThreads = internals::engineThreads + internals::usrThreads;

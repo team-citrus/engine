@@ -35,18 +35,12 @@ namespace engine
 		extern jmp_buf buf;
 
 		extern thrd_t render;
-		extern thrd_t phys;
 		extern thrd_t audio;
 		extern thrd_t gameplay;
-
-		// Making these functions weak aliases is INCREDIBLY useful for modding
 
 		// Render the scene, and draw the UI
 		NEVER_INLINE WEAK ALIAS(engine::internals::Vulkan::vkDraw)
 		int draw();
-		// Step the physics simulation, and call all physics triggered functions
-		NEVER_INLINE
-		int physmain();
 		// Perform audio operations
 		NEVER_INLINE
 		int mix();

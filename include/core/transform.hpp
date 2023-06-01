@@ -9,17 +9,17 @@
 #ifndef CITRUS_ENGINE_TRANSFORM_HPP__
 #define CITRUS_ENGINE_TRANSFORM_HPP__
 
+#include <glm/glm.hpp>
 #include "../core/extensions.h"
 #include "../core/component.hpp"
-#include "../physics/vectors.hpp"
 
 namespace engine
 {
-	using Float2 = physics::Vec2;
-	using Float3 = physics::Vec3;
-	using Float4 = physics::Vec4;
-	using Quaternion = physics::Quaternion;
-	using Quat = physics::Quat;
+	using Float2 = glm::vec2;
+	using Float3 = glm::vec3;
+	using Float4 = glm::vec4;
+	using Quaternion = glm::quat;
+	using Quat = Quaternion;
 
 	class Transform2D : public Component
 	{

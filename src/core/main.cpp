@@ -52,17 +52,7 @@
 using namespace engine;
 using namespace internals;
 
-int internals::frameRate;
-jmp_buf internals::buf;
-
-size_t internals::frameDelta;
-size_t internals::frameDur;
-
-size_t internals::physics::physicsDelta;
-size_t internals::physics::physicsDur;
-
 thrd_t internals::render;
-thrd_t internals::phys;
 thrd_t internals::mix;
 thrd_t internals::gameplay;
 
@@ -239,45 +229,13 @@ int MAIN
 
 	// TODO: Load main scene
 
-	while(true) // Outer loop is run each scene
-	{
-		// Physics runs on it's own internal timings, and executes some gameplay code
-		thrd_create(&internals::phys, (thrd_start_t)internals::physmain, NULL);
-
-		while(true) // Inner loop is run each frame
-		{
-			size_t frameStart = getTimeInMils();
-
-			// Internally, each thread will handle synchronization
-			// They should execute in the following order:
-			// Physics  ->        -> Physics
-			// Gameplay -> Render
-			//          -> Mix
-			// Physics locks Gameplay and render and mix
-			// Gameplay locks render and mix and physics
-			// If gameplay executes at the same time as render and mix bad things will happen
-
-			// TODO: Optimize this
-			// render will automatically create and join mix 
-
-			thrd_create(&internals::gameplay, (thrd_start_t)internals::gameplayMain, NULL);
-			thrd_create(&internals::render, (thrd_start_t)internals::draw, NULL);
-
-			thrd_join(internals::gameplay, NULL);
-			thrd_join(internals::render, NULL);
-
-			if(internals::loadNecesary) break; // If a new scene needs to load, stop handling frames.
-
-			// Handle the waits
-			internals::frameDur = getTimeInMils() - frameStart;
-			waitms(
-				// Approximate the time between frames and wait for that duration
-				(frameDelta = (1000 - (frameDur * internals::frameRate))/internals::frameRate)
-			);
-		}
-
-		thrd_join(internals::phys, NULL); // Physics will load the new scene and then terminate.
-	}
+	// We run multithreaded, gameplay and render both do their own thing.
+	// They internally handle scene loads. They internally handle timings. We aren't involved
+	// Once they branch, that's the end of our control.
+	// Main thread becomes gameplay. Render branches off.
+	internals::isRenderExecuting.store(false);
+	thrd_create(&render, draw, NULL);
+	gameplayMain();
 
 	return 0;
 }

@@ -16,13 +16,11 @@ namespace engine
 {
 	namespace internals
 	{
-		extern MUTEX std::atomic_bool isPhysicsBlocked;
-		extern MUTEX std::atomic_bool isRenderBlocked;
-		extern MUTEX std::atomic_bool isGameplayBlocked;
+		extern MUTEX std::atomic_bool isGameplayExecuting;
+		extern MUTEX std::atomic_bool isRenderExecuting;
 
-		extern MUTEX std::atomic_bool physicsJustExecuted;
-		extern MUTEX std::atomic_bool renderJustExecuted;
-		extern MUTEX std::atomic_bool gameplayJustExecuted;
+		extern MUTEX std::atomic_uint32_t objectCtr;
+		extern MUTEX std::atomic_uint32_t objectCnt;
 	}
 }
 
