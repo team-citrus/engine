@@ -14,7 +14,8 @@ As a bonus, it also demonstrates how the Citrus Engine can be adapted for your n
 - GLM
 - box2d
 - Bullet3
-- G++, or compatible C++ compiler (ie. clang, icc)
+- GNU Compiler Collection (+ mingw-w64 on windows)
+- Cargo
 
 ## TODOs
 
@@ -49,9 +50,7 @@ As a bonus, it also demonstrates how the Citrus Engine can be adapted for your n
 - [ ] Mult-platform support/Portability
   - [x] Linux support
   - [x] Windows support
-  - [ ] Generic BSD/*nix support
-  - [ ] MacOS Support (low prority, just here for organizational purposes)
-- [ ] Rust suport (Should be considered between medium and high priority)
+  - [ ] Generic BSD/\*nix suppor
 
 ### Should we somehow get the chance
 
