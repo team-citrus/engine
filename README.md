@@ -19,8 +19,6 @@ As a bonus, it also demonstrates how the Citrus Engine can be adapted for your n
 
 ## TODOs
 
-### High priority - ASAP
-
 - [ ] Document stuff
   - [ ] Doxygen comments in the source code
   - [ ] Documenetation of design choices and functionality.
@@ -43,11 +41,7 @@ As a bonus, it also demonstrates how the Citrus Engine can be adapted for your n
   - [x] `gameplayMain()`
   - [ ] `draw()`/`Vulkan::vkDraw()`
   - [ ] `mix()`
-
-### Medium priority - Before the next full release
-
-- [ ] Write a proper readme
-- [ ] Mult-platform support/Portability
+- [ ] Multi-platform support/Portability
   - [x] Linux support
   - [x] Windows support
   - [ ] Generic BSD/\*nix suppor
