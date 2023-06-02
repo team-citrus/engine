@@ -35,8 +35,7 @@ As a bonus, it also demonstrates how the Citrus Engine can be adapted for your n
       - [ ] Bones
     - [ ] `engine::MeshRenderer`
       - [ ] Possibly `engine::SkinedMeshRenderer`
-- [ ] Make a very tough decision in regards to languages.
-  - [ ] Possibly convert `engine::internals::gameplayMain()` and all components to Rust
+- [ ] Convert the project into Rust, with memory allocation and render code written in mixed C and C++.
 - [ ] Create the rendering pipeline
 - [ ] Create the main loop
   - [x] `main()`
