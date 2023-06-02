@@ -23,9 +23,6 @@
 #include <cstring>
 #include <cstdint>
 
-// We need to override b2Alloc_Default and b2Free_Default
-#include <box2d/b2_settings.h>
-
 #include "core/errno.hpp"
 #include "core/mem.hpp"
 #include "core/mem_int.hpp"
@@ -41,7 +38,7 @@ OPERATOR bool validatePointer(uintptr_t ptr)
 OPERATOR void mergeBlocks(engine::internals::poolBlock *nptr)
 {
 	engine::internals::poolBlock *tptr = nptr->next;
-	if((uintptr_t)nptr->next == POOL_END) return;
+	if(nptr->next == POOL_END) return;
 
 	while(true) // An infinite loop is fine, when the time is right it will return
 	{
@@ -65,17 +62,17 @@ OPERATOR void *alloc(int blocks)
 alloc_goto:
 	if(bptr->next == POOL_END)
 	{
-		if(bptr->fsize + blocks + 1 > engine::internals::pool.limit)
+		if((uintptr_t)(bptr + blocks + 1) > engine::internals::pool.limit)
 		{
-			if(_POOL_LIMIT_IS_HARD_ || limitExceeded)
+			if(_POOL_LIMIT_IS_HARD_ || pool.limitExceeded)
 			{
 				engine::errorcode() = ENGINE_NO_MEM;
-				return -1;
+				return (engine::internals::poolBlock*)-1;
 			}
 			else
 			{
 				engine::errorcode() = ENGINE_SOFT_MEM_LIMIT_REACHED;
-				limitExceeded = true;
+				pool.limitExceeded = true;
 
 				#ifdef CITRUS_ENGINE_UNIX
 
@@ -89,12 +86,13 @@ alloc_goto:
 					#else
 					(21 << MAP_HUGE_SHIFT)
 					#endif,
-					
+					#endif
+
 					0, 0);
 
 				#else
 
-				void *ptr = VirtualAlloc((void*)((uintptr_t)engine::internals::pool.start + _POOL_SIZE_)
+				void *ptr = VirtualAlloc((LPVOID)((uintptr_t)pool.start + _POOL_EXPANSION_SIZE_),
 					_POOL_EXPANSION_SIZE_, MEM_COMMIT, PAGE_READWRITE);
 				#endif
 
@@ -108,12 +106,14 @@ alloc_goto:
 					VirtualFree(ptr, _POOL_EXPANSION_SIZE_, 0);
 					#endif
 
-					return -1;
+					return (void*)-1;
 				}
 
 				engine::internals::pool.size += _POOL_EXPANSION_SIZE_/32;
 			}
 		}
+
+		engine::internals::poolBlock *nptr = bptr + blocks + 1;
 
 		nptr->next = POOL_END;
 		nptr->last = bptr;
@@ -162,14 +162,14 @@ alloc_goto:
 
 		return (void*)(bptr+1);
 	}
-	else if(bptr->fsize + bptr->next->fsize + 1 => blocks && bptr->next->fmagic == POOL_FREE_BLOCK_MAGIC)
+	else if(bptr->fsize + bptr->next->fsize + 1 >= blocks && bptr->next->fmagic == POOL_FREE_BLOCK_MAGIC)
 	{
 		size_t size = bptr->fsize + bptr->next->fsize + 1;
 
 		bptr->next = bptr->next->next;
 		bptr->next->last = bptr;
 		bptr->asize = size;
-		bptr->amagic POOL_ALLOC_BLOCK_MAGIC;
+		bptr->amagic = POOL_ALLOC_BLOCK_MAGIC;
 		
 		return (void*)(bptr+1);
 	}
@@ -217,7 +217,7 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 
 	lock();
 
-	if(bptr->asize == blocks || (bptr->asize <= blocks + 4 && bptr->asize > blocks) || (bptr->asize => blocks - 4 && bptr->asize < blocks))
+	if(bptr->asize == blocks || (bptr->asize <= blocks + 4 && bptr->asize > blocks) || (bptr->asize >= blocks - 4 && bptr->asize < blocks))
 	{
 		unlock();
 		return ptr;
@@ -237,12 +237,12 @@ void *engine::internals::Pool::reallocate(void *ptr, int blocks)
 	}
 	else
 	{
-		engine::internals::poolBlock *rptr = alloc(blocks);
+		engine::internals::poolBlock *rptr = (engine::internals::poolBlock*)alloc(blocks);
 		bptr->fsize = bptr->asize;
 		bptr->fmagic = POOL_FREE_BLOCK_MAGIC;
 
 		// No need for preprocessor nonsense, ymm_memcpy converts to xmm_memcpy if AVX is disabled
-		ymm_memcpy(rptr, bptr + i, bptr->fsize);
+		ymm_memcpy(rptr, bptr + 1, bptr->fsize);
 
 		unlock();
 		return rptr;
@@ -313,12 +313,12 @@ void *engine::zmalloc(size_t items, size_t size)
 
 size_t engine::memlen(void *ptr)
 {
-	return (((engine::internals::poolBlock*)ptr) - 1)->fmagic == POOL_FREE_BLOCK_MAGIC ? (((engine::internals::poolBlock*)ptr) - 1)->asize << 5 : (engine::errorcode = ENGINE_MEMFREE_INVALID_PTR);
+	return (((engine::internals::poolBlock*)ptr) - 1)->fmagic == POOL_FREE_BLOCK_MAGIC ? (((engine::internals::poolBlock*)ptr) - 1)->asize << 5 : (engine::errorcode() = ENGINE_MEMFREE_INVALID_PTR);
 }
 
 int engine::__memalloc_posix_memalign(void **memptr, size_t alignment, size_t size)
 {
-	void **ptrs = engine::memalloc(8);
+	void **ptrs = (void**)engine::memalloc(8);
 	size_t ptr = 0;
 
 	if(alignment % sizeof(void*))
@@ -331,7 +331,7 @@ int engine::__memalloc_posix_memalign(void **memptr, size_t alignment, size_t si
 	while(
 		(uintptr_t)(ptrs[ptr - 1] = engine::memalloc(size)) % alignment
 		&& engine::errorcode() != ENGINE_NO_MEM
-	) ptrs = engine::memrealloc(ptrs, ++ptr);
+	) ptrs = (void**)engine::memrealloc(ptrs, ++ptr);
 
 	if(engine::errorcode() != ENGINE_NO_MEM)
 	{
@@ -384,15 +384,4 @@ size_t engine::freed()
 	}
 
 	return ret << 5;
-}
-
-// b2Alloc_Default and b2Free_Default overrides
-B2_API void* b2Alloc_Default(int32_t size)
-{
-	return engine::memalloc(size);
-}
-
-B2_API void b2Free_Default(void *mem)
-{
-	engine::memfree(mem);
 }

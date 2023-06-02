@@ -23,7 +23,7 @@
 
 #define POOL_FREE_BLOCK_MAGIC 0x465245454E554D00ull
 #define POOL_ALLOC_BLOCK_MAGIC 0x414C4C4F43454400ull
-#define POOL_END -1ull
+#define POOL_END ((engine::internals::poolBlock*)-1ull)
 
 #ifndef _POOL_SIZE_
 #define _POOL_SIZE_ (1024ull * 1024ull * 1024ull * 2ull)
