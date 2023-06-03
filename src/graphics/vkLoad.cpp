@@ -1,7 +1,7 @@
 /*
 *   name: src/graphics/vkLoad.cpp
 *   origin: Citrus Engine
-*   purpose: Provide the code for engine::internals::Vulkan::vkLoad()
+*   purpose: Provide the code for engine::internals::vkLoad()
 *   author: https://github.com/ComradeYellowCitrusFruit
 *   license: LGPL-3.0-only
 */
@@ -19,6 +19,7 @@
 
 #endif
 
+#define VK_NO_PROTOTYPES
 #include <stdlib.h>
 #include <vulkan.h>
 #include "core/errno.hpp"
@@ -27,29 +28,32 @@
 #include "core/mem.hpp"
 #include "core/extensions.h"
 #include "core/vector.hpp"
-#include "graphics/vkGlobals.hpp"
-#include "graphics/vkInit.hpp"
+#include "graphics/vkGlobals.h"
+#include "graphics/vkInit.h"
+#include "graphics/vkCall.h"
 
 using namespace engine;
 using namespace internals;
 
-dllptr_t Vulkan::libvulkan;
+dllptr_t libvulkan;
 
-Vulkan::vkGIPA_t Vulkan::vkGetInstanceProcAddr;
-Vulkan::vkGDPA_t Vulkan::vkGetDeviceProcAddr;
+vkGIPA_t vkGetInstanceProcAddrPtr;
+vkGDPA_t vkGetDeviceProcAddrPtr;
 
-VkInstance Vulkan::instance;
-VkDevice Vulkan::device;
+VkInstance instance;
+VkDevice device;
 
-VkPhysicalDevice Vulkan::physicalDevice;
-VkPhysicalDeviceProperties Vulkan::physicalDeviceProperties;
-VkPhysicalDeviceMemoryProperties Vulkan::physicalDeviceMemoryProperties;
-size_t Vulkan::physicalDeviceVRAM;
+VkPhysicalDevice physicalDevice;
+VkPhysicalDeviceProperties physicalDeviceProperties;
+VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
+size_t physicalDeviceVRAM;
+
+// TODO: Convert to pure C.
 
 static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperties *devP, Vector<VkQueueFamilyProperties> &queueP, VkPhysicalDeviceMemoryProperties &deviceMemoryProperties, size_t &vram)
 {
 	// Get the device properties
-	Vulkan::vkNullCall(STRINGIFY(vkGetPhysicalDeviceProperties), dev, &devP);
+	vkNullCall(STRINGIFY(vkGetPhysicalDeviceProperties), dev, &devP);
 
 	// Don't use a CPU
 	if(devP->deviceType == VK_PHYSICAL_DEVICE_TYPE_CPU)
@@ -59,9 +63,9 @@ static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperti
 
 	int qCount;
 	VkQueueFamilyProperties *qProperties;
-	Vulkan::vkNullCall(STRINGIFY(vkGetPhysicalDeviceQueueFamilyProperties), dev, &qCount, NULL);
+	vkNullCall(STRINGIFY(vkGetPhysicalDeviceQueueFamilyProperties), dev, &qCount, NULL);
 	qProperties = (VkQueueFamilyProperties*)memalloc(sizeof(VkQueueFamilyProperties) * qCount);
-	Vulkan::vkNullCall(STRINGIFY(vkGetPhysicalDeviceQueueFamilyProperties), dev, &qCount, qProperties);
+	vkNullCall(STRINGIFY(vkGetPhysicalDeviceQueueFamilyProperties), dev, &qCount, qProperties);
 	for(int i = 0; i < qCount; i++)
 	{
 		queueP.push(qProperties[i]);
@@ -85,7 +89,7 @@ static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperti
 	// Perform memory filtering
 
 	vram = 0;
-	Vulkan::vkNullCall(STRINGIFY(vkGetPhysicalDeviceMemoryProperties), dev, &deviceMemoryProperties);
+	vkNullCall(STRINGIFY(vkGetPhysicalDeviceMemoryProperties), dev, &deviceMemoryProperties);
 	for(int i = 0; i < deviceMemoryProperties.memoryHeapCount; i++)
 		vram += deviceMemoryProperties.memoryHeaps[i].size;
 	
@@ -135,39 +139,39 @@ static inline void countInferiors(Vector<int> &inferiors, Vector<int> deviceScor
 	}
 }
 
-int Vulkan::vkLoad()
+int vkLoad()
 {
 	#ifdef CITRUS_ENGINE_UNIX
 
-	Vulkan::libvulkan = dlopen("libvulkan.so.1", RTLD_NOW | RTLD_GLOBAL);
-	if(Vulkan::libvulkan == NULL)
+	libvulkan = dlopen("libvulkan.so.1", RTLD_NOW | RTLD_GLOBAL);
+	if(libvulkan == NULL)
 	{
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "libvulkan.so.1 not found!");
+		log(STRINGIFY(engine::internals::vkLoad()), "libvulkan.so.1 not found!");
 		exit(VULKAN_NOT_FOUND);
 	}
 
 	// Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
-	Vulkan::vkGetInstanceProcAddr = (Vulkan::vkGIPA_t)dlsym(Vulkan::libvulkan, STRINGIFY(vkGetInstanceProcAddr));
-	Vulkan::vkGetDeviceProcAddr = (Vulkan::vkGIDA_t)dlsym(Vulkan::libvulkan, STRINGIFY(vkGetDeviceProcAddr));
+	vkGetInstanceProcAddrPtr = (vkGIPA_t)dlsym(libvulkan, STRINGIFY(vkGetInstanceProcAddr));
+	vkGetDeviceProcAddrPtr = (vkGIDA_t)dlsym(libvulkan, STRINGIFY(vkGetDeviceProcAddr));
 
 	#else
 
-	Vulkan::libvulkan = LoadLibraryA("Vulkan-1.dll");
-	if(Vulkan::libvulkan == NULL)
+	libvulkan = LoadLibraryA("Vulkan-1.dll");
+	if(libvulkan == NULL)
 	{
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "Vulkan-1.dll not found!");
+		log(STRINGIFY(engine::internals::vkLoad()), "Vulkan-1.dll not found!");
 		exit(VULKAN_NOT_FOUND);
 	}
 
 	// Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
-	Vulkan::vkGetInstanceProcAddr = (Vulkan::vkGIPA_t)GetProcAddress(Vulkan::libvulkan, STRINGIFY(vkGetInstanceProcAddr));
-	Vulkan::vkGetDeviceProcAddr = (Vulkan::vkGDPA_t)GetProcAddress(Vulkan::libvulkan, STRINGIFY(vkGetDeviceProcAddr));
+	vkGetInstanceProcAddrPtr = (vkGIPA_t)GetProcAddress(libvulkan, STRINGIFY(vkGetInstanceProcAddr));
+	vkGetDeviceProcAddrPtr = (vkGDPA_t)GetProcAddress(libvulkan, STRINGIFY(vkGetDeviceProcAddr));
 
 	#endif
 
-	if(vkGetInstanceProcAddr == NULL || vkGetDeviceProcAddr == NULL)
+	if(vkGetInstanceProcAddrPtr == NULL || vkGetDeviceProcAddrPtr == NULL)
 	{
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "Failure to load critical Vulkan functions!");
+		log(STRINGIFY(engine::internals::vkLoad()), "Failure to load critical Vulkan functions!");
 		exit(VK_LOAD_FAILURE);
 	}
 
@@ -177,13 +181,11 @@ int Vulkan::vkLoad()
 
 	VkApplicationInfo aInfo;
 	aInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-	// _APPLICATION_NAME_ defined during compilation
 	// TODO: info.pApplicationName = ;
 	// TODO: info.applicationVersion = ;
 	aInfo.pNext = NULL;
 	aInfo.pEngineName = "Citrus Engine Builtin Vulkan Render Engine";
-	// _CITRUS_ENGINE_VERSION_ defined during compilation
-	aInfo.engineVersion = _CITRUS_ENGINE_VERSION_;
+	aInfo.engineVersion = (0xec << 24) | (1 << 8); // This variant of the Citrus Engine always has a variant number of 0xec
 	aInfo.apiVersion = VK_VERSION_1_0;
 
 	// Vulkan instance creation info
@@ -196,9 +198,9 @@ int Vulkan::vkLoad()
 	iInfo.ppEnabledExtensionNames = NULL;
 
 	// Initalize the instance
-	if(Vulkan::vkNullCall(STRINGIFY(vkCreateInstance), 0, &iInfo, NULL, &Vulkan::instance) != VK_SUCCESS)
+	if(vkNullCall(STRINGIFY(vkCreateInstance), 0, &iInfo, NULL, &instance) != VK_SUCCESS)
 	{
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "Failure to create Vulkan instance!");
+		log(STRINGIFY(engine::internals::vkLoad()), "Failure to create Vulkan instance!");
 		exit(VK_LOAD_FAILURE);
 	}
 
@@ -209,17 +211,17 @@ int Vulkan::vkLoad()
 	// Get the count
 
 	int devCount = 0;
-	vkInstanceCall(STRINGIFY(vkEnumeratePhysicalDevices), Vulkan::instance, Vulkan::instance, &devCount, NULL);
+	vkInstanceCall(STRINGIFY(vkEnumeratePhysicalDevices), instance, instance, &devCount, NULL);
 	if(devCount == 0) 
 	{
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "No (Vulkan supporting) GPUs found!");
+		log(STRINGIFY(engine::internals::vkLoad()), "No (Vulkan supporting) GPUs found!");
 		exit(VK_COMPATIBLE_GPU_NOT_FOUND);
 	}
 
 	// Get the handles
 
 	VkPhysicalDevice *devices = (VkPhysicalDevice*)memalloc(sizeof(VkPhysicalDevice) * devCount);
-	vkInstanceCall(STRINGIFY(vkEnumeratePhysicalDevices), Vulkan::instance, Vulkan::instance, &devCount, devices);
+	vkInstanceCall(STRINGIFY(vkEnumeratePhysicalDevices), instance, instance, &devCount, devices);
 
 	// Filter out all of the eligible devices
 
@@ -249,7 +251,7 @@ int Vulkan::vkLoad()
 
 	if(!eligibleDevices.getCount())
 	{
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "No eligible GPUs found");
+		log(STRINGIFY(engine::internals::vkLoad()), "No eligible GPUs found");
 		exit(VK_COMPATIBLE_GPU_NOT_FOUND);
 	}
 
@@ -312,14 +314,14 @@ int Vulkan::vkLoad()
 
 	// Load the globals for the physical device
 
-	Vulkan::physicalDevice = eligibleDevices[0];
-	Vulkan::physicalDeviceProperties = deviceProperties[0];
-	Vulkan::physicalDeviceMemoryProperties = deviceMemoryProperties[0];
-	Vulkan::physicalDeviceVRAM = deviceVram[0];
+	physicalDevice = eligibleDevices[0];
+	physicalDeviceProperties = deviceProperties[0];
+	physicalDeviceMemoryProperties = deviceMemoryProperties[0];
+	physicalDeviceVRAM = deviceVram[0];
 
 	// Log the choice
 
-	log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "Selected GPU: %s", deviceProperties[0].deviceName);
+	log(STRINGIFY(engine::internals::vkLoad()), "Selected GPU: %s", deviceProperties[0].deviceName);
 
 	// TODO: Add code to update the version and select the Vulkan function
 
@@ -336,9 +338,9 @@ int Vulkan::vkLoad()
 	// TODO: handle extensions and layers
 	// TODO: select device features
 
-	if(Vulkan::vkNullCall(STRINGIFY(vkCreateDevice), Vulkan::physicalDevice, &devInfo, &device) != VK_SUCCESS)
+	if(vkNullCall(STRINGIFY(vkCreateDevice), physicalDevice, &devInfo, &device) != VK_SUCCESS)
 	{
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "Failure to create the logical device");
+		log(STRINGIFY(engine::internals::vkLoad()), "Failure to create the logical device");
 		exit(VK_LOAD_FAILURE);
 	}
 

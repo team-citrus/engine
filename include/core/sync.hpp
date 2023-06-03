@@ -12,16 +12,10 @@
 #include <atomic>
 #include "../core/extensions.h"
 
-namespace engine
-{
-	namespace internals
-	{
-		extern MUTEX std::atomic_bool isGameplayExecuting;
-		extern MUTEX std::atomic_bool isRenderExecuting;
+extern MUTEX std::atomic_bool isGameplayExecuting;
+extern MUTEX std::atomic_bool isRenderExecuting;
 
-		extern MUTEX std::atomic_uint32_t objectCtr;
-		extern MUTEX std::atomic_uint32_t objectCnt;
-	}
-}
+extern MUTEX std::atomic_uint32_t objectCtr;
+extern MUTEX std::atomic_uint32_t objectCnt;
 
 #endif

@@ -12,21 +12,10 @@
 #include <typeinfo>
 #include "../core/extensions.h"
 #include "../core/object.hpp"
-#include "../physics/collider.hpp"
 
 namespace engine // TODO: Internalize some of this stuff
 {
 	typedef void (*ComponentFuncPtr)(void*);
-		
-	// Exactly like it's Rust counterpart
-	struct RustComponentBase
-	{
-		ComponentFuncPtr awake;
-		ComponentFuncPtr start;
-		ComponentFuncPtr update;
-		ComponentFuncPtr fixedUpdate;
-		// TODO: Triggers
-	};
 	
 	// The base class for all components, similar to Unity components
 	class Component
@@ -58,22 +47,6 @@ namespace engine // TODO: Internalize some of this stuff
 			{
 				return;
 			}
-			// Functions similar to Unity's onTriggerEnter()
-			virtual void onTriggerEnter2D(physics::Collider2D *offender)
-			{
-				return;
-			}
-			// Functions similar to Unity's onTriggerStay()
-			virtual void onTriggerStay2D(physics::Collider2D *offender)
-			{
-				return;
-			}
-			// Functions similar to Unity's onTriggerExit()
-			virtual void onTriggerExit2D(physics::Collider2D *offender)
-			{
-				return;
-			}
-			// TODO: onColliderEnter, etc.
 			
 			// Exists for obvious reasons.
 			virtual ~Component()
@@ -97,16 +70,6 @@ namespace engine // TODO: Internalize some of this stuff
 			// Use this to validate component type
 			virtual std::type_info getComponentID();
 			friend class Object;
-	};
-
-	// Wrapper around Rust components, unfortunately C++ can't add or see into Rust components, not without copius amounts of Jerryrigging
-	class RustComponent : public Component
-	{
-		public:
-		// Pointer to the actual component. Please note that actual Rust components can only be added from Rust
-		RustComponentBase *base; // TODO: Fix that
-		
-		// TODO: stuff
 	};
 };
 
