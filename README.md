@@ -14,11 +14,10 @@ As a bonus, it also demonstrates how the Citrus Engine can be adapted for your n
 - GLM
 - box2d
 - Bullet3
-- G++, or compatible C++ compiler (ie. clang, icc)
+- GNU Compiler Collection (+ mingw-w64 on windows)
+- Cargo
 
 ## TODOs
-
-### High priority - ASAP
 
 - [ ] Document stuff
   - [ ] Doxygen comments in the source code
@@ -35,24 +34,17 @@ As a bonus, it also demonstrates how the Citrus Engine can be adapted for your n
       - [ ] Bones
     - [ ] `engine::MeshRenderer`
       - [ ] Possibly `engine::SkinedMeshRenderer`
-- [ ] Make a very tough decision in regards to languages.
-  - [ ] Possibly convert `engine::internals::gameplayMain()` and all components to Rust
+- [ ] Convert the project into Rust, with memory allocation and render code written in mixed C and C++.
 - [ ] Create the rendering pipeline
 - [ ] Create the main loop
   - [x] `main()`
   - [x] `gameplayMain()`
   - [ ] `draw()`/`Vulkan::vkDraw()`
   - [ ] `mix()`
-
-### Medium priority - Before the next full release
-
-- [ ] Write a proper readme
-- [ ] Mult-platform support/Portability
+- [ ] Multi-platform support/Portability
   - [x] Linux support
   - [x] Windows support
-  - [ ] Generic BSD/*nix support
-  - [ ] MacOS Support (low prority, just here for organizational purposes)
-- [ ] Rust suport (Should be considered between medium and high priority)
+  - [ ] Generic BSD/\*nix suppor
 
 ### Should we somehow get the chance
 
