@@ -6,8 +6,8 @@
 *   license: LGPL-3.0-only
 */
 
-#ifndef CITRUS_ENGINE_VULKAN_GLOBALS_HPP__
-#define CITRUS_ENGINE_VULKAN_GLOBALS_HPP__
+#ifndef CITRUS_ENGINE_VULKAN_GLOBALS_H__
+#define CITRUS_ENGINE_VULKAN_GLOBALS_H__
 
 #include <vulkan.h>
 #include "../core/os.h"
@@ -27,6 +27,13 @@ typedef void* dllptr_t;
 
 typedef PFN_vkVoidFunction (*vkGIPA_t)(VkInstance, const char*);
 typedef PFN_vkVoidFunction (*vkGDPA_t)(VkDevice, const char*);
+
+#ifdef __cplusplus
+
+NOMANGLE
+{
+
+#endif
 
 // The address of the Vulkan library
 extern dllptr_t libvulkan;
@@ -50,7 +57,12 @@ extern VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
 extern size_t physicalDeviceVRAM;
 		
 // TODO: Add different Vulkan render functions based on different Vulkan versions and extensions
-// TODO: render::Camera &mainCamera;
 // TODO: Framebuffer
+
+#ifdef __cplusplus
+
+}
+
+#endif
 
 #endif

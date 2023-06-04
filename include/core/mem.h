@@ -6,8 +6,8 @@
 *   license: LGPL-3.0-only
 */
 
-#ifndef CITRUS_ENGINE_MEMORY_MANAGEMENT_HPP__
-#define CITRUS_ENGINE_MEMORY_MANAGEMENT_HPP__
+#ifndef CITRUS_ENGINE_MEMORY_MANAGEMENT_H__
+#define CITRUS_ENGINE_MEMORY_MANAGEMENT_H__
 
 #include <cerrno>
 #include <cstdint>

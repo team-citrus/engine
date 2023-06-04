@@ -25,7 +25,7 @@
 #include "core/errno.hpp"
 #include "core/crash.hpp"
 #include "core/log.hpp"
-#include "core/mem.hpp"
+#include "core/mem.h"
 #include "core/extensions.h"
 #include "core/vector.hpp"
 #include "graphics/vkGlobals.h"
@@ -139,7 +139,7 @@ static inline void countInferiors(Vector<int> &inferiors, Vector<int> deviceScor
 	}
 }
 
-int vkLoad()
+NOMANGLE int vkLoad()
 {
 	#ifdef CITRUS_ENGINE_UNIX
 

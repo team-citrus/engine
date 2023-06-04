@@ -6,8 +6,8 @@
 *   license: LGPL-3.0-only
 */
 
-#ifndef CITRUS_ENGINE_VULKAN_INITIALIZATION_HPP__
-#define CITRUS_ENGINE_VULKAN_INITIALIZATION_HPP__
+#ifndef CITRUS_ENGINE_VULKAN_INITIALIZATION_H__
+#define CITRUS_ENGINE_VULKAN_INITIALIZATION_H__
 
 #define ERR_VULKAN_NOT_FOUND -1
 #define ERR_VULKAN_LOADER_FAILED -2
@@ -18,8 +18,20 @@
 #include <vulkan.h>
 #include "../graphics/vkGlobals.h"
 
-	
+#ifdef __cplusplus
+
+NOMANGLE
+{
+
+#endif
+
 int vkLoad();
 int vkTerminate();
+
+#ifdef __cplusplus
+
+}
+
+#endif
 
 #endif

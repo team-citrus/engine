@@ -6,8 +6,8 @@
 *   license: LGPL-3.0-only
 */
 
-#ifndef CITRUS_ENGINE_VULKAN_CALLS_HPP__
-#define CITRUS_ENGINE_VULKAN_CALLS_HPP__
+#ifndef CITRUS_ENGINE_VULKAN_CALLS_H__
+#define CITRUS_ENGINE_VULKAN_CALLS_H__
 
 #define VK_NO_PROTOTYPES
 #include <vulkan.h>
