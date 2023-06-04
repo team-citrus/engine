@@ -22,7 +22,6 @@
 #define VK_NO_PROTOTYPES
 #include <stdlib.h>
 #include <vulkan.h>
-#include "core/errno.hpp"
 #include "core/log.hpp"
 #include "core/mem.h"
 #include "core/extensions.h"
@@ -30,9 +29,6 @@
 #include "graphics/vkGlobals.h"
 #include "graphics/vkInit.h"
 #include "graphics/vkCall.h"
-
-using namespace engine;
-using namespace internals;
 
 dllptr_t libvulkan;
 

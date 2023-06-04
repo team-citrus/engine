@@ -26,8 +26,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "core/errno.hpp"
-
 #include "core/extensions.h"
 #include "core/simd.h"
 
