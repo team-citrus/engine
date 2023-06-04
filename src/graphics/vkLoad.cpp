@@ -61,10 +61,11 @@ static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperti
 	vkNullCall(STRINGIFY(vkGetPhysicalDeviceQueueFamilyProperties), dev, &qCount, NULL);
 	qProperties = (VkQueueFamilyProperties*)memalloc(sizeof(VkQueueFamilyProperties) * qCount);
 	vkNullCall(STRINGIFY(vkGetPhysicalDeviceQueueFamilyProperties), dev, &qCount, qProperties);
-	for(int i = 0; i < qCount; i++)
-	{
+
+	for(int i = 0; i < qCount; i++) {
 		queueP.push(qProperties[i]);
 	}
+
 	memfree(qProperties);
 
 	// Perform queue filtering
@@ -72,8 +73,7 @@ static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperti
 	int gSupportCount = 0;
 	int cSupportCount = 0;
 	int tSupportCount = 0;
-	for(int i = 0; i < qCount; i++)
-	{
+	for(int i = 0; i < qCount; i++) {
 		if(queueP[i].queueFlags & VkQueueFlagBits::VK_QUEUE_GRAPHICS_BIT) gSupportCount++;
 		if(queueP[i].queueFlags & VkQueueFlagBits::VK_QUEUE_COMPUTE_BIT) cSupportCount++;
 		if(queueP[i].queueFlags & VkQueueFlagBits::VK_QUEUE_TRANSFER_BIT) tSupportCount++;
@@ -119,17 +119,15 @@ static inline int calcDeviceScore(VkPhysicalDeviceProperties devP, Vector<VkQueu
 
 static inline void countInferiors(Vector<int> &inferiors, Vector<int> deviceScore)
 {
-	for(int i = 0; i < deviceScore.getCount(); i++)
-	{
+	for(int i = 0; i < deviceScore.getCount(); i++) {
 		int count = 0;
-		for(int j = 0; j < deviceScore.getCount(); j++)
-		{
-			if(j != i)
-			{
+		for(int j = 0; j < deviceScore.getCount(); j++) {
+			if(j != i) {
 				count = (deviceScore[i] >= deviceScore[j]) ? count + 1 : count;
 				count = (deviceScore[i] == deviceScore[j] && j < i) ? count - 1 : count;
 			}
 		}
+
 		inferiors.push(count);
 	}
 }
@@ -139,8 +137,7 @@ NOMANGLE int vkLoad()
 	#ifdef CITRUS_ENGINE_UNIX
 
 	libvulkan = dlopen("libvulkan.so.1", RTLD_NOW | RTLD_GLOBAL);
-	if(libvulkan == NULL)
-	{
+	if(libvulkan == NULL) {
 		log(STRINGIFY(engine::internals::vkLoad()), "libvulkan.so.1 not found!");
 		exit(-1);
 	}
@@ -152,8 +149,7 @@ NOMANGLE int vkLoad()
 	#else
 
 	libvulkan = LoadLibraryA("Vulkan-1.dll");
-	if(libvulkan == NULL)
-	{
+	if(libvulkan == NULL) {
 		log(STRINGIFY(engine::internals::vkLoad()), "Vulkan-1.dll not found!");
 		exit(-1);
 	}
@@ -164,8 +160,7 @@ NOMANGLE int vkLoad()
 
 	#endif
 
-	if(vkGetInstanceProcAddrPtr == NULL || vkGetDeviceProcAddrPtr == NULL)
-	{
+	if(vkGetInstanceProcAddrPtr == NULL || vkGetDeviceProcAddrPtr == NULL) {
 		log(STRINGIFY(engine::internals::vkLoad()), "Failure to load critical Vulkan functions!");
 		exit(-1);
 	}
@@ -193,8 +188,7 @@ NOMANGLE int vkLoad()
 	iInfo.ppEnabledExtensionNames = NULL;
 
 	// Initalize the instance
-	if(vkNullCall(STRINGIFY(vkCreateInstance), 0, &iInfo, NULL, &instance) != VK_SUCCESS)
-	{
+	if(vkNullCall(STRINGIFY(vkCreateInstance), 0, &iInfo, NULL, &instance) != VK_SUCCESS) {
 		log(STRINGIFY(engine::internals::vkLoad()), "Failure to create Vulkan instance!");
 		exit(-1);
 	}
@@ -207,8 +201,7 @@ NOMANGLE int vkLoad()
 
 	int devCount = 0;
 	vkInstanceCall(STRINGIFY(vkEnumeratePhysicalDevices), instance, instance, &devCount, NULL);
-	if(devCount == 0) 
-	{
+	if(devCount == 0) {
 		log(STRINGIFY(engine::internals::vkLoad()), "No (Vulkan supporting) GPUs found!");
 		exit(-1);
 	}
@@ -226,8 +219,7 @@ NOMANGLE int vkLoad()
 	Vector<VkPhysicalDeviceMemoryProperties> deviceMemoryProperties;
 	Vector<size_t> deviceVram;
 	Vector<int> deviceScore;
-	for(int i = 0; i < devCount; i++)
-	{
+	for(int i = 0; i < devCount; i++) {
 		VkPhysicalDeviceProperties p;
 		Vector<VkQueueFamilyProperties> qp;
 		VkPhysicalDeviceMemoryProperties mp;
@@ -244,8 +236,7 @@ NOMANGLE int vkLoad()
 	}
 	memfree(devices);
 
-	if(!eligibleDevices.getCount())
-	{
+	if(!eligibleDevices.getCount()) {
 		log(STRINGIFY(engine::internals::vkLoad()), "No eligible GPUs found");
 		exit(-1);
 	}
@@ -253,8 +244,7 @@ NOMANGLE int vkLoad()
 	// Evaluate the devices
 
 	// TODO: Optimize this code
-	while(eligibleDevices.getCount() != 1)
-	{
+	while(eligibleDevices.getCount() != 1) {
 		// Vector for counting each device and what it has a higher score than
 		Vector<int> deviceInferiorCount;
 		countInferiors(deviceInferiorCount, deviceScore);
@@ -262,11 +252,9 @@ NOMANGLE int vkLoad()
 		// Set to true everytime something isn't removed
 		bool repeat = true;
 
-		for(int i = 0; i < deviceInferiorCount.getCount(); i++)
-		{
+		for(int i = 0; i < deviceInferiorCount.getCount(); i++) {
 			// Filter out everything that isn't better than something
-			if(deviceInferiorCount[i] == 0)
-			{
+			if(deviceInferiorCount[i] == 0) {
 				eligibleDevices.rm(i);
 				deviceProperties.rm(i);
 				deviceQueueProperties.rm(i);
@@ -279,23 +267,18 @@ NOMANGLE int vkLoad()
 		}
 
 		// Break tie by selecting first dedicated (non integrated) GPU found, if none are found, fall back on first GPU found.
-		if(repeat)
-		{
+		if(repeat) {
 			VkPhysicalDevice dev = eligibleDevices[0];
 
-			for(int i = 0; i < deviceProperties.getCount(); i++)
-			{
-				if(deviceProperties[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU || deviceProperties[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU)
-				{
+			for(int i = 0; i < deviceProperties.getCount(); i++) {
+				if(deviceProperties[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU || deviceProperties[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU) {
 					dev = eligibleDevices[i];
 					break;
 				}
 			}
 
-			for(int i = 0; i < eligibleDevices.getCount(); i++)
-			{
-				if(eligibleDevices[i] != dev)
-				{
+			for(int i = 0; i < eligibleDevices.getCount(); i++) {
+				if(eligibleDevices[i] != dev) {
 					eligibleDevices.rm(i);
 					deviceProperties.rm(i);
 					deviceQueueProperties.rm(i);
@@ -333,8 +316,7 @@ NOMANGLE int vkLoad()
 	// TODO: handle extensions and layers
 	// TODO: select device features
 
-	if(vkNullCall(STRINGIFY(vkCreateDevice), physicalDevice, &devInfo, &device) != VK_SUCCESS)
-	{
+	if(vkNullCall(STRINGIFY(vkCreateDevice), physicalDevice, &devInfo, &device) != VK_SUCCESS) {
 		log(STRINGIFY(engine::internals::vkLoad()), "Failure to create the logical device");
 		exit(-1);
 	}

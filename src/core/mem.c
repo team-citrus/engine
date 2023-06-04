@@ -147,8 +147,7 @@ __attribute__((__always_inline__)) void mergeBlocks(PoolBlock *nptr)
 	PoolBlock *tptr = nptr->next;
 	if(nptr->next == POOL_END) return;
 
-	while(true) // An infinite loop is fine, when the time is right it will return
-	{
+	while(true) { // An infinite loop is fine, when the time is right it will return 
 		tptr = tptr->next;
 
 		if(tptr->magic == POOL_ALLOC_BLOCK_MAGIC) return;
@@ -167,16 +166,12 @@ __attribute__((__always_inline__)) void *alloc(int blocks)
 	PoolBlock *bptr = pool.head;
 
 alloc_goto:
-	if(bptr->next == POOL_END)
-	{
-		if((uintptr_t)(bptr + blocks + 1) > pool.limit)
-		{
-			if(_POOL_LIMIT_IS_HARD_ || pool.limitExceeded)
-			{
+	if(bptr->next == POOL_END) {
+		if((uintptr_t)(bptr + blocks + 1) > pool.limit) {
+			if(_POOL_LIMIT_IS_HARD_ || pool.limitExceeded) {
+				errno = ENOMEM;
 				return -1;
-			}
-			else
-			{
+			} else {
 				pool.limitExceeded = true;
 
 				#ifdef CITRUS_ENGINE_UNIX
@@ -201,13 +196,14 @@ alloc_goto:
 					_POOL_EXPANSION_SIZE_, MEM_COMMIT, PAGE_READWRITE);
 				#endif
 
-				if((uintptr_t)ptr != ((uintptr_t)pool.start + _POOL_SIZE_))
-				{
+				if((uintptr_t)ptr != ((uintptr_t)pool.start + _POOL_SIZE_)) {
 					#ifdef CITRUS_ENGINE_UNIX
 					munmap(ptr, _POOL_EXPANSION_SIZE_);
 					#else
 					VirtualFree(ptr, _POOL_EXPANSION_SIZE_, 0);
 					#endif
+
+					errno = ENOMEM;
 
 					return (void*)-1;
 				}
@@ -226,16 +222,12 @@ alloc_goto:
 		bptr->magic = POOL_ALLOC_BLOCK_MAGIC;
 		bptr->size = blocks;
 		return (void*)(bptr+1);
-	}
-	else if(bptr->size == blocks)
-	{
+	} else if(bptr->size == blocks) {
 		bptr->magic = POOL_ALLOC_BLOCK_MAGIC;
 		bptr->size = blocks;
 
 		return (void*)(bptr+1);
-	}
-	else if(bptr->size > blocks + 4)
-	{
+	} else if(bptr->size > blocks + 4) {
 		PoolBlock *nptr = bptr + blocks + 1;
 
 		nptr->magic = POOL_FREE_BLOCK_MAGIC;
@@ -248,9 +240,7 @@ alloc_goto:
 		bptr->size = blocks;
 
 		return (void*)(bptr+1);
-	}
-	else if(bptr->size + bptr->next->size + 1 > blocks + 4 && bptr->next->magic == POOL_FREE_BLOCK_MAGIC)
-	{
+	} else if(bptr->size + bptr->next->size + 1 > blocks + 4 && bptr->next->magic == POOL_FREE_BLOCK_MAGIC) {
 		PoolBlock *nptr = bptr + blocks + 1;
 		size_t totalSize = bptr->size + bptr->next->size + 1;
 
@@ -264,9 +254,7 @@ alloc_goto:
 		bptr->next = nptr;
 
 		return (void*)(bptr+1);
-	}
-	else if(bptr->size + bptr->next->size + 1 >= blocks && bptr->next->magic == POOL_FREE_BLOCK_MAGIC)
-	{
+	} else if(bptr->size + bptr->next->size + 1 >= blocks && bptr->next->magic == POOL_FREE_BLOCK_MAGIC) {
 		size_t size = bptr->size + bptr->next->size + 1;
 
 		bptr->next = bptr->next->next;
@@ -275,9 +263,7 @@ alloc_goto:
 		bptr->magic = POOL_ALLOC_BLOCK_MAGIC;
 		
 		return (void*)(bptr+1);
-	}
-	else
-	{
+	} else {
 		bptr = bptr->next;
 		while(bptr->magic != POOL_FREE_BLOCK_MAGIC) bptr = bptr->next;
 		goto alloc_goto;
@@ -301,29 +287,23 @@ void *reallocate(void *ptr, int blocks)
 {
 	PoolBlock *bptr = (PoolBlock*)ptr - 1;
 	
-	if(!validatePointer((uintptr_t)ptr))
-	{
+	if(!validatePointer((uintptr_t)ptr)) {
+		errno = EINVAL;
 		return allocate(blocks);
-	}
-	else if(bptr->magic != POOL_ALLOC_BLOCK_MAGIC)
-	{
+	} else if(bptr->magic != POOL_ALLOC_BLOCK_MAGIC) {
+		errno = EINVAL;
 		return allocate(blocks);
-	}
-	else if(!blocks)
-	{
+	} else if(blocks == 0) {
 		_free(bptr);
 		return ptr;
 	}
 
 	accquire();
 
-	if(bptr->size == blocks || (bptr->size <= blocks + 4 && bptr->size > blocks) || (bptr->size >= blocks - 4 && bptr->size < blocks))
-	{
+	if(bptr->size == blocks || (bptr->size <= blocks + 4 && bptr->size > blocks) || (bptr->size >= blocks - 4 && bptr->size < blocks)) {
 		release();
 		return ptr;
-	}
-	else if(bptr->size < blocks - 4)
-	{
+	} else if(bptr->size < blocks - 4) {
 		PoolBlock *nptr = bptr + blocks + 1;
 		nptr->next = bptr->next;
 		bptr->next->last = nptr;
@@ -334,9 +314,7 @@ void *reallocate(void *ptr, int blocks)
 		bptr->size = blocks;
 		release();
 		return ptr;
-	}
-	else
-	{
+	} else {
 		PoolBlock *rptr = (PoolBlock*)alloc(blocks);
 		bptr->size = bptr->size;
 		bptr->magic = POOL_FREE_BLOCK_MAGIC;
@@ -353,14 +331,13 @@ void _free(PoolBlock *bptr)
 {
 	accquire();
 
-	if(!validatePointer((uintptr_t)bptr))
-	{
+	if(!validatePointer((uintptr_t)bptr)) {
+		errno = EINVAL;
 		release();
 		return;
 	}
 	
-	if(bptr->magic == POOL_ALLOC_BLOCK_MAGIC)
-	{
+	if(bptr->magic == POOL_ALLOC_BLOCK_MAGIC) {
 		bptr->size = bptr->size;
 		bptr->magic = POOL_FREE_BLOCK_MAGIC;
 	}
@@ -371,8 +348,7 @@ void _free(PoolBlock *bptr)
 	pool.head = tptr;
 
 	// Merge all the blocks
-	while(tptr->next != POOL_END)
-	{
+	while(tptr->next != POOL_END) {
 		mergeBlocks(tptr);
 		tptr = tptr->next;
 	}
@@ -416,8 +392,7 @@ size_t allocated()
 	size_t ret;
 	PoolBlock *ptr = pool.start;
 
-	while(ptr != POOL_END)
-	{
+	while(ptr != POOL_END) {
 		if(ptr->magic == POOL_ALLOC_BLOCK_MAGIC)
 			ret += ptr->size;
 
@@ -432,8 +407,7 @@ size_t freed()
 	size_t ret;
 	PoolBlock *ptr = pool.start;
 
-	while(ptr != POOL_END)
-	{
+	while(ptr != POOL_END) {
 		if(ptr->magic == POOL_FREE_BLOCK_MAGIC)
 			ret += ptr->size;
 			

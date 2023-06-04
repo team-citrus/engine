@@ -42,6 +42,7 @@ class Vector
 		if(!count)
 			return none<T>();
 		count--;
+
 		T obj = ptr[count];
 		ptr = memrealloc(ptr, count * sizeof(T));
 		return Option::some(obj);
@@ -51,6 +52,7 @@ class Vector
 	{
 		if(!count)
 			return;
+
 		for(size_t i = index; i < count - 1; i--)
 			ptr[i] = ptr[i+1];
 		count--;

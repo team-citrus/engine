@@ -15,7 +15,8 @@ fn main() {
 
     // source
     gcc.file("src/core/mem.c");
-    gcc.file("src/core/stb_image.c"); 
+    gcc.file("src/core/stb_image.c");
+    gcc.file("src/core/log.cpp"); 
     gcc.file("src/graphics/vkLoad.cpp");
 
     // finish C/C++/Asm code
