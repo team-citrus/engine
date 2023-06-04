@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <vulkan.h>
 #include "core/errno.hpp"
-#include "core/crash.hpp"
 #include "core/log.hpp"
 #include "core/mem.h"
 #include "core/extensions.h"
@@ -147,7 +146,7 @@ NOMANGLE int vkLoad()
 	if(libvulkan == NULL)
 	{
 		log(STRINGIFY(engine::internals::vkLoad()), "libvulkan.so.1 not found!");
-		exit(VULKAN_NOT_FOUND);
+		exit(-1);
 	}
 
 	// Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
@@ -160,7 +159,7 @@ NOMANGLE int vkLoad()
 	if(libvulkan == NULL)
 	{
 		log(STRINGIFY(engine::internals::vkLoad()), "Vulkan-1.dll not found!");
-		exit(VULKAN_NOT_FOUND);
+		exit(-1);
 	}
 
 	// Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
@@ -172,7 +171,7 @@ NOMANGLE int vkLoad()
 	if(vkGetInstanceProcAddrPtr == NULL || vkGetDeviceProcAddrPtr == NULL)
 	{
 		log(STRINGIFY(engine::internals::vkLoad()), "Failure to load critical Vulkan functions!");
-		exit(VK_LOAD_FAILURE);
+		exit(-1);
 	}
 
 	// Initalize Vulkan
@@ -201,7 +200,7 @@ NOMANGLE int vkLoad()
 	if(vkNullCall(STRINGIFY(vkCreateInstance), 0, &iInfo, NULL, &instance) != VK_SUCCESS)
 	{
 		log(STRINGIFY(engine::internals::vkLoad()), "Failure to create Vulkan instance!");
-		exit(VK_LOAD_FAILURE);
+		exit(-1);
 	}
 
 	// TODO: Validation layers
@@ -215,7 +214,7 @@ NOMANGLE int vkLoad()
 	if(devCount == 0) 
 	{
 		log(STRINGIFY(engine::internals::vkLoad()), "No (Vulkan supporting) GPUs found!");
-		exit(VK_COMPATIBLE_GPU_NOT_FOUND);
+		exit(-1);
 	}
 
 	// Get the handles
@@ -252,7 +251,7 @@ NOMANGLE int vkLoad()
 	if(!eligibleDevices.getCount())
 	{
 		log(STRINGIFY(engine::internals::vkLoad()), "No eligible GPUs found");
-		exit(VK_COMPATIBLE_GPU_NOT_FOUND);
+		exit(-1);
 	}
 
 	// Evaluate the devices
@@ -341,7 +340,6 @@ NOMANGLE int vkLoad()
 	if(vkNullCall(STRINGIFY(vkCreateDevice), physicalDevice, &devInfo, &device) != VK_SUCCESS)
 	{
 		log(STRINGIFY(engine::internals::vkLoad()), "Failure to create the logical device");
-		exit(VK_LOAD_FAILURE);
+		exit(-1);
 	}
-
 }

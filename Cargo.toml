@@ -5,9 +5,13 @@ edition = "2021"
 authors = ["Teresa de Cualquier Lugar Menos Francia"]
 repository = "https://github.com/team-citrus/ecosystem-engine-variant"
 license = "LGPL-3.0"
+build = "build.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 # TODO: stuff
 
 [dependencies]
 soloud = "1"
+
+[build-dependencies]
+cc = { version = "1.0", features = ["parallel"] }
