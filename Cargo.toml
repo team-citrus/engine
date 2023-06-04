@@ -7,3 +7,4 @@ edition = "2021"
 # TODO: stuff
 
 [dependencies]
+soloud = "1"

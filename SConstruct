@@ -40,7 +40,6 @@ if BUILD_TYPE == "DEBUG" or BUILD_TYPE == "FINAL":
 
 SConscript('src/core/SConscript')
 SConscript('src/graphics/SConscript')
-SConscript('soloud/src/SConscript')
 
 # TODO: Different build types for Rust
 
