@@ -2,6 +2,9 @@
 name = "Ecosystem-Citrus-Engine"
 version = "0.1.0"
 edition = "2021"
+authors = ["Teresa de Cualquier Lugar Menos Francia"]
+repository = "https://github.com/team-citrus/ecosystem-engine-variant"
+license = "LGPL-3.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 # TODO: stuff
