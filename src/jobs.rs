@@ -72,7 +72,7 @@ fn job_system_thread() -> () {
                         Err(err) => { panic!("A catastrophic jobsystem error has occured. {}", err) },
                     }
                     drop(guard);
-                    job.1.execute();
+                    *(job.1).execute();
                     continue;
                 }
             },
@@ -94,7 +94,7 @@ fn job_system_thread() -> () {
                         Err(err) => { panic!("A catastrophic jobsystem error has occured. {}", err) },
                     }
                     drop(guard);
-                    job.1.execute();
+                    *(job.1).execute();
                     continue;
                 }
             },

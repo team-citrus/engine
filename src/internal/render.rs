@@ -10,7 +10,7 @@ use std::{time::Duration, thread, sync::atomic::Ordering};
 use super::{sync, waste_cpu_cycles};
 
 #[no_mangle]
-extern "C" vk_draw() -> ();
+extern "C" fn vk_draw() -> ();
 
 pub fn render() -> () {
     loop {
