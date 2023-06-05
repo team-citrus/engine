@@ -1,6 +1,3 @@
-SConstruct linguist-vendored
-src/graphics/SConscript linguist-vendored
-src/core/SConscript linguist-vendored
-src/physics/SConscript
-soloud/** linguist-vendored
 include/sys/** linguist-vendored
+include/core/stb_image.h linuguist-vendored
+src/core/stb_image.c linguist-vendored
