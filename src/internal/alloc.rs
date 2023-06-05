@@ -21,7 +21,6 @@ struct MemallocAndFriends;
 
 unsafe impl Sync for MemallocAndFriends {}
 
-
 unsafe impl GlobalAlloc for MemallocAndFriends {
     unsafe fn alloc(&self, l: Layout) -> *mut u8 {
         memalloc(l.size())
