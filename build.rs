@@ -1,5 +1,6 @@
 fn main() {
-    let mut gcc = cc::Build::new().cpp(true);
+    let mut gcc = cc::Build::new();
+    gcc.cpp(true);
     // includes
     gcc.include("include");
     gcc.flag("-idirafter include/sys");
