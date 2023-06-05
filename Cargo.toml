@@ -13,6 +13,7 @@ build = "build.rs"
 [dependencies]
 soloud = "1"
 glm = "0.2.3"
+rand = "0.8.4"
 
 [build-dependencies]
 cc = { version = "1.0", features = ["parallel"] }
