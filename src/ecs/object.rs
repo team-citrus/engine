@@ -10,7 +10,7 @@ use std::{vec::Vec, boxed::Box, ops::{Deref, DerefMut}};
 use super::component::{self, Component};
 
 pub struct Object {
-    components: Vec<Box<dyn Component>>,
+    pub(crate) components: Vec<Box<dyn Component>>,
     pub(crate) marked_for_death: bool,
 }
 
