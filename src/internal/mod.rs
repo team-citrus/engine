@@ -7,4 +7,7 @@
 */
 
 pub mod gameplay;
+pub mod render;
+pub mod threads;
+mod alloc;
 mod sync;

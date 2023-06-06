@@ -6,7 +6,9 @@
 *   license: LGPL-3.0-only
 */
 
-use std::sync::atomic::AtomicBool;
+use std::sync::atomic::{AtomicBool, AtomicI32};
 
-static is_render_executing: AtomicBool = false;
-static is_gameplay_executing: AtomicBool = false;
+static is_render_executing: AtomicBool;
+static is_gameplay_executing: AtomicBool;
+static object_counter: AtomicI32;
+static object_count: AtomicI32;
