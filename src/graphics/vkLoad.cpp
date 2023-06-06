@@ -87,17 +87,17 @@ static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperti
 	vkNullCall(STRINGIFY(vkGetPhysicalDeviceMemoryProperties), dev, &deviceMemoryProperties);
 	for(int i = 0; i < deviceMemoryProperties.memoryHeapCount; i++)
 		vram += deviceMemoryProperties.memoryHeaps[i].size;
-	
+
 	// 1/2 GB as an arbitrary limit in case no other is set
-	
-	if(vram < 
+
+	if(vram <
 		#ifdef _MINIMUM_VRAM_
 		_MINIMUM_VRAM_
 		#else
 		(1024 * 1024 * 512)
 		#endif
 	) return false;
-	
+
 	return true;
 }
 
@@ -107,10 +107,10 @@ static inline int calcDeviceScore(VkPhysicalDeviceProperties devP, Vector<VkQueu
 	int score = 0;
 	score += vram/(1024 * 1024);
 	score += (devP.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ) ? 1 : 0;
-	
+
 	// Could be useful later
 	score += VK_API_VERSION_MAJOR(devP.apiVersion);
-	
+
 	// TODO: Add code that takes devP.limits into account
 	// TODO: Add code that takes queueP into account... somehow
 
@@ -304,7 +304,7 @@ NOMANGLE int vkLoad()
 	// TODO: Add code to update the version and select the Vulkan function
 
 	// Create the logical device
-	
+
 	VkDeviceCreateInfo devInfo;
 	VkDeviceQueueCreateInfo queueMkInfo;
 	VkPhysicalDeviceFeatures devFeatures;

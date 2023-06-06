@@ -9,5 +9,5 @@
 pub mod component;
 pub mod object;
 
-pub use component;
-pub use object;
+pub use component::*;
+pub use object::*;
