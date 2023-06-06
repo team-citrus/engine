@@ -13,18 +13,35 @@
 
 #define GNU __GNUC__
 
+#ifdef __cplusplus
+
 #define ALWAYS_INLINE [[gnu::always_inline]]
 #define NEVER_INLINE [[gnu::noinline]]
 #define DEPRECATED(...) [[deprecated(STRINGIFY(__VA_ARGS__))]]
 #define NORETURN [[noreturn]]
-#define PACKED __attribute__((__packed__))
-#define OPTIMIZE(i) __attribute__ ((optimize(i)))
-#define NO_DISCARD [[gnu::nodiscard]]
+#define NO_DISCARD [[nodiscard]]
 #define PURE [[gnu::pure]]
 #define SYMBOL_ALIAS(x) __attribute__((alias(STRINGIFY(x))))
-#define ALIAS(x) SYMBOL_ALIAS(x)
 #define WEAK [[gnu::weak]]
-#define WARN_UNUSED [[gnu::warn_unused_result]]
+#define WARN_UNUSED [[nodiscard]]
+
+#else
+
+#define ALWAYS_INLINE __attribute__((always_inline))
+#define NEVER_INLINE __attribute__((noinline))
+#define DEPRECATED __attribute__((deprecated))
+#define NORETURN __attribute__((noreturn))
+#define OPTIMIZE(i) __attribute__((optimize(i)))
+#define NO_DISCARD __attribute__((warn_unused_result))
+#define PURE  __attribute__((pure))
+#define SYMBOL_ALIAS(x) __attribute__((alias(STRINGIFY(x))))
+#define WEAK  __attribute__((weak))
+#define WARN_UNUSED __attribute__((warn_unused_result))
+#endif
+
+#define PACKED __attribute__((__packed__))
+#define OPTIMIZE(i) __attribute__ ((optimize(i)))
+#define ALIAS(x) SYMBOL_ALIAS(x)
 #define ALIGN(x) __attribute__((aligned(x)))
 
 #else
@@ -38,7 +55,7 @@
 
 #define NO_INLINE NEVER_INLINE
 
-#define STRINGIFY(...) __STRINGIFY__(##__VA_ARGS__)
+#define STRINGIFY(...) (__STRINGIFY__(__VA_ARGS__))
 #define __STRINGIFY__(...) #__VA_ARGS__
 
 #define __VA_ARGS_FIX__(...) __VA_ARGS__

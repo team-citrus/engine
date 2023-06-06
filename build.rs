@@ -4,7 +4,7 @@ fn main() {
     // includes
     gcc.include("include");
     gcc.flag("-idirafter include/sys");
-    
+
     // Compiler flags
     gcc .flag("-m64")
         .flag("-mavx2")
@@ -15,7 +15,7 @@ fn main() {
     // source
     gcc.file("src/core/mem.c");
     gcc.file("src/core/stb_image.c");
-    gcc.file("src/core/log.cpp"); 
+    gcc.file("src/core/log.cpp");
     gcc.file("src/graphics/vkLoad.cpp");
 
     // finish C/C++/Asm code

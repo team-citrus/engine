@@ -44,9 +44,9 @@ OPERATOR void log(const char *module, const char *format, T... args)
 	time_t t = time(NULL);
 	tm tmtime = *localtime(&t);
 
-	fprintf(internals::logfile, "[%d-%d-%d %d:%d:%d] %s: ", tmtime.tm_year + 1900, tmtime.tm_mon + 1, tmtime.tm_mday, tmtime.tm_hour, tmtime.tm_min, tmtime.tm_sec, module); // ISO 8601 standard date format
-	fprintf(internals::logfile, format, args...);
-	putc('\n', internals::logfile);
+	fprintf(logfile, "[%d-%d-%d %d:%d:%d] %s: ", tmtime.tm_year + 1900, tmtime.tm_mon + 1, tmtime.tm_mday, tmtime.tm_hour, tmtime.tm_min, tmtime.tm_sec, module); // ISO 8601 standard date format
+	fprintf(logfile, format, args...);
+	putc('\n', logfile);
 }
 
 // Logs a message, and appends a newline, use this only in Rust code

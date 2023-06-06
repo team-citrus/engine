@@ -56,13 +56,13 @@ class Vector
 		for(size_t i = index; i < count - 1; i--)
 			ptr[i] = ptr[i+1];
 		count--;
-		ptr = (count >= capcity - 8) ? memrealloc(ptr, (capacity -= 8) * sizeof(T)) : ptr;
+		ptr = (count >= capacity - 8) ? memrealloc(ptr, (capacity -= 8) * sizeof(T)) : ptr;
 	}
 
 	OPERATOR T &insert(size_t index, T obj)
 	{
 		count++;
-		ptr = (count >= capcity) ? memrealloc(ptr, (capacity += 8) * sizeof(T)) : ptr;
+		ptr = (count >= capacity) ? memrealloc(ptr, (capacity += 8) * sizeof(T)) : ptr;
 		for(size_t i = count - 2; i > index; i--)
 			data[i+1] = data[i];
 		data[index] = obj;
