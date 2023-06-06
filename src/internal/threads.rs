@@ -13,6 +13,6 @@ pub fn enter_threads() -> () {
     is_render_executing.store(false, Ordering::Relaxed);
     is_gameplay_executing.store(true, Ordering::Relaxed);
 
-    thread::spawn(render);
+    thread::spawn(|| render::render());
     gameplay();
 }

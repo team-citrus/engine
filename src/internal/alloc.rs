@@ -31,7 +31,7 @@ unsafe impl GlobalAlloc for MemallocAndFriends {
     }
 
     unsafe fn alloc_zeroed(&self, l: Layout) -> *mut u8 {
-        zmalloc(1, l.size)
+        zmalloc(1, l.size())
     }
 
     unsafe fn realloc(&self, ptr: *mut u8, l: Layout, size: usize) -> *mut u8 {

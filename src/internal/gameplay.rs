@@ -12,7 +12,7 @@ use crate::ecs::object::Object;
 use super::sync;
 
 #[inline(always)]
-pub fn waste_cpu_cycles(cycles: i32) {
+pub(crate) fn waste_cpu_cycles(cycles: i32) {
     let mut c = cycles/3;   // mov {c}|eax, {cycles}; mov {reg}, 3; idiv {reg}
     c -= 32;                     // sub {c}, 32
 
