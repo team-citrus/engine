@@ -10,9 +10,7 @@ fn main() {
         .flag("-mavx2")
         .flag("-march=haswell")
         .flag("-mtune=cannonlake")
-        .flag("-Wpedantic")
-        .flag("-Wall")
-        .flag("-Wextra");
+        .warnings(true);
 
     // source
     gcc.file("src/core/mem.c");

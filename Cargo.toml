@@ -6,12 +6,30 @@ authors = ["Teresa de Cualquier Lugar Menos Francia"]
 repository = "https://github.com/team-citrus/ecosystem-engine-variant"
 license = "LGPL-3.0"
 build = "build.rs"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-# TODO: stuff
 
 [dependencies]
 soloud = "1"
+glm = "0.2.3"
+rand = "0.8.4"
 
 [build-dependencies]
 cc = { version = "1.0", features = ["parallel"] }
+
+[profile.dev]
+opt-level = 1
+overflow-checks = false
+debug = true
+lto = "thin"
+panic = "unwind"
+incremental = true
+
+[profile.release]
+opt-level = 3
+overflow-checks = false
+debug = false
+lto = true
+panic = "abort"
+incremental = false
