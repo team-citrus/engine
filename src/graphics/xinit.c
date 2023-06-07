@@ -1,6 +1,6 @@
 /*
 *   name: src/graphics/xinit.c
-*   origin: Citrus Engine
+*   origin: Ecosystem Variant of the Citrus Engine
 *   purpose: Functions for initalizing Xlib windows
 *   author: https://github.com/ComradeYellowCitrusFruit
 *   license: LGPL-3.0-only
