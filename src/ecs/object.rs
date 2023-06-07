@@ -41,8 +41,13 @@ impl Object {
         None
     }
 
-    fn add_component<T: ? Component>(&mut self) -> &mut T {
-        self.components.push(Box::new(T::awake()));
-        self.components.last().unwrap()
+    pub fn add_component<T: ? Component>(&mut self) -> &mut T {
+        self.components.push(Box::new(T::awake(self)));
+        self.components.last().unwrap().deref_mut()
+    }
+
+    pub fn register_component<T: ? Component>(&mut self, c: T) -> &mut T {
+        self.component.push(Box::new(c));
+        self.components.last().unwrap().deref_mut()
     }
 }

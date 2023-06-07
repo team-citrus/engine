@@ -14,6 +14,7 @@
 #include <cstdint>
 #include "../graphics/vkGlobals.h"
 #include "../core/extensions.h"
+#include "../core/log.hpp"
 
 typedef VkResult (*vkFuncPtr_t)(...);
 

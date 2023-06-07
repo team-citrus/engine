@@ -9,14 +9,26 @@
 #include <glm/glm.hpp
 #include "core/extensions.h"
 
+struct VertexWeight {
+    int index;
+    float weight;
+}
+
 struct Vertex {
     glm::vec3 pos;
     glm::vec2 uv;
+    glm::vec2 normal; // I KNEW IT! NORMALS!
+    VertexWeight *boneWeights;
+    size_t weightCount;
+};
 
-    // TODO: Normals? Normals... right?
-}
+struct Mesh {
+    Vertex *verts;
+    int *indexBuffer;
+    size_t indexBufferLen;
 
-// TODO: meshes
+    // TODO: THEM BONES!
+};
 
 NO_INLINE NOMANGLE void vk_draw()
 {

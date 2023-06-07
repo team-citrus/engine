@@ -10,4 +10,5 @@ pub mod internal;
 pub mod ecs;
 pub mod jobs;
 pub mod compound;
+pub mod mesh;
 pub use compound;
