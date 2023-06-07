@@ -55,4 +55,6 @@ VkResult vkNullCall(const char *func, A... parameters)
 	return ((vkGetInstanceProcAddrPtr(NULL, func))(parameters...));
 }
 
+#define vkCheck(x) {auto _x = x; if(x!=VK_SUCCESS) { log("Vulkan", "Vulkan error %d, exiting.", _x); exit(-1); }}
+
 #endif
