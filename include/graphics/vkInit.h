@@ -26,6 +26,7 @@ NOMANGLE
 #endif
 
 int vkLoad();
+void vkCreateSwapChain();
 int vkTerminate();
 
 #ifdef __cplusplus

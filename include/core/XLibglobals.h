@@ -15,21 +15,15 @@
 
 #include <X11/Xlib.h>
 
-namespace engine
-{
-	namespace internals
-	{
-		Display *display;
-		int screen;
-		Window window;
-		Time frameStart;
-		Time gameStart;
-	}
-}
+Display *display;
+int screen;
+Window window;
+Time frameStart;
+Time gameStart;
 
 #elif defined(CITRUS_ENGINE_WINDOWS)
 
-#warning Why is core/XLibglobals included in Windows code exactly?
+#warning Why is core/XLibglobals.h included in Windows code exactly?
 
 #endif
 

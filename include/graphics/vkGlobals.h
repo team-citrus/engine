@@ -49,6 +49,10 @@ extern VkInstance instance;
 // The Vulkan device
 extern VkDevice device;
 
+// The Vulkan Swapchain
+extern VkSwapchainKHR swapchain;
+extern VkSufaceKHR surface;
+
 // Physical device info
 
 extern VkPhysicalDevice physicalDevice;

@@ -12,10 +12,12 @@
 
 #include <unistd.h>
 #include <dlfcn.h>
+#include "core/XLibglobals.h"
 
 #else
 
 #include <Windows.h>
+#include "core/windowsGlobals.h"
 
 #endif
 
@@ -43,7 +45,10 @@ VkPhysicalDeviceProperties physicalDeviceProperties;
 VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
 size_t physicalDeviceVRAM;
 
-// TODO: Convert to pure C.
+VkSwapchainKHR swapchain = VK_NULL_HANDLE;
+VkSufaceKHR surface;
+
+// TODO: Convert to pure C, maybe
 
 static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperties *devP, Vector<VkQueueFamilyProperties> &queueP, VkPhysicalDeviceMemoryProperties &deviceMemoryProperties, size_t &vram)
 {
@@ -184,8 +189,8 @@ NOMANGLE int vkLoad()
 	iInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	iInfo.pApplicationInfo = &aInfo;
 	// TODO: Add the layer information.
-	iInfo.enabledExtensionCount = 0;
-	iInfo.ppEnabledExtensionNames = NULL;
+	iInfo.enabledExtensionCount = 2;
+	iInfo.ppEnabledExtensionNames = ["VK_KHR_swapchain", "VK_KHR_surface"];
 
 	// Initalize the instance
 	if(vkNullCall(STRINGIFY(vkCreateInstance), 0, &iInfo, NULL, &instance) != VK_SUCCESS) {
@@ -299,7 +304,7 @@ NOMANGLE int vkLoad()
 
 	// Log the choice
 
-	log(STRINGIFY(engine::internals::vkLoad()), "Selected GPU: %s", deviceProperties[0].deviceName);
+	log(STRINGIFY(vkLoad()), "Selected GPU: %s", deviceProperties[0].deviceName);
 
 	// TODO: Add code to update the version and select the Vulkan function
 
@@ -317,7 +322,66 @@ NOMANGLE int vkLoad()
 	// TODO: select device features
 
 	if(vkNullCall(STRINGIFY(vkCreateDevice), physicalDevice, &devInfo, &device) != VK_SUCCESS) {
-		log(STRINGIFY(engine::internals::vkLoad()), "Failure to create the logical device");
+		log(STRINGIFY(vkLoad()), "Failure to create the logical device");
+		exit(-1);
+	}
+
+	#ifdef CITRUS_ENGINE_WINDOWS
+
+	VkWin32SurfaceCreateInfoKHR surfaceCreateInfo;
+	surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+	surfaceCreateInfo.pNext = NULL;
+	surfaceCreateInfo.flags = 0;
+	surfaceCreateInfo.hinstance = hinstance;
+	surfaceCreateInfo.hwnd = hwnd;
+
+	if(vkInstanceCall(STRINGIFY(vkCreateWin32SurfaceKHR), instance, &surfaceCreateInfo, NULL, &surface) != VK_SUCCESS) {
+		log(STRINGIFY(vkLoad()), "Failure to create the swapchain surface");
+		exit(-1);
+	}
+
+	#else
+
+	VkXlibSurfaceCreateInfoKHR surfaceCreateInfo;
+	surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
+	surfaceCreateInfo.pNext = NULL;
+	surfaceCreateInfo.flags = 0;
+	surfaceCreateInfo.dpy = display;
+	surfaceCreateInfo.window = window;
+
+	if(vkInstanceCall(STRINGIFY(vkCreateXlibSurfaceKHR), instance, &surfaceCreateInfo, NULL, &surface) != VK_SUCCESS) {
+		log(STRINGIFY(vkLoad()), "Failure to create the swapchain surface");
+		exit(-1);
+	}
+
+	#endif
+
+	vkCreateSwapChain();
+}
+
+void vkCreateSwapChain()
+{
+	VkSwapchainCreateInfoKHR swapInfo;
+	swapInfo.sType = VkSwapchainCreateInfoKHR;
+	swapInfo.pNext = NULL;
+	swapInfo.flags = 0;
+	swapInfo.surface = surface;
+	swapInfo.minImageCount = 3; // Triple buffering
+	swapInfo.imageFormat = VK_FORMAT_B8G8R8A8_SRGB; // TODO: Check for color support
+	swapInfo.imageColorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+	// TODO: swapInfo.imageExtent = ;
+	swapInfo.imageUsage = VK_IMAGE_USAGE_TRANSFER_DST_BIT; // post-processing + bliting with UI
+	swapInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	swapInfo.queueFamilyIndexCount = 0;
+	swapInfo.pQueueFamilyIndices = NULL;
+	swapInfo.preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+	swapInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR; // TODO: option to change this
+	swapInfo.presentMode = VK_PRESENT_MODE_MAILBOX_KHR; // TODO: Vsync + framerate detection
+	swapInfo.clipped = VK_TRUE;
+	swapInfo.oldSwapchain = swapchain;
+
+	if(vkDeviceCall(STRINGIFY(vkCreateSwapchainKHR), device, &swapInfo, NULL, &swapchain) != VK_SUCCESS) {
+		log(STRINGIFY(vkCreateSwapChain()), "Failure to create the swapchain");
 		exit(-1);
 	}
 }
