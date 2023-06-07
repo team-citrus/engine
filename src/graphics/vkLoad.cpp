@@ -137,6 +137,23 @@ static inline void countInferiors(Vector<int> &inferiors, Vector<int> deviceScor
 	}
 }
 
+NOMANGLE void graphics_init()
+{
+	#ifdef CITRUS_ENGINE_WINDOWS
+
+	winit();
+	vkLoad();
+	ShowWindow(hwnd, showStyle);
+
+	#else
+
+	xinit();
+	vkLoad();
+	XMapWindow(display, window);
+
+	#endif
+}
+
 NOMANGLE int vkLoad()
 {
 	#ifdef CITRUS_ENGINE_UNIX
@@ -356,10 +373,10 @@ NOMANGLE int vkLoad()
 
 	#endif
 
-	vkCreateSwapChain();
+	vkCreateSwapChain(0, 0); // TODO: real values
 }
 
-void vkCreateSwapChain()
+void vkCreateSwapChain(int width, int height)
 {
 	VkSwapchainCreateInfoKHR swapInfo;
 	swapInfo.sType = VkSwapchainCreateInfoKHR;
@@ -369,7 +386,7 @@ void vkCreateSwapChain()
 	swapInfo.minImageCount = 3; // Triple buffering
 	swapInfo.imageFormat = VK_FORMAT_B8G8R8A8_SRGB; // TODO: Check for color support
 	swapInfo.imageColorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
-	// TODO: swapInfo.imageExtent = ;
+	swapInfo.imageExtent = { width, height } ;
 	swapInfo.imageUsage = VK_IMAGE_USAGE_TRANSFER_DST_BIT; // post-processing + bliting with UI
 	swapInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	swapInfo.queueFamilyIndexCount = 0;

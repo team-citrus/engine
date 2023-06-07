@@ -15,8 +15,19 @@
 
 #include <Windows.h>
 
+#ifdef __cplusplus
+NOMANGLE {
+#endif
+
 HINSTANCE hinstance;
 HWND hwnd;
+int showStyle;
+
+void winit();
+
+#ifdef __cplusplus
+}
+#endif
 
 #elif defined(CITRUS_ENGINE_UNIX)
 

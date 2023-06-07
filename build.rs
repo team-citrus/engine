@@ -23,5 +23,6 @@ fn main() {
 
     println!("cargo:rerun-if-changed=src/core/mem.c");
     println!("cargo:rerun-if-changed=src/core/stb_image.c");
+    println!("cargo:rerun-if-changed=src/core/log.cpp");
     println!("cargo:rerun-if-changed=src/graphics/vkLoad.cpp");
 }

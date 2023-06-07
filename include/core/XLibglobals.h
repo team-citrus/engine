@@ -15,11 +15,21 @@
 
 #include <X11/Xlib.h>
 
+#ifdef __cplusplus
+NOMANGLE {
+#endif
+
 Display *display;
 int screen;
 Window window;
 Time frameStart;
 Time gameStart;
+
+void xinit();
+
+#ifdef __cplusplus
+}
+#endif
 
 #elif defined(CITRUS_ENGINE_WINDOWS)
 
