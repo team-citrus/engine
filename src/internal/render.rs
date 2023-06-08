@@ -11,8 +11,11 @@ use super::{sync, waste_cpu_cycles};
 
 #[no_mangle]
 extern "C" fn vk_draw() -> ();
+#[no_mangle]
+extern "C" fn graphics_init() -> ();
 
 pub fn render() -> () {
+    graphics_init();
     loop {
         while is_gameplay_executing {
             let obj_ctr = object_counter.load(Ordering::SeqCst);

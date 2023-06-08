@@ -26,6 +26,7 @@ NOMANGLE
 #endif
 
 int vkLoad();
+void vkCreateSwapChain(int width, int height);
 int vkTerminate();
 
 #ifdef __cplusplus

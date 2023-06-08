@@ -42,12 +42,16 @@ extern dllptr_t libvulkan;
 extern vkGIPA_t vkGetInstanceProcAddrPtr;
 // Good ol' vkGetDeviceProcAddr
 extern vkGDPA_t vkGetDeviceProcAddrPtr;
-		
+
 // The Vulkan instance
 extern VkInstance instance;
 
 // The Vulkan device
 extern VkDevice device;
+
+// The Vulkan Swapchain
+extern VkSwapchainKHR swapchain;
+extern VkSurfaceKHR surface;
 
 // Physical device info
 
@@ -55,7 +59,7 @@ extern VkPhysicalDevice physicalDevice;
 extern VkPhysicalDeviceProperties physicalDeviceProperties;
 extern VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
 extern size_t physicalDeviceVRAM;
-		
+
 // TODO: Add different Vulkan render functions based on different Vulkan versions and extensions
 // TODO: Framebuffer
 
