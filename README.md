@@ -30,10 +30,10 @@ As a bonus, it also demonstrates how the Citrus Engine can be adapted for your n
     - [ ] Write or otherwise adopt a FBX loader
     - [ ] Write or otherwise adopt a binary format glTF loader
     - [ ] `mesh::Mesh`
-      - [ ] Vertex groups
       - [ ] Bones
+        - [x] Vertex Weights
+        - [ ] Other Bone data
     - [ ] `mesh::MeshRenderer`
-      - [ ] Possibly `mesh::SkinedMeshRenderer`
 - [x] Convert the project into Rust, with memory allocation and render code written in mixed C and C++.
 - [ ] Create the rendering pipeline
 - [ ] Create the main loop
