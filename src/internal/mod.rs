@@ -9,5 +9,6 @@
 pub mod gameplay;
 pub mod render;
 pub mod threads;
+pub(crate) mod vendor;
 mod alloc;
 mod sync;

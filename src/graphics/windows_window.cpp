@@ -15,6 +15,8 @@
 #include "core/extensions.h"
 #include "graphics/vkInit.h"
 
+extern const wchar_t GAME_NAME[];
+
 NEVER_INLINE CALLBACK LRESULT handleChangeToWindow(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch(uMsg)
@@ -61,7 +63,7 @@ void winit()
     RegisterClass(&wclass);
 
     hwnd = CreateWindowExW(
-        0, L"La sola ventana.", /* TODO: lpWindowName */, WS_OVERLAPPEDWINDOW | WS_MAXIMIZE,
+        0, L"La sola ventana.", GAME_NAME, WS_OVERLAPPEDWINDOW | WS_MAXIMIZE,
         0, 0, CW_USEDEFAULT, CW_USEDEFAULT,
         NULL, NULL, hinstance, NULL
     );

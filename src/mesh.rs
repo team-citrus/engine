@@ -7,7 +7,7 @@
 */
 
 use super;
-use std::ops::Index;
+use std::{rc::Rc, string::String};
 
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq)]
@@ -18,10 +18,7 @@ pub struct VertexWeight {
 
 #[derive(Copy, Clone, PartialEq)]
 pub struct Vertex {
-    pos: Vector3<f32>,
-    uv: Vector2<f32>,
-    normal: Vector2<f32>, // I KNEW IT! NORMALS!
-    bone_weights: Vec<VertexWeight>, // Perfect!
+    data: &CVertex,
 }
 
 #[repr(C)]
@@ -39,39 +36,21 @@ impl Vertex {
     }
 }
 
-// TODO: turn into forward of a reference counted type similar to the old MeshBufferHandle
-pub struct Mesh {
-    verts: Vec<Vertex>,
-    index_buf: Vec<i32>,
+pub struct MeshBufferHandle {
+    verts: *mut CVertex,
+    vert_count: i32,
+    index_buf: *mut i32,
+    index_buffer_count: i32,
 
     // TODO: THEM BONES!
 }
 
-#[repr(C)]
-pub struct CMesh {
-    verts: *const CVertex,
-    index_buf: *const i32,
-    index_buf_len: usize,
-}
-
-impl Index<usize> for Mesh {
-    type Output = Vertex;
-
-    fn index(&self, idx: usize) -> &Self::Output {
-        self.verts.index(self.index_buf[idx])
+impl MeshBufferHandle {
+    pub fn get_new_handle(fname: &String) -> Rc<MeshBufferHandle> {
+        // TODO: stuff.
     }
 }
 
-impl IndexMut<usize> for Mesh {
-    type Output = Vertex;
-
-    fn index_mut(&self, idx: usize) -> &mut Self::Output {
-        self.verts.index_mut(self.index_buf[idx])
-    }
-}
-
-impl Mesh {
-    pub(crate) unsafe fn create_c_repr(&self) -> CMesh {
-        // TODO: this.
-    }
+pub struct Mesh {
+    handle: Rc<MeshBufferHandle>,
 }
