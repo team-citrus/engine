@@ -27,7 +27,6 @@ pub fn render() -> () {
                 asm!("pause",);
             }
         }
-        is_render_executing.store(true, Ordering::SeqCst);
 
         vk_draw();
 

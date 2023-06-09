@@ -13,6 +13,10 @@ pub fn enter_threads() -> () {
     is_render_executing.store(false, Ordering::Relaxed);
     is_gameplay_executing.store(true, Ordering::Relaxed);
 
+    // There is a behind the scenes audio thread that we have no control over, not even soloud does.
+    // We simply have to trust soloud to do what is best for us.
+    sound::internals::init_soloud();
+    
     thread::spawn(|| render::render());
     gameplay();
 }
