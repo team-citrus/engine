@@ -55,7 +55,7 @@
 
 #define NO_INLINE NEVER_INLINE
 
-#define STRINGIFY(...) (__STRINGIFY__(__VA_ARGS__))
+#define STRINGIFY(...) __STRINGIFY__(__VA_ARGS__)
 #define __STRINGIFY__(...) #__VA_ARGS__
 
 #define __VA_ARGS_FIX__(...) __VA_ARGS__

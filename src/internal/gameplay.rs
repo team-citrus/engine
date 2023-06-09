@@ -11,19 +11,9 @@ use crate::ecs::object::Object;
 
 use super::sync;
 
-#[inline(always)]
-pub(crate) fn waste_cpu_cycles(cycles: i32) {
-    let mut c = cycles/3;   // mov {c}|eax, {cycles}; mov {reg}, 3; idiv {reg}
-    c -= 32;                     // sub {c}, 32
-
-    loop {                       // .L:
-        c -= 1;                  // dec {c}
-                 
-        if c <= 0 {              // cmp {c}, 0
-            break;               // jg .L
-        }               
-    }
-}
+#[no_mangle]
+// Unfortunately, Rust doesn't let you disable optimization inside a single function, so we have to use external assembly.
+extern "C" pub(crate) fn waste_cpu_cycles(cycles: i32);
 
 struct Scene {
     objects: Vec<Object>,

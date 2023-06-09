@@ -9,6 +9,8 @@
 
 #ifdef CITRUS_ENGINE_UNIX
 
+#define _GNU_SOURCE
+
 #include <unistd.h>
 #include <sys/mman.h>
 
@@ -86,18 +88,16 @@ Pool init()
 	ret.size = _POOL_SIZE_/32;
 
 	#ifdef CITRUS_ENGINE_UNIX
-	ret.start = (poolBlock*)mmap(NULL, _POOL_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON |
+	ret.start = (PoolBlock*)mmap(NULL, _POOL_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON
 					
 	#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 1024ull) == 0 || (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 2ull) == 0
-	MAP_HUGETLB | 
+	| MAP_HUGETLB | 
 	#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024 * 1024 * 1024) == 0
 	(30 << MAP_HUGE_SHIFT)
 	#else
 	(21 << MAP_HUGE_SHIFT)
-	#endif,
 	#endif
-					
-	0, 0);
+	#endif, 0, 0);
 
 	#else
 
@@ -176,19 +176,17 @@ alloc_goto:
 
 				#ifdef CITRUS_ENGINE_UNIX
 
-				void *ptr = mmap((void*)((uintptr_t)engine::internals::pool.start + _POOL_SIZE_), 
-					_POOL_EXPANSION_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON | MAP_FIXED_NOREPLACE |
+				void *ptr = mmap((void*)((uintptr_t)pool.start + _POOL_SIZE_), 
+					_POOL_EXPANSION_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON | MAP_FIXED_NOREPLACE
 					
 					#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 1024ull) == 0 || (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 2ull) == 0
-					MAP_HUGETLB | 
+					| MAP_HUGETLB | 
 					#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024 * 1024 * 1024) == 0
 					(30 << MAP_HUGE_SHIFT)
 					#else
 					(21 << MAP_HUGE_SHIFT)
-					#endif,
 					#endif
-
-					0, 0);
+					#endif, 0, 0);
 
 				#else
 
