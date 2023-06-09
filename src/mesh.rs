@@ -7,7 +7,10 @@
 */
 
 use super;
-use std::{rc::Rc, string::String};
+use std::{rc::Rc, string::String, ffi::c_char, sync::atomic::AtomicBool};
+
+#[no_mangle]
+extern "C" fn has_a_mesh(string: *const c_char) -> i32;
 
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq)]
@@ -41,16 +44,22 @@ pub struct MeshBufferHandle {
     vert_count: i32,
     index_buf: *mut i32,
     index_buffer_count: i32,
+    ref_count: i32,
+    lock: AtomicBool,
 
     // TODO: THEM BONES!
 }
 
 impl MeshBufferHandle {
-    pub fn get_new_handle(fname: &String) -> Rc<MeshBufferHandle> {
+    pub fn get_new_handle(fname: &String) -> &MeshBufferHandle {
         // TODO: stuff.
+    }
+
+    pub fn get_new_handle_w_flags(fname: &String, flags: i32) -> &MeshBufferHandle {
+
     }
 }
 
 pub struct Mesh {
-    handle: Rc<MeshBufferHandle>,
+    handle: &MeshBufferHandle,
 }
