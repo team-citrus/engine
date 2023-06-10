@@ -8,7 +8,7 @@
 #else
 
 #define GLOBAL_SYMBOL(x) x
-#define ARGUMENT1(x) %edi
+#define ARGUMENT1 %edi
 
 #endif
 
