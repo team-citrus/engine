@@ -8,3 +8,5 @@
 
 pub(crate) mod internals;
 pub(crate) use internals;
+
+pub mod settings;

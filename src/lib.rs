@@ -12,3 +12,4 @@ pub mod jobs;
 pub use glm::*;
 pub use glm::builtin::*;
 pub mod mesh;
+pub mod sound;

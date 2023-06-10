@@ -7,13 +7,13 @@
 */
 
 use std::sync::Mutex;
-use soloud::{Soloud, SoloudFlag, Backend};
+pub use soloud::{Soloud, SoloudFlag, Backend};
 
-static audio_engine: Mutex<Soloud>;
+pub static audio_engine: Mutex<Soloud>;
 
 pub(crate) fn init_soloud() -> () {
     match audio_engine.lock() {
-        Ok(guard) => { *guard.deref_mut() = Soloud::new(SoloudFlag::LeftHanded3D, Backend::Miniaudio, 
+        Ok(guard) => { *guard.deref_mut() = Soloud::new(SoloudFlag::LeftHanded3D, Backend::Miniaudio,
             48000 /* couldn't find actual docs, just assume Hz */, 1024, 2).unwrap(); }, // TODO: refine this.
         Err(err) => { panic!("The guard mutex of the audio engine has been corrupted. {}", err) },
     }
