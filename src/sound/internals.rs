@@ -7,7 +7,7 @@
 */
 
 use std::sync::Mutex;
-pub use soloud::{Soloud, SoloudFlag, Backend};
+pub use soloud::*;
 
 pub static audio_engine: Mutex<Soloud>;
 

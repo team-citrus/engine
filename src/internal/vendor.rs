@@ -15,9 +15,12 @@ const CITRUS_ENGINE_VENDOR_EXECUTE: i32 = 1;
 pub struct File;
 
 #[no_mangle]
-extern "C" fn __citrus_engine_vendor_map_file_to_mem(name: *const c_char, offset: usize, len: usize, perms: i32) -> *mut c_void;
+pub extern "C" fn __citrus_engine_vendor_map_file_to_mem(name: *const c_char, offset: usize, len: usize, perms: i32) -> *mut c_void;
 
 #[no_mangle]
-extern "C" fn __citrus_engine_vendor_unmap_file_from_mem(ptr: *mut c_void, len: usize) -> ();
+pub extern "C" fn __citrus_engine_vendor_file_to_slice(name: *const c_char, offset: usize) -> &mut [u8];
+
+#[no_mangle]
+pub extern "C" fn __citrus_engine_vendor_unmap_file_from_mem(ptr: *mut c_void, len: usize) -> ();
 
 // TODO: rest.

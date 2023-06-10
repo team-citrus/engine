@@ -10,3 +10,5 @@ pub(crate) mod internals;
 pub(crate) use internals;
 
 pub mod settings;
+pub mod sound;
+pub use sound;
