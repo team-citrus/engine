@@ -62,7 +62,7 @@ typedef struct PoolBlock
 			struct PoolBlock *next;
 			struct PoolBlock *last;
 		};
-		
+
 		// Expand the size to 32 bytes
 		uint_least8_t __force_size[32];
 	};
@@ -89,9 +89,9 @@ Pool init()
 
 	#ifdef CITRUS_ENGINE_UNIX
 	ret.start = (PoolBlock*)mmap(NULL, _POOL_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON
-					
+
 	#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 1024ull) == 0 || (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 2ull) == 0
-	| MAP_HUGETLB | 
+	| MAP_HUGETLB |
 	#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024 * 1024 * 1024) == 0
 	(30 << MAP_HUGE_SHIFT)
 	#else
@@ -102,7 +102,7 @@ Pool init()
 	#else
 
 	ret.start = VirtualAlloc(NULL, _POOL_SIZE_, MEM_COMMIT | MEM_RESERVE
-			
+
 	#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 1024ull) == 0 || (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 2ull) == 0
 	| MEM_LARGE_PAGES
 	#endif
@@ -147,7 +147,7 @@ __attribute__((__always_inline__)) void mergeBlocks(PoolBlock *nptr)
 	PoolBlock *tptr = nptr->next;
 	if(nptr->next == POOL_END) return;
 
-	while(true) { // An infinite loop is fine, when the time is right it will return 
+	while(true) { // An infinite loop is fine, when the time is right it will return
 		tptr = tptr->next;
 
 		if(tptr->magic == POOL_ALLOC_BLOCK_MAGIC) return;
@@ -176,11 +176,11 @@ alloc_goto:
 
 				#ifdef CITRUS_ENGINE_UNIX
 
-				void *ptr = mmap((void*)((uintptr_t)pool.start + _POOL_SIZE_), 
+				void *ptr = mmap((void*)((uintptr_t)pool.start + _POOL_SIZE_),
 					_POOL_EXPANSION_SIZE_, PROT_WRITE | PROT_READ, MAP_ANON | MAP_FIXED_NOREPLACE
-					
+
 					#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 1024ull) == 0 || (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024ull * 1024ull * 2ull) == 0
-					| MAP_HUGETLB | 
+					| MAP_HUGETLB |
 					#if (_POOL_SIZE_ + _POOL_EXPANSION_SIZE_) % (1024 * 1024 * 1024) == 0
 					(30 << MAP_HUGE_SHIFT)
 					#else
@@ -259,7 +259,7 @@ alloc_goto:
 		bptr->next->last = bptr;
 		bptr->size = size;
 		bptr->magic = POOL_ALLOC_BLOCK_MAGIC;
-		
+
 		return (void*)(bptr+1);
 	} else {
 		bptr = bptr->next;
@@ -284,7 +284,7 @@ void *allocate(int blocks)
 void *reallocate(void *ptr, int blocks)
 {
 	PoolBlock *bptr = (PoolBlock*)ptr - 1;
-	
+
 	if(!validatePointer((uintptr_t)ptr)) {
 		errno = EINVAL;
 		return allocate(blocks);
@@ -334,7 +334,7 @@ void _free(PoolBlock *bptr)
 		release();
 		return;
 	}
-	
+
 	if(bptr->magic == POOL_ALLOC_BLOCK_MAGIC) {
 		bptr->size = bptr->size;
 		bptr->magic = POOL_FREE_BLOCK_MAGIC;
@@ -408,7 +408,7 @@ size_t freed()
 	while(ptr != POOL_END) {
 		if(ptr->magic == POOL_FREE_BLOCK_MAGIC)
 			ret += ptr->size;
-			
+
 		ptr = ptr->next;
 	}
 

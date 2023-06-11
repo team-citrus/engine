@@ -122,7 +122,7 @@ fn refresh_job_system() -> () {
         let mut outages = 0;
 
         match engine_jobs_queued.lock() {
-            Ok(guard) => { 
+            Ok(guard) => {
                 let _cmp = thread_count.load(Ordering::SeqCst) < max_thread_count.load(Ordering::SeqCst);
 
                 if guard.deref().len() != 0 && _cmp {
@@ -140,7 +140,7 @@ fn refresh_job_system() -> () {
         }
 
         match jobs_queued.lock() {
-            Ok(guard) => { 
+            Ok(guard) => {
                 let _cmp = thread_count.load(Ordering::SeqCst) < max_thread_count.load(Ordering::SeqCst);
 
                 if guard.deref().len() != 0 && _cmp {
@@ -277,7 +277,7 @@ impl JobHandle {
 
         CompleteResult::NotFound
     }
-    
+
     pub fn complete_blocking(&self) -> CompleteResult {
         let mut found = false;
         let mut executing = false;
@@ -327,7 +327,7 @@ impl JobHandle {
                         }
                     },
                     Err(err) => { panic!("A catastrophic jobsystem error has occured. {}", err) },
-                }        
+                }
             } else {
                 if self.id & (1 << 63) != 0 {
                     match engine_jobs_queued.lock() {
@@ -335,7 +335,7 @@ impl JobHandle {
                             guard.deref_mut().make_contiguous();
                             for i in guard.deref().as_slices().0 {
                                 if i.0 == self.id { drop(guard); waste_cpu_cycles(100); continue; }
-                                
+
                                 executing = true;
                                 continue;
                             }
@@ -348,7 +348,7 @@ impl JobHandle {
                             guard.deref_mut().make_contiguous();
                             for i in guard.deref().as_slices().0 {
                                 if i.0 == self.id { drop(guard); waste_cpu_cycles(100); continue; }
-                                
+
                                 executing = true;
                                 continue;
                             }
