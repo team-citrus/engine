@@ -106,13 +106,49 @@ impl Sound {
                 } else {
                     self.handle = match self.parent {
                         Some(handle) => {
-                            let tmp = handle.play_ex(&wav, self.volume, self.pan, start_paused);
+                            let tmp = handle.int_repr.play_ex(&wav, self.volume, self.pan, start_paused);
                             self.parent = Some(handle);
                             tmp
                         },
                         None => {
                             self.parent = None;
                             guard.deref_mut().play_ex(&wav, self.volume, self.pan, start_paused, unsafe { Handle::from_raw(0) })
+                        }
+                    };
+                }
+            },
+            Err(err) => { panic!("The guard mutex of the audio engine has been corrupted. {}", err) }
+        }
+    }
+
+    pub fn play_delayed(&mut self, start_delay: f32, start_paused: bool) {
+        let mut wav = audio::Wav::default();
+        wav.load_mem(__citrus_engine_vendor_file_to_slice(self.file.as_bytes().as_ptr() as *const c_char, 0)).unwrap();
+
+        match audio_engine.lock() {
+            Ok(mut guard) => {
+                if self.is3d {
+                    self.handle = match self.parent {
+                        Some(handle) => {
+                            let tmp = handle.int_repr.play_3d_clocked_ex(start_delay, &wav, self.position.x, self.position.y, self.position.z, 0.0, 0.0, 0.0, self.volume);
+                            self.parent = Some(handle);
+                            tmp
+                        },
+                        None => {
+                            self.parent = None;
+                            guard.deref_mut().play_3d_clocked_ex(start_delay, &wav, self.position.x, self.position.y, self.position.z, 0.0, 0.0, 0.0, self.volume, unsafe { Handle::from_raw(0) })
+                        }
+                    };
+                } else {
+                    self.handle = match self.parent {
+                        Some(handle) => {
+                            let tmp = handle.int_repr.play_clocked_ex(start_delay, &wav, self.volume, self.pan);
+                            self.parent = Some(handle);
+                            tmp
+                        },
+                        None => {
+                            self.parent = None;
+                            guard.deref_mut().play_clocked_ex(start_delay, &wav, self.volume, self.pan, unsafe { Handle::from_raw(0) })
                         }
                     };
                 }
