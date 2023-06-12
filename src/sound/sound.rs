@@ -163,5 +163,42 @@ impl Sound {
             Err(err) => { panic!("The guard mutex of the audio engine has been corrupted. {}", err) }
         }
     }
+
+    pub fn get_volume(&self) -> f32 {
+        self.volume
+    }
+
+    pub fn set_volume(&mut self, volume: f32) -> () {
+        self.volume = volume;
+        if self.handle.raw() != 0 {
+            match audio_engine.lock() {
+                Ok(mut guard) => {
+                    guard.deref_mut().set_volume(self.handle, volume);
+                },
+                Err(err) => { panic!("The guard mutex of the audio engine has been corrupted. {}", err) }
+            }
+        }
+    }
+
+    pub fn get_pan(&self) -> f32 {
+        if self.is3d {
+            0
+        } else {
+            self.pan
+        }
+    }
+
+    pub fn set_pan(&mut self, pan: f32) -> () {
+        self.pan = pan;
+        if self.handle.raw() != 0 && self.is3d == false {
+            match audio_engine.lock() {
+                Ok(mut guard) => {
+                    guard.deref_mut().set_pan(self.handle, pan);
+                },
+                Err(err) => { panic!("The guard mutex of the audio engine has been corrupted. {}", err) }
+            }
+        }
+    }
+
     // TODO: stuff
 }
