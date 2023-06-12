@@ -200,5 +200,24 @@ impl Sound {
         }
     }
 
+    pub fn set_position(&mut self, position: Vec3<f32>) -> () {
+        if self.is3d {
+            self.position = position;
+
+            if self.handle.raw() != 0 {
+                match audio_engine.lock() {
+                    Ok(mut guard) => {
+                        guard.deref_mut().set_3d_source_position(self.handle, pos_x, pos_y, pos_z);
+                    },
+                    Err(err) => { panic!("The guard mutex of the audio engine has been corrupted. {}", err) }
+                }
+            }
+        }
+    }
+
+    pub fn get_position(&self) -> Vec3<f32> {
+        self.position
+    }
+
     // TODO: stuff
 }
