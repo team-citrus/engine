@@ -8,6 +8,8 @@
 
 pub mod component;
 pub mod object;
+pub mod handle;
 
 pub use component::*;
 pub use object::*;
+pub use handle::*;

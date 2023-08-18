@@ -7,47 +7,42 @@
 */
 
 use std::{vec::Vec, boxed::Box, ops::{Deref, DerefMut}};
-use super::component::{self, Component};
+use super::{ComponentHandle, Component};
 
+const OBJECT_HANDLE_MAGIC_NUMBER: i32 = 0x911628b5;
+
+#[derive(PartialEq, Eq, Clone, Copy)]
 pub struct Object {
-    pub(crate) components: Vec<Box<dyn Component>>,
-    pub(crate) marked_for_death: bool,
+    magic_number: i32,
+    code: i64,
 }
 
-impl Object {
-    pub fn kill(&mut self) -> () {
-        self.marked_for_death = true;
-    }
+#[derive(Clone)]
+pub(crate) struct ObjectInternals {
+    parent: Object,
+    components: Vec<ComponentHandle<dyn Component>>,
+}
 
-    pub fn get_component<T: ? Component>(&self) -> Option<&T> {
-        let id = T.component_type_id();
-        for i in self.components {
-            if id == i.component_type_id() {
-                return Some(i.deref());
-            }
+impl EcsHandle for Object {
+    fn destroy(&mut self) {
+        if self.is_valid() {
+            // TODO: mark for death
+
+            self.magic_number = 0;
+            self.code = 0;
         }
-
-        None
     }
 
-    pub fn get_mut_component<T: ? Component>(&mut self) -> Option<&mut T> {
-        let id = T.component_type_id();
-        for i in self.components {
-            if id == i.component_type_id() {
-                return Some(i.deref_mut());
-            }
+    fn is_valid(&self) -> bool {
+        if self.magic_number == OBJECT_HANDLE_MAGIC_NUMBER {
+            // TODO: Validar el código
         }
-
-        None
     }
 
-    pub fn add_component<T: ? Component>(&mut self) -> &mut T {
-        self.components.push(Box::new(T::awake(self)));
-        self.components.last().unwrap().deref_mut()
-    }
+    fn get_component<T>(&self) -> ComponentHandle<T> {
 
-    pub fn register_component<T: ? Component>(&mut self, c: T) -> &mut T {
-        self.component.push(Box::new(c));
-        self.components.last().unwrap().deref_mut()
+    }
+	fn get_object<T>(&self) -> Object {
+        (*self)
     }
 }
