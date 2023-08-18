@@ -7,9 +7,14 @@
 */
 
 use super::{Object, EcsHandle};
-use std::{any::Any, marker::{Sized, Copy}, ops::{Deref, DerefMut}, cmp::{PartialEq, Eq}, clone::Clone};
+use crate::SlotMap;
+use std::{any::Any, marker::{Sized, Copy}, ops::{Deref, DerefMut}, cmp::{PartialEq, Eq}, clone::Clone, boxed::Box};
+use lazy_static::lazy_static;
 
 const COMPONENT_HANDLE_MAGIC_NUMBER: i32 = 0x7ff54c5a;
+lazy_static! {
+    pub(crate) static ref COMPONENTS: SlotMap<i64, Box<dyn Component>> = SlotMap::with_capacity_and_key(32);
+}
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub struct ComponentHandle<C: Component> {
@@ -42,7 +47,7 @@ pub trait Component: Any + Sized {
     // TODO: algunas cosas mas
 }
 
-impl EcsHandle for ComponentHandle<C> {
+impl<C> EcsHandle for ComponentHandle<C> {
     fn destroy(&mut self) {
         if self.is_valid() {
             // TODO: mark for death
@@ -53,8 +58,10 @@ impl EcsHandle for ComponentHandle<C> {
     }
 
     fn is_valid(&self) -> bool {
-        if self.magic_number == COMPONENT_HANDLE_MAGIC_NUMBER {
-            // TODO: Validar el código
+        if self.magic_number == COMPONENT_HANDLE_MAGIC_NUMBER && COMPONENTS.deref().contains_key(self.code) {
+            // TODO: Validate type.
+        } else {
+            false
         }
     }
 
@@ -65,6 +72,38 @@ impl EcsHandle for ComponentHandle<C> {
 	fn get_object<T>(&self) -> Object {
         self.object
     }
+
+    fn add_component<T>(&mut self) -> ComponentHandle<T> {
+        self.object.add_component()
+    }
+
+    fn get_components<T>(&self) -> Vec<ComponentHandle<T>> {
+        self.object.get_components()
+    }
 }
 
-// TODO: Terminar de implementar el acceso a los Components desde ComponentHandles, al estilo de std::sync::Mutex y std::sync::MutexGuard
+impl<C> ComponentHandle<C> {
+    pub fn access(&self) -> Option<&C> {
+        if self.magic_number == COMPONENT_HANDLE_MAGIC_NUMBER {
+            match COMPONENTS.deref().get(self.code) {
+                Option::Some(value) => {
+                    value.downcast_ref::<C>()
+                },
+                Option::None => Option::None,
+            }
+        }
+    }
+
+    pub fn access_mut(&mut self) -> Option<&mut C> {
+        if self.magic_number == COMPONENT_HANDLE_MAGIC_NUMBER {
+            match COMPONENTS.deref().get(self.code) {
+                Option::Some(value) => {
+                    value.downcast_mut::<C>()
+                },
+                Option::None => Option::None,
+            }
+        }
+    }
+}
+
+// TODO: Terminar de implementar el acceso a los Components desde ComponentHandles

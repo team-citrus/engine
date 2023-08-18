@@ -11,5 +11,6 @@ pub mod ecs;
 pub mod jobs;
 pub use glm::*;
 pub use glm::builtin::*;
+pub use slotmap::*;
 pub mod mesh;
 pub mod sound;

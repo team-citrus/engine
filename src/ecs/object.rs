@@ -40,9 +40,30 @@ impl EcsHandle for Object {
     }
 
     fn get_component<T>(&self) -> ComponentHandle<T> {
+        let tmp: ComponentHandle<T> = ComponentHandle {
+            magic_number: 0,
+            code: 0,
+            object: *self,
+        };
 
+        // TODO: actual code.
+
+        tmp
     }
+
 	fn get_object<T>(&self) -> Object {
         (*self)
     }
+
+    fn add_component<T>(&mut self) -> ComponentHandle<T> {
+        todo!();
+    }
+
+    fn get_components<T>(&self) -> Vec<ComponentHandle<T>> {
+        todo!();
+    }
+}
+
+impl Object {
+    // TODO: algunas cosas mas
 }
