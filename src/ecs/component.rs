@@ -8,19 +8,30 @@
 
 use super::{Object, EcsHandle};
 use crate::SlotMap;
-use std::{any::Any, marker::{Sized, Copy}, ops::{Deref, DerefMut}, cmp::{PartialEq, Eq}, clone::Clone, boxed::Box};
+use std::{
+    any::{Any, TypeId},
+    marker::{Sized, Copy},
+    ops::{Deref, DerefMut},
+    cmp::{PartialEq, Eq},
+    clone::Clone,
+    boxed::Box,
+    mem::MaybeUninit,
+    sync::Mutex,
+};
 use lazy_static::lazy_static;
 
 const COMPONENT_HANDLE_MAGIC_NUMBER: i32 = 0x7ff54c5a;
 lazy_static! {
-    pub(crate) static ref COMPONENTS: SlotMap<i64, Box<dyn Component>> = SlotMap::with_capacity_and_key(32);
+    pub(crate) static ref COMPONENTS: Mutex<SlotMap<i32, Box<dyn Component>>> = {
+        Mutex::new(SlotMap::with_capacity_and_key(64))
+    };
 }
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub struct ComponentHandle<C: Component> {
-    magic_number: i32,
-    code: i64,
-    object: Object,
+    pub(super) magic_number: i32,
+    pub(super) code: i32,
+    pub(super) object: Object,
 }
 
 pub trait Component: Any + Sized {
@@ -51,15 +62,28 @@ impl<C> EcsHandle for ComponentHandle<C> {
     fn destroy(&mut self) {
         if self.is_valid() {
             // TODO: mark for death
-
-            self.magic_number = 0;
-            self.code = 0;
         }
     }
 
     fn is_valid(&self) -> bool {
-        if self.magic_number == COMPONENT_HANDLE_MAGIC_NUMBER && COMPONENTS.deref().contains_key(self.code) {
-            // TODO: Validate type.
+        if self.magic_number == COMPONENT_HANDLE_MAGIC_NUMBER {
+            match COMPONENTS.deref().lock() {
+                Ok(guardia) => {
+                    match guardia.deref().get(self.code) {
+                        Option::Some(value) => {
+                            match value.downcast_ref::<C>() {
+                                Option::Some => true,
+                                Option::None => false,
+                            }
+                        },
+                        Option::None => false,
+                    }
+                },
+                Err(_) => {
+                    panic!("ECS broke.");
+                    false
+                }
+            }
         } else {
             false
         }
@@ -82,28 +106,64 @@ impl<C> EcsHandle for ComponentHandle<C> {
     }
 }
 
+impl<C> Any for ComponentHandle<C> {
+    fn type_id(&self) -> TypeId {
+        TypeId::of::<ComponentHandle<C>>()
+    }
+}
+
 impl<C> ComponentHandle<C> {
     pub fn access(&self) -> Option<&C> {
         if self.magic_number == COMPONENT_HANDLE_MAGIC_NUMBER {
-            match COMPONENTS.deref().get(self.code) {
-                Option::Some(value) => {
-                    value.downcast_ref::<C>()
+            match COMPONENTS.deref().lock() {
+                Ok(guardia ) => {
+                    guardia.deref().get(self.code)
                 },
-                Option::None => Option::None,
+                Err(_) => {
+                    panic!("ECS broke.");
+                    None
+                }
             }
         }
     }
 
     pub fn access_mut(&mut self) -> Option<&mut C> {
         if self.magic_number == COMPONENT_HANDLE_MAGIC_NUMBER {
-            match COMPONENTS.deref().get(self.code) {
-                Option::Some(value) => {
-                    value.downcast_mut::<C>()
+            match COMPONENTS.deref().lock() {
+                Ok(mut guardia ) => {
+                    guardia.deref_mut().get_mut(self.code)
                 },
-                Option::None => Option::None,
+                Err(_) => {
+                    panic!("ECS broke.");
+                    None
+                }
             }
         }
     }
-}
 
-// TODO: Terminar de implementar el acceso a los Components desde ComponentHandles
+    pub(crate) fn from_code<C>(code: i32, obj: Object) -> ComponentHandle<C> {
+        ComponentHandle {
+            magic_number: COMPONENT_HANDLE_MAGIC_NUMBER,
+            code: code,
+            object: obj
+        }
+    }
+
+    pub fn generate_invalid<C>() -> ComponentHandle<C> {
+        ComponentHandle {
+            magic_number: 0,
+            code: 0,
+            object: Object { magic_number: 0, code: 0}
+        }
+    }
+
+    pub(crate) fn new<C>() -> ComponentHandle<C> {
+        ComponentHandle {
+            magic_number: COMPONENT_HANDLE_MAGIC_NUMBER,
+            code: COMPONENTS.deref().insert(
+                unsafe { MaybeUninit::<C>::zeroed().assume_init() }
+            ),
+            object: Object { magic_number: 0, code: 0 }
+        }
+    }
+}
