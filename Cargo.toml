@@ -10,13 +10,13 @@ readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies]
+[dependencies] # We have too many dependencies
 soloud = "1"
 glm = "0.2.3"
 rand = "0.8.4"
 slotmap = "1.0.6"
 lazy_static = "1.4.0"
-
+num_cpus = "1"
 
 [build-dependencies]
 cc = { version = "1.0", features = ["parallel"] }

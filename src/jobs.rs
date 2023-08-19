@@ -1,23 +1,30 @@
 /*
 *   name: src/jobs.rs
-*   origin: Citrus Engine
+*   origin: Citrus ENGINE
 *   purpose: The Job system and public interface
 *   author: https://github.com/ComradeYellowCitrusFruit
 *   license: LGPL-3.0-only
 */
 
-use std::{thread, sync::{atomic::*, Mutex}, vec::Vec, collections::VecDeque, boxed::Box, mem::drop, ops::{Deref, DerefMut}};
+use std::{thread, sync::{atomic::*, Mutex, BarrierWaitResult}, vec::Vec, collections::VecDeque, boxed::Box, mem::drop, ops::{Deref, DerefMut}};
 use rand::thread_rng;
+use lazy_static::lazy_static;
+use num_cpus;
 
 use crate::internal::gameplay::waste_cpu_cycles;
 
 const COMPLETE_BLOCK_FOR: u8 = 255; // At 2.8ghz, this will block for a little over 10 milliseconds
 
-static thread_count: AtomicI32;
-static max_thread_count: AtomicI32;
-static jobs_queued: Mutex<VecDeque<JobTuple>>;
-static engine_jobs_queued: Mutex<VecDeque<JobTuple>>;
-static jobs_executing: Mutex<Vec<JobTuple>>;
+// TODO: Improve power efficiency
+// TODO: Rework pretty much all of the complete related code.
+
+lazy_static! {
+    static ref THREAD_COUNT: AtomicI32 = AtomicI32::new(0);
+    static ref MAX_THREAD_COUNT: AtomicI32 = AtomicI32::new(num_cpus::get() * 2);
+    static ref JOBS_QUEUED: Mutex<VecDeque<JobTuple>> = Mutex::new(VecDeque::with_capacity(num_cpus::get() * 2));
+    static ref ENGINE_JOBS_QUEUED: Mutex<VecDeque<JobTuple>> = Mutex::new(VecDeque::with_capacity(num_cpus::get() * 2));
+    static ref JOBS_EXECUTING: Mutex<Vec<JobTuple>> = Mutex::new(VecDeque::with_capacity(num_cpus::get() * 2));
+}
 
 pub trait Job {
     fn execute(mut self) -> ();
@@ -35,7 +42,7 @@ pub fn schedule<T: Job + Clone>(job: &T) -> JobHandle {
     let tmp = JobHandle { id: thread_rng().next_u64() & (!(1 << 63)), };
     let tuple = JobTuple(tmp.id, Box::new(*job));
 
-    match jobs_queued.lock() {
+    match JOBS_QUEUED.lock() {
         Ok(guard) => { guard.deref_mut().push_back(tuple) },
         Err(err) => { panic!("A catastrophic jobsystem error has occured. {}", err) },
     }
@@ -48,7 +55,7 @@ pub(crate) fn engine_schedule<T: Job + Clone>(job: &T) -> JobHandle {
     let tmp = JobHandle { id: thread_rng().next_u64() | (1 << 63), };
     let tuple = JobTuple(tmp.id, Box::new(*job));
 
-    match engine_jobs_queued.lock() {
+    match ENGINE_JOBS_QUEUED.deref().lock() {
         Ok(guard) => { guard.deref_mut().push_back(tuple) },
         Err(err) => { panic!("A catastrophic jobsystem error has occured. {}", err) },
     }
@@ -60,7 +67,7 @@ pub(crate) fn engine_schedule<T: Job + Clone>(job: &T) -> JobHandle {
 fn job_system_thread() -> () {
     loop {
         let mut outages = 0;
-        match engine_jobs_queued.lock() {
+        match ENGINE_JOBS_QUEUED.deref().lock() {
             Ok(mut guard) => {
                 if guard.deref().len() == 0 {
                     outages += 1;
@@ -68,7 +75,7 @@ fn job_system_thread() -> () {
                     let mut job = guard.deref_mut().pop_front().unwrap();
                     let idx;
 
-                    match jobs_executing.lock() {
+                    match JOBS_EXECUTING.lock() {
                         Ok(mut inner) => {
                             idx = inner.deref().len();
 
@@ -86,7 +93,7 @@ fn job_system_thread() -> () {
             Err(err) => { panic!("A catastrophic jobsystem error has occured. {}", err) },
         }
 
-        match jobs_queued.lock() {
+        match JOBS_QUEUED.deref().lock() {
             Ok(mut guard) => {
                 if guard.deref().len() == 0 {
                     outages += 1;
@@ -94,12 +101,14 @@ fn job_system_thread() -> () {
                     let mut job = guard.deref_mut().pop_front().unwrap();
                     let idx;
 
-                    match jobs_executing.lock() {
+                    match JOBS_EXECUTING.lock() {
                         Ok(mut inner) => {
                             idx = inner.deref().len();
                             inner.deref_mut().push(job);
                         },
-                        Err(err) => { panic!("A catastrophic jobsystem error has occured. {}", err) },
+                        Err(err) => {
+                            panic!("A catastrophic jobsystem error has occured. {}", err)
+                        },
                     }
 
                     drop(guard);
@@ -111,22 +120,26 @@ fn job_system_thread() -> () {
             Err(err) => { panic!("A catastrophic jobsystem error has occured. {}", err) },
         }
 
-        if outages == 2 { break; }
+        if outages >= 2 && outages <= 6 {
+            thread::yield_now()
+        } else if outages > 6 {
+            break;
+        }
     }
 
-    thread_count.fetch_sub(1, Ordering::SeqCst);
+    THREAD_COUNT.deref().fetch_sub(1, Ordering::SeqCst);
 }
 
 fn refresh_job_system() -> () {
     loop {
         let mut outages = 0;
 
-        match engine_jobs_queued.lock() {
+        match ENGINE_JOBS_QUEUED.deref().lock() {
             Ok(guard) => {
-                let _cmp = thread_count.load(Ordering::SeqCst) < max_thread_count.load(Ordering::SeqCst);
+                let _cmp = THREAD_COUNT.deref().load(Ordering::SeqCst) < MAX_THREAD_COUNT.deref().load(Ordering::SeqCst);
 
                 if guard.deref().len() != 0 && _cmp {
-                    thread_count.fetch_sub(1, Ordering::SeqCst);
+                    THREAD_COUNT.deref().fetch_add(1, Ordering::SeqCst);
                     thread::Builder::new().name("Job System Thread".to_string()).spawn(|| job_system_thread());
 
                     drop(guard);
@@ -139,12 +152,12 @@ fn refresh_job_system() -> () {
             Err(err) => { panic!("A catastrophic jobsystem error has occured. {}", err) },
         }
 
-        match jobs_queued.lock() {
+        match JOBS_QUEUED.deref().lock() {
             Ok(guard) => {
-                let _cmp = thread_count.load(Ordering::SeqCst) < max_thread_count.load(Ordering::SeqCst);
+                let _cmp = THREAD_COUNT.deref().load(Ordering::SeqCst) < MAX_THREAD_COUNT.deref().load(Ordering::SeqCst);
 
                 if guard.deref().len() != 0 && _cmp {
-                    thread_count.fetch_sub(1, Ordering::SeqCst);
+                    THREAD_COUNT.deref().fetch_add(1, Ordering::SeqCst);
                     thread::Builder::new().name("Job System Thread".to_string()).spawn(|| job_system_thread());
 
                     drop(guard);
@@ -171,7 +184,7 @@ fn wait_to_stop_executing(id: u64, iters: u8) -> CompleteResult {
     while iters != 0 {
         iters -= 1;
 
-        loop { match jobs_executing.lock() {
+        loop { match JOBS_EXECUTING.deref().lock() {
             Ok(mut guard) => {
                 guard.deref_mut().make_contiguous();
                 for i in guard.deref().as_slices().0 {
@@ -195,7 +208,7 @@ fn wait_to_start_executing_engine(id: u64) -> CompleteResult {
     while iters != 0 {
         iters -= 1;
 
-        loop { match engine_jobs_queued.lock() {
+        loop { match ENGINE_JOBS_QUEUED.deref().lock() {
             Ok(mut guard) => {
                 guard.deref_mut().make_contiguous();
                 for i in guard.deref().as_slices().0 {
@@ -219,7 +232,7 @@ fn wait_to_start_executing(id: u64) -> CompleteResult {
     while iters != 0 {
         iters -= 1;
 
-        loop { match jobs_queued.lock() {
+        loop { match JOBS_QUEUED.deref().lock() {
             Ok(mut guard) => {
                 guard.deref_mut().make_contiguous();
                 for i in guard.deref().as_slices().0 {
@@ -239,19 +252,19 @@ fn wait_to_start_executing(id: u64) -> CompleteResult {
 
 impl JobHandle {
     pub fn complete(&self) -> CompleteResult {
-        match engine_jobs_queued.lock() {
+        match ENGINE_JOBS_QUEUED.deref().lock() {
             Ok(mut guard) => {
                 guard.deref_mut().make_contiguous();
                 for i in guard.deref().as_slices().0 {
                     if i.0 == self.id {
-                        return wait_to_start_executing_engine(self.id);
+                        return wait_to_start_executing_ENGINE(self.id);
                     }
                 }
             },
             Err(err) => { panic!("A catastrophic jobsystem error has occured. {}", err) },
         }
 
-        match jobs_queued.lock() {
+        match JOBS_QUEUED.deref().lock() {
             Ok(mut guard) => {
                 guard.deref_mut().make_contiguous();
                 for i in guard.deref().as_slices().0 {
@@ -263,7 +276,7 @@ impl JobHandle {
             Err(err) => { panic!("A catastrophic jobsystem error has occured. {}", err) },
         }
 
-        match jobs_executing.lock() {
+        match JOBS_EXECUTING.deref().lock() {
             Ok(mut guard) => {
                 guard.deref_mut().make_contiguous();
                 for i in guard.deref().as_slices().0 {
@@ -282,7 +295,7 @@ impl JobHandle {
         let mut found = false;
         let mut executing = false;
         if self.id & (1 << 63) != 0 {
-            match engine_jobs_queued.lock() {
+            match ENGINE_JOBS_QUEUED.deref().lock() {
                 Ok(mut guard) => {
                     guard.deref_mut().make_contiguous();
                     for i in guard.deref().as_slices().0 {
@@ -292,7 +305,7 @@ impl JobHandle {
                 Err(err) => { panic!("A catastrophic jobsystem error has occured. {}", err) },
             }
         } else {
-            match jobs_queued.lock() {
+            match JOBS_QUEUED.deref().lock() {
                 Ok(mut guard) => {
                     guard.deref_mut().make_contiguous();
                     for i in guard.deref().as_slices().0 {
@@ -303,7 +316,7 @@ impl JobHandle {
             }
         }
 
-        match jobs_executing.lock() {
+        match JOBS_EXECUTING.deref().lock() {
             Ok(mut guard) => {
                 guard.deref_mut().make_contiguous();
                 for i in guard.deref().as_slices().0 {
@@ -317,7 +330,7 @@ impl JobHandle {
 
         loop {
             if executing {
-                match jobs_executing.lock() {
+                match JOBS_EXECUTING.deref().lock() {
                     Ok(mut guard) => {
                         guard.deref_mut().make_contiguous();
                         for i in guard.deref().as_slices().0 {
@@ -330,7 +343,7 @@ impl JobHandle {
                 }
             } else {
                 if self.id & (1 << 63) != 0 {
-                    match engine_jobs_queued.lock() {
+                    match ENGINE_JOBS_QUEUED.deref().lock() {
                         Ok(mut guard) => {
                             guard.deref_mut().make_contiguous();
                             for i in guard.deref().as_slices().0 {
@@ -343,7 +356,7 @@ impl JobHandle {
                         Err(err) => { panic!("A catastrophic jobsystem error has occured. {}", err) },
                     }
                 } else {
-                    match jobs_queued.lock() {
+                    match JOBS_QUEUED.deref().lock() {
                         Ok(mut guard) => {
                             guard.deref_mut().make_contiguous();
                             for i in guard.deref().as_slices().0 {

@@ -13,7 +13,7 @@ use std::{
     ops::{Deref, DerefMut},
     sync::Mutex,
 };
-use super::{ComponentHandle, Component, COMPONENTS};
+use super::{ComponentHandle, Component, COMPONENTS, EcsHandle};
 use crate::{SlotMap, internal};
 use lazy_static::lazy_static;
 
@@ -86,20 +86,29 @@ impl EcsHandle for Object {
     }
 
     fn add_component<T>(&mut self) -> ComponentHandle<T> {
-        let new_component = ComponentHandle::new::<T>();
+        if self.is_valid() {
+            let new_component = ComponentHandle::new::<T>();
+            new_component.object = *self;
 
-        new_component.object = *self;
+            unsafe {
+                self.get_mut_internals().unwrap_unchecked().components.push(new_component);
+                new_component.access_mut().unwrap_unchecked().awake();
+            }
 
-        unsafe {
-            self.get_mut_internals().unwrap_unchecked().components.push(new_component);
-            new_component.access_mut().unwrap_unchecked().awake();
+            new_component
+        } else {
+            ComponentHandle::generate_invalid::<T>()
         }
-
-        new_component
     }
 
     fn get_components<T>(&self) -> Option<Vec<ComponentHandle<T>>> {
         todo!();
+    }
+}
+
+impl Any for Object {
+    fn type_id(&self) -> TypeId {
+        TypeId::of::<Object>()
     }
 }
 
