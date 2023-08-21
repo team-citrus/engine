@@ -1,7 +1,7 @@
 /*
 *   name: src/graphics/vkLoad.cpp
 *   origin: Citrus Engine
-*   purpose: Provide the code for engine::internals::Vulkan::vkLoad()
+*   purpose: Provide the code for engine::internals::vkLoad()
 *   author: https://github.com/ComradeYellowCitrusFruit
 *   license: LGPL-3.0-only
 */
@@ -12,44 +12,49 @@
 
 #include <unistd.h>
 #include <dlfcn.h>
+#include "core/XLibglobals.h"
+#define VK_USE_PLATFORM_XLIB_KHR
 
 #else
 
 #include <Windows.h>
-
+#include "core/windowsGlobals.h"
+#define VK_USE_PLATFORM_WIN32_KHR
 #endif
 
+#define VK_NO_PROTOTYPES
 #include <stdlib.h>
 #include <vulkan.h>
-#include "core/errno.hpp"
-#include "core/crash.hpp"
 #include "core/log.hpp"
-#include "core/mem.hpp"
+#include "core/mem.h"
 #include "core/extensions.h"
 #include "core/vector.hpp"
-#include "graphics/vkGlobals.hpp"
-#include "graphics/vkInit.hpp"
+#include "graphics/vkGlobals.h"
+#include "graphics/vkInit.h"
+#include "graphics/vkCall.h"
 
-using namespace engine;
-using namespace internals;
+dllptr_t libvulkan;
 
-dllptr_t Vulkan::libvulkan;
+vkGIPA_t vkGetInstanceProcAddrPtr;
+vkGDPA_t vkGetDeviceProcAddrPtr;
 
-Vulkan::vkGIPA_t Vulkan::vkGetInstanceProcAddr;
-Vulkan::vkGDPA_t Vulkan::vkGetDeviceProcAddr;
+VkInstance instance;
+VkDevice device;
 
-VkInstance Vulkan::instance;
-VkDevice Vulkan::device;
+VkPhysicalDevice physicalDevice;
+VkPhysicalDeviceProperties physicalDeviceProperties;
+VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
+size_t physicalDeviceVRAM;
 
-VkPhysicalDevice Vulkan::physicalDevice;
-VkPhysicalDeviceProperties Vulkan::physicalDeviceProperties;
-VkPhysicalDeviceMemoryProperties Vulkan::physicalDeviceMemoryProperties;
-size_t Vulkan::physicalDeviceVRAM;
+VkSwapchainKHR swapchain = VK_NULL_HANDLE;
+VkSurfaceKHR surface;
+
+// TODO: Convert to pure C, maybe
 
 static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperties *devP, Vector<VkQueueFamilyProperties> &queueP, VkPhysicalDeviceMemoryProperties &deviceMemoryProperties, size_t &vram)
 {
 	// Get the device properties
-	Vulkan::vkNullCall(STRINGIFY(vkGetPhysicalDeviceProperties), dev, &devP);
+	vkNullCall(STRINGIFY(vkGetPhysicalDeviceProperties), dev, &devP);
 
 	// Don't use a CPU
 	if(devP->deviceType == VK_PHYSICAL_DEVICE_TYPE_CPU)
@@ -59,13 +64,14 @@ static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperti
 
 	int qCount;
 	VkQueueFamilyProperties *qProperties;
-	Vulkan::vkNullCall(STRINGIFY(vkGetPhysicalDeviceQueueFamilyProperties), dev, &qCount, NULL);
+	vkNullCall(STRINGIFY(vkGetPhysicalDeviceQueueFamilyProperties), dev, &qCount, NULL);
 	qProperties = (VkQueueFamilyProperties*)memalloc(sizeof(VkQueueFamilyProperties) * qCount);
-	Vulkan::vkNullCall(STRINGIFY(vkGetPhysicalDeviceQueueFamilyProperties), dev, &qCount, qProperties);
-	for(int i = 0; i < qCount; i++)
-	{
+	vkNullCall(STRINGIFY(vkGetPhysicalDeviceQueueFamilyProperties), dev, &qCount, qProperties);
+
+	for(int i = 0; i < qCount; i++) {
 		queueP.push(qProperties[i]);
 	}
+
 	memfree(qProperties);
 
 	// Perform queue filtering
@@ -73,8 +79,7 @@ static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperti
 	int gSupportCount = 0;
 	int cSupportCount = 0;
 	int tSupportCount = 0;
-	for(int i = 0; i < qCount; i++)
-	{
+	for(int i = 0; i < qCount; i++) {
 		if(queueP[i].queueFlags & VkQueueFlagBits::VK_QUEUE_GRAPHICS_BIT) gSupportCount++;
 		if(queueP[i].queueFlags & VkQueueFlagBits::VK_QUEUE_COMPUTE_BIT) cSupportCount++;
 		if(queueP[i].queueFlags & VkQueueFlagBits::VK_QUEUE_TRANSFER_BIT) tSupportCount++;
@@ -85,20 +90,20 @@ static inline bool deviceEligable(VkPhysicalDevice dev, VkPhysicalDeviceProperti
 	// Perform memory filtering
 
 	vram = 0;
-	Vulkan::vkNullCall(STRINGIFY(vkGetPhysicalDeviceMemoryProperties), dev, &deviceMemoryProperties);
+	vkNullCall(STRINGIFY(vkGetPhysicalDeviceMemoryProperties), dev, &deviceMemoryProperties);
 	for(int i = 0; i < deviceMemoryProperties.memoryHeapCount; i++)
 		vram += deviceMemoryProperties.memoryHeaps[i].size;
-	
+
 	// 1/2 GB as an arbitrary limit in case no other is set
-	
-	if(vram < 
+
+	if(vram <
 		#ifdef _MINIMUM_VRAM_
 		_MINIMUM_VRAM_
 		#else
 		(1024 * 1024 * 512)
 		#endif
 	) return false;
-	
+
 	return true;
 }
 
@@ -108,10 +113,10 @@ static inline int calcDeviceScore(VkPhysicalDeviceProperties devP, Vector<VkQueu
 	int score = 0;
 	score += vram/(1024 * 1024);
 	score += (devP.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ) ? 1 : 0;
-	
+
 	// Could be useful later
 	score += VK_API_VERSION_MAJOR(devP.apiVersion);
-	
+
 	// TODO: Add code that takes devP.limits into account
 	// TODO: Add code that takes queueP into account... somehow
 
@@ -120,55 +125,67 @@ static inline int calcDeviceScore(VkPhysicalDeviceProperties devP, Vector<VkQueu
 
 static inline void countInferiors(Vector<int> &inferiors, Vector<int> deviceScore)
 {
-	for(int i = 0; i < deviceScore.getCount(); i++)
-	{
+	for(int i = 0; i < deviceScore.getCount(); i++) {
 		int count = 0;
-		for(int j = 0; j < deviceScore.getCount(); j++)
-		{
-			if(j != i)
-			{
+		for(int j = 0; j < deviceScore.getCount(); j++) {
+			if(j != i) {
 				count = (deviceScore[i] >= deviceScore[j]) ? count + 1 : count;
 				count = (deviceScore[i] == deviceScore[j] && j < i) ? count - 1 : count;
 			}
 		}
+
 		inferiors.push(count);
 	}
 }
 
-int Vulkan::vkLoad()
+NOMANGLE void graphics_init()
 {
-	#ifdef CITRUS_ENGINE_UNIX
+	#ifdef CITRUS_ENGINE_WINDOWS
 
-	Vulkan::libvulkan = dlopen("libvulkan.so.1", RTLD_NOW | RTLD_GLOBAL);
-	if(Vulkan::libvulkan == NULL)
-	{
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "libvulkan.so.1 not found!");
-		exit(VULKAN_NOT_FOUND);
-	}
-
-	// Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
-	Vulkan::vkGetInstanceProcAddr = (Vulkan::vkGIPA_t)dlsym(Vulkan::libvulkan, STRINGIFY(vkGetInstanceProcAddr));
-	Vulkan::vkGetDeviceProcAddr = (Vulkan::vkGIDA_t)dlsym(Vulkan::libvulkan, STRINGIFY(vkGetDeviceProcAddr));
+	winit();
+	vkLoad();
+	ShowWindow(hwnd, showStyle);
 
 	#else
 
-	Vulkan::libvulkan = LoadLibraryA("Vulkan-1.dll");
-	if(Vulkan::libvulkan == NULL)
-	{
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "Vulkan-1.dll not found!");
-		exit(VULKAN_NOT_FOUND);
+	xinit();
+	vkLoad();
+	XMapWindow(display, window);
+
+	#endif
+}
+
+NOMANGLE int vkLoad()
+{
+	#ifdef CITRUS_ENGINE_UNIX
+
+	libvulkan = dlopen("libvulkan.so.1", RTLD_NOW | RTLD_GLOBAL);
+	if(libvulkan == NULL) {
+		log(STRINGIFY(engine::internals::vkLoad()), "libvulkan.so.1 not found!");
+		exit(-1);
 	}
 
 	// Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
-	Vulkan::vkGetInstanceProcAddr = (Vulkan::vkGIPA_t)GetProcAddress(Vulkan::libvulkan, STRINGIFY(vkGetInstanceProcAddr));
-	Vulkan::vkGetDeviceProcAddr = (Vulkan::vkGDPA_t)GetProcAddress(Vulkan::libvulkan, STRINGIFY(vkGetDeviceProcAddr));
+	vkGetInstanceProcAddrPtr = (vkGIPA_t)dlsym(libvulkan, STRINGIFY(vkGetInstanceProcAddr));
+	vkGetDeviceProcAddrPtr = (vkGIDA_t)dlsym(libvulkan, STRINGIFY(vkGetDeviceProcAddr));
+
+	#else
+
+	libvulkan = LoadLibraryA("Vulkan-1.dll");
+	if(libvulkan == NULL) {
+		log(STRINGIFY(engine::internals::vkLoad()), "Vulkan-1.dll not found!");
+		exit(-1);
+	}
+
+	// Get good ol' vkGetInstanceProcAddr and vkGetDeviceProcAddr
+	vkGetInstanceProcAddrPtr = (vkGIPA_t)GetProcAddress(libvulkan, STRINGIFY(vkGetInstanceProcAddr));
+	vkGetDeviceProcAddrPtr = (vkGDPA_t)GetProcAddress(libvulkan, STRINGIFY(vkGetDeviceProcAddr));
 
 	#endif
 
-	if(vkGetInstanceProcAddr == NULL || vkGetDeviceProcAddr == NULL)
-	{
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "Failure to load critical Vulkan functions!");
-		exit(VK_LOAD_FAILURE);
+	if(vkGetInstanceProcAddrPtr == NULL || vkGetDeviceProcAddrPtr == NULL) {
+		log(STRINGIFY(engine::internals::vkLoad()), "Failure to load critical Vulkan functions!");
+		exit(-1);
 	}
 
 	// Initalize Vulkan
@@ -177,29 +194,29 @@ int Vulkan::vkLoad()
 
 	VkApplicationInfo aInfo;
 	aInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-	// _APPLICATION_NAME_ defined during compilation
 	// TODO: info.pApplicationName = ;
 	// TODO: info.applicationVersion = ;
 	aInfo.pNext = NULL;
 	aInfo.pEngineName = "Citrus Engine Builtin Vulkan Render Engine";
-	// _CITRUS_ENGINE_VERSION_ defined during compilation
-	aInfo.engineVersion = _CITRUS_ENGINE_VERSION_;
+	aInfo.engineVersion = (0xec << 24) | (1 << 8); // This variant of the Citrus Engine always has a variant number of 0xec
 	aInfo.apiVersion = VK_VERSION_1_0;
 
 	// Vulkan instance creation info
 
 	VkInstanceCreateInfo iInfo;
+	const char VK_KHR_swapchain_str[] = "VK_KHR_swapchain";
+	const char VK_KHR_surface_str[] = "VK_KHR_surface";
+	const char *extensionNames[] = {VK_KHR_swapchain_str, VK_KHR_surface_str};
 	iInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	iInfo.pApplicationInfo = &aInfo;
 	// TODO: Add the layer information.
-	iInfo.enabledExtensionCount = 0;
-	iInfo.ppEnabledExtensionNames = NULL;
+	iInfo.enabledExtensionCount = 2;
+	iInfo.ppEnabledExtensionNames = extensionNames;
 
 	// Initalize the instance
-	if(Vulkan::vkNullCall(STRINGIFY(vkCreateInstance), 0, &iInfo, NULL, &Vulkan::instance) != VK_SUCCESS)
-	{
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "Failure to create Vulkan instance!");
-		exit(VK_LOAD_FAILURE);
+	if(vkNullCall(STRINGIFY(vkCreateInstance), 0, &iInfo, NULL, &instance) != VK_SUCCESS) {
+		log(STRINGIFY(engine::internals::vkLoad()), "Failure to create Vulkan instance!");
+		exit(-1);
 	}
 
 	// TODO: Validation layers
@@ -209,17 +226,16 @@ int Vulkan::vkLoad()
 	// Get the count
 
 	int devCount = 0;
-	vkInstanceCall(STRINGIFY(vkEnumeratePhysicalDevices), Vulkan::instance, Vulkan::instance, &devCount, NULL);
-	if(devCount == 0) 
-	{
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "No (Vulkan supporting) GPUs found!");
-		exit(VK_COMPATIBLE_GPU_NOT_FOUND);
+	vkInstanceCall(STRINGIFY(vkEnumeratePhysicalDevices), instance, instance, &devCount, NULL);
+	if(devCount == 0) {
+		log(STRINGIFY(engine::internals::vkLoad()), "No (Vulkan supporting) GPUs found!");
+		exit(-1);
 	}
 
 	// Get the handles
 
 	VkPhysicalDevice *devices = (VkPhysicalDevice*)memalloc(sizeof(VkPhysicalDevice) * devCount);
-	vkInstanceCall(STRINGIFY(vkEnumeratePhysicalDevices), Vulkan::instance, Vulkan::instance, &devCount, devices);
+	vkInstanceCall(STRINGIFY(vkEnumeratePhysicalDevices), instance, instance, &devCount, devices);
 
 	// Filter out all of the eligible devices
 
@@ -229,8 +245,7 @@ int Vulkan::vkLoad()
 	Vector<VkPhysicalDeviceMemoryProperties> deviceMemoryProperties;
 	Vector<size_t> deviceVram;
 	Vector<int> deviceScore;
-	for(int i = 0; i < devCount; i++)
-	{
+	for(int i = 0; i < devCount; i++) {
 		VkPhysicalDeviceProperties p;
 		Vector<VkQueueFamilyProperties> qp;
 		VkPhysicalDeviceMemoryProperties mp;
@@ -247,17 +262,15 @@ int Vulkan::vkLoad()
 	}
 	memfree(devices);
 
-	if(!eligibleDevices.getCount())
-	{
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "No eligible GPUs found");
-		exit(VK_COMPATIBLE_GPU_NOT_FOUND);
+	if(!eligibleDevices.getCount()) {
+		log(STRINGIFY(engine::internals::vkLoad()), "No eligible GPUs found");
+		exit(-1);
 	}
 
 	// Evaluate the devices
 
 	// TODO: Optimize this code
-	while(eligibleDevices.getCount() != 1)
-	{
+	while(eligibleDevices.getCount() != 1) {
 		// Vector for counting each device and what it has a higher score than
 		Vector<int> deviceInferiorCount;
 		countInferiors(deviceInferiorCount, deviceScore);
@@ -265,11 +278,9 @@ int Vulkan::vkLoad()
 		// Set to true everytime something isn't removed
 		bool repeat = true;
 
-		for(int i = 0; i < deviceInferiorCount.getCount(); i++)
-		{
+		for(int i = 0; i < deviceInferiorCount.getCount(); i++) {
 			// Filter out everything that isn't better than something
-			if(deviceInferiorCount[i] == 0)
-			{
+			if(deviceInferiorCount[i] == 0) {
 				eligibleDevices.rm(i);
 				deviceProperties.rm(i);
 				deviceQueueProperties.rm(i);
@@ -282,23 +293,18 @@ int Vulkan::vkLoad()
 		}
 
 		// Break tie by selecting first dedicated (non integrated) GPU found, if none are found, fall back on first GPU found.
-		if(repeat)
-		{
+		if(repeat) {
 			VkPhysicalDevice dev = eligibleDevices[0];
 
-			for(int i = 0; i < deviceProperties.getCount(); i++)
-			{
-				if(deviceProperties[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU || deviceProperties[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU)
-				{
+			for(int i = 0; i < deviceProperties.getCount(); i++) {
+				if(deviceProperties[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU || deviceProperties[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU) {
 					dev = eligibleDevices[i];
 					break;
 				}
 			}
 
-			for(int i = 0; i < eligibleDevices.getCount(); i++)
-			{
-				if(eligibleDevices[i] != dev)
-				{
+			for(int i = 0; i < eligibleDevices.getCount(); i++) {
+				if(eligibleDevices[i] != dev) {
 					eligibleDevices.rm(i);
 					deviceProperties.rm(i);
 					deviceQueueProperties.rm(i);
@@ -312,19 +318,19 @@ int Vulkan::vkLoad()
 
 	// Load the globals for the physical device
 
-	Vulkan::physicalDevice = eligibleDevices[0];
-	Vulkan::physicalDeviceProperties = deviceProperties[0];
-	Vulkan::physicalDeviceMemoryProperties = deviceMemoryProperties[0];
-	Vulkan::physicalDeviceVRAM = deviceVram[0];
+	physicalDevice = eligibleDevices[0];
+	physicalDeviceProperties = deviceProperties[0];
+	physicalDeviceMemoryProperties = deviceMemoryProperties[0];
+	physicalDeviceVRAM = deviceVram[0];
 
 	// Log the choice
 
-	log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "Selected GPU: %s", deviceProperties[0].deviceName);
+	log(STRINGIFY(vkLoad()), "Selected GPU: %s", deviceProperties[0].deviceName);
 
 	// TODO: Add code to update the version and select the Vulkan function
 
 	// Create the logical device
-	
+
 	VkDeviceCreateInfo devInfo;
 	VkDeviceQueueCreateInfo queueMkInfo;
 	VkPhysicalDeviceFeatures devFeatures;
@@ -336,10 +342,67 @@ int Vulkan::vkLoad()
 	// TODO: handle extensions and layers
 	// TODO: select device features
 
-	if(Vulkan::vkNullCall(STRINGIFY(vkCreateDevice), Vulkan::physicalDevice, &devInfo, &device) != VK_SUCCESS)
-	{
-		log(STRINGIFY(engine::internals::Vulkan::vkLoad()), "Failure to create the logical device");
-		exit(VK_LOAD_FAILURE);
+	if(vkNullCall(STRINGIFY(vkCreateDevice), physicalDevice, &devInfo, &device) != VK_SUCCESS) {
+		log(STRINGIFY(vkLoad()), "Failure to create the logical device");
+		exit(-1);
 	}
 
+	#ifdef CITRUS_ENGINE_WINDOWS
+
+	VkWin32SurfaceCreateInfoKHR surfaceCreateInfo;
+	surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+	surfaceCreateInfo.pNext = NULL;
+	surfaceCreateInfo.flags = 0;
+	surfaceCreateInfo.hinstance = hinstance;
+	surfaceCreateInfo.hwnd = hwnd;
+
+	if(vkInstanceCall(STRINGIFY(vkCreateWin32SurfaceKHR), instance, &surfaceCreateInfo, NULL, &surface) != VK_SUCCESS) {
+		log(STRINGIFY(vkLoad()), "Failure to create the swapchain surface");
+		exit(-1);
+	}
+
+	#else
+
+	VkXlibSurfaceCreateInfoKHR surfaceCreateInfo;
+	surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
+	surfaceCreateInfo.pNext = NULL;
+	surfaceCreateInfo.flags = 0;
+	surfaceCreateInfo.dpy = display;
+	surfaceCreateInfo.window = window;
+
+	if(vkInstanceCall(STRINGIFY(vkCreateXlibSurfaceKHR), instance, &surfaceCreateInfo, NULL, &surface) != VK_SUCCESS) {
+		log(STRINGIFY(vkLoad()), "Failure to create the swapchain surface");
+		exit(-1);
+	}
+
+	#endif
+
+	vkCreateSwapChain(0, 0); // TODO: real values
+}
+
+void vkCreateSwapChain(int width, int height)
+{
+	VkSwapchainCreateInfoKHR swapInfo;
+	swapInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+	swapInfo.pNext = NULL;
+	swapInfo.flags = 0;
+	swapInfo.surface = surface;
+	swapInfo.minImageCount = 3; // Triple buffering
+	swapInfo.imageFormat = VK_FORMAT_B8G8R8A8_SRGB; // TODO: Check for color support
+	swapInfo.imageColorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+	swapInfo.imageExtent = { (uint32_t)width, (uint32_t)height } ;
+	swapInfo.imageUsage = VK_IMAGE_USAGE_TRANSFER_DST_BIT; // post-processing + bliting with UI
+	swapInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	swapInfo.queueFamilyIndexCount = 0;
+	swapInfo.pQueueFamilyIndices = NULL;
+	swapInfo.preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+	swapInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR; // TODO: option to change this
+	swapInfo.presentMode = VK_PRESENT_MODE_MAILBOX_KHR; // TODO: Vsync + framerate detection
+	swapInfo.clipped = VK_TRUE;
+	swapInfo.oldSwapchain = swapchain;
+
+	if(vkDeviceCall(STRINGIFY(vkCreateSwapchainKHR), device, &swapInfo, NULL, &swapchain) != VK_SUCCESS) {
+		log(STRINGIFY(vkCreateSwapChain()), "Failure to create the swapchain");
+		exit(-1);
+	}
 }

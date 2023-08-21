@@ -50,85 +50,81 @@ typedef double f64;
 
 #ifdef __cplusplus
 
-namespace engine
+u8 abs(u8 a)
 {
-	u8 abs(u8 a)
-	{
-		return a;
-	}
-
-	u16 abs(u16 a)
-	{
-		return a;
-	}
-
-	u32 abs(u32 a)
-	{
-		return a;
-	}
-
-	u64 abs(u64 a)
-	{
-		return a;
-	}
-
-	i8 abs(i8 a)
-	{
-		return (a & (1 << 7)) ? ~a + 1 : a;
-	}
-
-	i16 abs(i16 a)
-	{
-		return (a & (1 << 15)) ? ~a + 1 : a;
-	}
-
-	i32 abs(i32 a)
-	{
-		return (a & (1 << 31)) ? ~a + 1 : a;
-	}
-
-	i64 abs(i64 a)
-	{
-		return (a & (1 << 63)) ? ~a + 1 : a;
-	}
-
-	f32 abs(f32 a)
-	{
-		return (a < 0.0f) ? a * -1.0f : a;
-	}
-
-	f64 abs(f64 a)
-	{
-		return (a < 0.0) ? a * -1.0 : a;
-	}
-
-	template <typename T>
-	T pow(T a, int power)
-	{
-		return (power) ? a * pow(a, power - 1) : (T)1;
-	}
-
-	template <typename T, constexpr int power>
-	constexpr T pow(const T a)
-	{
-		return a * pow<T, power - 1>(a);
-	}
-
-	template <typename T>
-	constexpr T pow<T, 1>(const T a)
-	{
-		return a;
-	}
-
-	template <typename T>
-	constexpr T pow<T, 0>(const T a)
-	{
-		return (T)1;
-	}
-
-	// TODO: sqrt and isqrt
-
+	return a;
 }
+
+u16 abs(u16 a)
+{
+	return a;
+}
+
+u32 abs(u32 a)
+{
+	return a;
+}
+
+u64 abs(u64 a)
+{
+	return a;
+}
+
+i8 abs(i8 a)
+{	
+	return (a & (1 << 7)) ? ~a + 1 : a;
+}
+
+i16 abs(i16 a)
+{
+	return (a & (1 << 15)) ? ~a + 1 : a;
+}
+
+i32 abs(i32 a)
+{
+	return (a & (1 << 31)) ? ~a + 1 : a;
+}
+
+i64 abs(i64 a)
+{
+	return (a & (1 << 63)) ? ~a + 1 : a;
+}
+
+f32 abs(f32 a)
+{
+	return (a < 0.0f) ? a * -1.0f : a;
+}
+
+f64 abs(f64 a)
+{
+	return (a < 0.0) ? a * -1.0 : a;
+}
+
+template <typename T>
+T pow(T a, int power)
+{
+	return (power) ? a * pow(a, power - 1) : (T)1;
+}
+
+template <typename T, int power>
+constexpr T pow(const T a)
+{
+	return a * pow<T, power - 1>(a);
+}
+
+template <typename T>
+constexpr T pow<T, 1>(const T a)
+{
+	return a;
+}
+
+template <typename T>
+constexpr T pow<T, 0>(const T a)
+{
+	return (T)1;
+}
+
+// TODO: sqrt and isqrt
 
 #endif
 

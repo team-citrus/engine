@@ -1,12 +1,10 @@
-# The Citrus Engine
+# The Ecosystem Citrus Engine
 
-The Citrus Engine, a game engine originally created for the Team Citrus project.
+The Ecosystem Variant of the Citrus Engine, created for the Citrus Engine.
+This will be used in the Citrus Game itself, and is highly optimized for it.
+As a bonus, it also demonstrates how the Citrus Engine can be adapted for your needs.
 
-For this game engine, we have a simple goal in mind, **we want to create a simple, extendable, well documented, game engine**.
-We also intend to use this game engine in our future projects, and hope others adopt it as well.
-As well, by making the engine free software, we hope to set a precident in the game development world.
-
-***If you are looking to contribute, the style guide can be found at docs/style.md, and the contributing guide can be found at docs/contrib.md.***
+***If you are looking for [the main Citrus Engine, it can be found here](https://github.com/team-citrus/engine/)***
 
 ## Compiling requirements
 
@@ -16,87 +14,37 @@ As well, by making the engine free software, we hope to set a precident in the g
 - GLM
 - box2d
 - Bullet3
-- G++, or compatible C++ compiler (ie. clang, icc)
+- GNU Compiler Collection (+ mingw-w64 on windows)
+- Cargo
 
 ## TODOs
 
-### High priority - ASAP
-
-- [x] Integrate the Soloud sources into the engine
 - [ ] Document stuff
   - [ ] Doxygen comments in the source code
   - [ ] Documenetation of design choices and functionality.
 - [ ] Write the graphics API
   - [ ] Write the UI API
-- [ ] Write the phyics API
-  - [x] Box2d
-  - [ ] Bullet3
-  - [ ] Generalization of the physics API
 - [ ] Write the core API
   - [x] Write the input system
   - [ ] Meshes, verts, etc
     - [ ] Write or otherwise adopt a FBX loader
     - [ ] Write or otherwise adopt a binary format glTF loader
-    - [ ] `engine::Mesh`
-      - [ ] Vertex groups
+    - [ ] `mesh::Mesh`
       - [ ] Bones
-    - [ ] `engine::MeshRenderer`
-      - [ ] Possibly `engine::SkinedMeshRenderer`
-- [x] Write replacement functions and classes for some standard library functions and classes
-  - [x] `engine::Vector<T>`
-    - [ ] `std::vector<T>` compatibility
-  - [x] `engine::Pair<A, B>`
-    - [x] `std::pair<T1, T2>` compatibility
-  - [x] `engine::Map<A, B>`
-    - [ ] `std::map<Key, T>` compatibilty
-  - [ ] `engine::HashMap<K, T>`
-    - [ ] `std::unordered_map<Key, T>` compatibility
-    - [ ] Optimization
-      - [ ] Customization support
-  - [ ] `engine::String`
-    - [ ] `std::string` semi-compatibility
+        - [x] Vertex Weights
+        - [ ] Other Bone data
+    - [ ] `mesh::MeshRenderer`
+- [x] Convert the project into Rust, with memory allocation and render code written in mixed C and C++.
 - [ ] Create the rendering pipeline
 - [ ] Create the main loop
   - [x] `main()`
   - [x] `gameplayMain()`
-  - [x] `physmain()`
   - [ ] `draw()`/`Vulkan::vkDraw()`
   - [ ] `mix()`
-
-### Medium priority - Before the next full release
-
-- [ ] Write a proper readme
-- [ ] Multi-arch support/Portability (Should be considered between medium and high priority)
-  - [ ] Generic implementations of CPU specific code (except AES)
-  - [ ] More detailed build options for different platforms
-  - [ ] Optimization headers/APIs for different platforms and extensions
-    - [x] SSE4.2
-    - [x] AVX
-    - [x] AVX2
-    - [ ] AVX512
-    - [ ] SVE
-    - [ ] SVE2
-    - [x] Neon
-      - [ ] SSE compatibility layer
-    - [ ] C++ versions
-  - [ ] AArch64 optimizations
-  - [x] AMD64 optimizations
-- [ ] Mult-platoform support/Portability
+- [ ] Multi-platform support/Portability
   - [x] Linux support
   - [x] Windows support
-  - [ ] Generic BSD/*nix support
-  - [ ] MacOS Support (low prority, just here for organizational purposes)
-- [ ] Rust suport (Should be considered between medium and high priority)
-
-### Low priority (within the next few releases)
-
-- [ ] Raytracing rendering for Vulkan (Should be considered between medium and low priority)
-- [ ] Mobile support
-  - [ ] iOS (after MacOS support in terms of prority)
-  - [ ] Android (between *nix support and MacOS support in terms of prority)
-- [ ] VR support
-- [ ] IR support
-- [ ] C# support
+  - [ ] Generic BSD/\*nix suppor
 
 ### Should we somehow get the chance
 
