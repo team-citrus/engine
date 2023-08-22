@@ -16,21 +16,5 @@ extern "C" fn graphics_init() -> ();
 
 pub fn render() -> () {
     graphics_init();
-    loop {
-        while is_gameplay_executing {
-            let obj_ctr = object_counter.load(Ordering::SeqCst);
-            let obj_cnt = object_count.load(Ordering::SeqCst);
-            if obj_ctr == 0 || obj_cnt == 0 || ((obj_ctr as f32)/(obj_cnt as f32) < 0.75) {
-                let dur = Duration::from_millis(5);
-                thread::sleep(dur);
-            } else {
-                asm!("pause",);
-            }
-        }
-
-        vk_draw();
-
-        is_render_executing.store(false, Ordering::SeqCst);
-        waste_cpu_cycles(2000);
-    }
+    
 }

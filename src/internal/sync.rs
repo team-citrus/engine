@@ -6,9 +6,16 @@
 *   license: LGPL-3.0-only
 */
 
-use std::sync::atomic::{AtomicBool, AtomicI32};
+use std::sync::{atomic::{AtomicBool, AtomicI32}, Mutex};
+use lazy_static::lazy_static;
 
-static is_render_executing: AtomicBool;
-static is_gameplay_executing: AtomicBool;
-static object_counter: AtomicI32;
-static object_count: AtomicI32;
+pub(super) enum Executing {
+    Gameplay, Render, Physics, None,
+}
+
+lazy_static! {
+    pub(super) static ref EXECUTING_MUTEX: Mutex<Executing> = Mutex::new(Executing::None);
+    pub(super) static ref ECS_ITER_MUTEX: Mutex<Executing> = Mutex::new(Executing::None);
+    pub(super) static ref NEW_SCENE_LOADING: AtomicBool = AtomicBool::new(true);
+    pub(super) static ref SCENE_CODE: AtomicI32 = AtomicI32::new(0);
+}

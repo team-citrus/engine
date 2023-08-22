@@ -7,44 +7,32 @@
 */
 
 use std::{arch::asm, sync::{atomic::Ordering, Mutex}};
-use crate::ecs::object::Object;
-
+use crate::ecs::*;
 use super::sync;
+use lazy_static::lazy_static;
 
 #[no_mangle]
 // Unfortunately, Rust doesn't let you disable optimization inside a single function, so we have to use external assembly.
-extern "C" pub(crate) fn waste_cpu_cycles(cycles: i32);
+pub(crate) extern "C" fn waste_cpu_cycles(cycles: i32);
 
-struct Scene {
-    objects: Vec<Object>,
-    id: usize
+lazy_static! {
+    pub(crate) static ref OBJECTS_FOR_DEATH: Mutex<Vec<i32>> = {
+        Mutex::new(Vec::with_capacity(32))
+    };
+    pub(crate) static ref COMPONENTS_FOR_DEATH: Mutex<Vec<i32>> = {
+        Mutex::new(Vec::with_capacity(32))
+    };
+    pub(crate) static ref COMPONENTS_ON_START: Mutex<Vec<i32>> = {
+        Mutex::new(Vec::with_capacity(32))
+    };
 }
 
-static scenes: Vec<Mutex<Scene>>;
-
 pub fn gameplay_main() -> () {
-    let cur_scene: *mut Scene; // TODO: default scene.
+    // TODO: scene loading, etc.
 
     loop {
-        // TODO: Keyboard stuff
-        // TODO: load scene.
 
-        let scene_ref:&mut Scene = unsafe { &mut *cur_scene };
 
-        while is_render_executing.load(Ordering::SeqCst) {
-            asm!("pause",);
-        }
-        is_gameplay_executing.store(true, Ordering::SeqCst);
-
-        object_counter.store(0, Ordering::SeqCst);
-
-        for obj in scene_ref.objects.as_mut_slice() {
-            for c in obj.components.as_mut_slice() {
-                c.deref().update();
-            }
-        }
-
-        is_gameplay_executing.store(false, Ordering::SeqCst);
-        waste_cpu_cycles(50);
+        // TODO: scene unloading, ECS unloading, etc.
     }
 }
