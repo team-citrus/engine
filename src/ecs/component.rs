@@ -7,7 +7,7 @@
 */
 
 use super::{Object, EcsHandle};
-use crate::SlotMap;
+use crate::{SlotMap, internal::gameplay::COMPONENTS_FOR_DEATH};
 use std::{
     any::{Any, TypeId},
     marker::{Sized, Copy},
@@ -15,7 +15,7 @@ use std::{
     cmp::{PartialEq, Eq},
     clone::Clone,
     boxed::Box,
-    mem::MaybeUninit,
+    mem::{MaybeUninit, drop},
     sync::Mutex,
 };
 use lazy_static::lazy_static;
@@ -61,7 +61,12 @@ pub trait Component: Any + Sized {
 impl<C> EcsHandle for ComponentHandle<C> {
     fn destroy(&mut self) {
         if self.is_valid() {
-            // TODO: mark for death
+            match COMPONENTS_FOR_DEATH.deref().lock() {
+                Ok(mut guardia) => {
+                    guardia.deref_mut().push(self.code);
+                },
+                Err(_) => { panic!("The whole thing broke!") }
+            }
         }
     }
 
@@ -164,6 +169,23 @@ impl<C> ComponentHandle<C> {
                 unsafe { MaybeUninit::<C>::zeroed().assume_init() }
             ),
             object: Object { magic_number: 0, code: 0 }
+        }
+    }
+}
+
+pub(in super::internal::gameplay) fn terminate_component(code: i32) {
+    match *COMPONENTS.lock() {
+        Ok(mut guardia) => {
+            match guardia.deref_mut().remove(code) {
+                Some(component) => {
+                    *component.on_death();
+                    drop(component);
+                },
+                None => {}
+            }
+        },
+        Err(_) => {
+            panic!("ECS broke!");
         }
     }
 }

@@ -6,9 +6,9 @@
 *   license: LGPL-3.0-only
 */
 
-use std::{arch::asm, sync::{atomic::Ordering, Mutex}};
+use std::{arch::asm, sync::{atomic::Ordering, Mutex}, ops::{Deref, DerefMut}};
 use crate::ecs::*;
-use super::sync;
+use super::sync::{self, NEW_SCENE_LOADING};
 use lazy_static::lazy_static;
 
 #[no_mangle]
@@ -27,11 +27,37 @@ lazy_static! {
     };
 }
 
+fn loop_inner() -> () {
+    // First thing's first, handle everything marked for death.
+    
+    match *OBJECTS_FOR_DEATH.lock() {
+        Ok(mut guardia) => {
+            for i in *guardia {
+                terminate_object(i);
+            }
+            *guardia.clear();
+        },
+        Err(_) => { panic!("The whole damn thing broke!") }
+    }
+
+    match *COMPONENTS_FOR_DEATH.lock() {
+        Ok(mut guardia) => {
+            for i in *guardia {
+                terminate_component(i);
+            }
+            *guardia.clear();
+        },
+        Err(_) => { panic!("The whole damn thing broke!") }
+    }
+}
+
 pub fn gameplay_main() -> () {
     // TODO: scene loading, etc.
 
     loop {
-
+        while *NEW_SCENE_LOADING.load(Ordering::SeqCst) == false {
+            loop_inner();
+        }
 
         // TODO: scene unloading, ECS unloading, etc.
     }

@@ -14,7 +14,7 @@ use std::{
     sync::Mutex,
 };
 use super::{ComponentHandle, Component, COMPONENTS, EcsHandle};
-use crate::{SlotMap, internal};
+use crate::{SlotMap, internal, internal::gameplay::COMPONENTS_FOR_DEATH, internal::gameplay::OBJECTS_FOR_DEATH};
 use lazy_static::lazy_static;
 
 const OBJECT_HANDLE_MAGIC_NUMBER: i32 = 0x911628b5;
@@ -34,13 +34,18 @@ pub struct Object {
 pub(crate) struct ObjectInternals {
     parent: Object,
     components: Vec<ComponentHandle<dyn Component>>,
-    children: Vec<ComponentHandle<Object>>
+    children: Vec<Object>
 }
 
 impl EcsHandle for Object {
     fn destroy(&mut self) {
         if self.is_valid() {
-            // TODO: mark for death
+            match OBJECTS_FOR_DEATH.deref().lock() {
+                Ok(mut guardia) => {
+                    guardia.deref_mut().push(self.code);
+                },
+                Err(_) => { panic!("The whole damn thing is broke!") }
+            }
         }
     }
 
@@ -61,11 +66,12 @@ impl EcsHandle for Object {
     }
 
     fn get_component<T>(&self) -> ComponentHandle<T> {
+        let mut handle = ComponentHandle::generate_invalid::<T>();
+
         if self.magic_number == OBJECT_HANDLE_MAGIC_NUMBER {
             match self.get_internals() {
                 Some(internal) => {
                     let type_id = TypeId::of::<ComponentHandle<T>>();
-                    let mut handle = ComponentHandle::generate_invalid::<T>();
 
                     for i in internal.components.iter() {
                         if type_id == i.type_id() {
@@ -73,12 +79,12 @@ impl EcsHandle for Object {
                             break;
                         }
                     }
-
-                    handle
                 },
-                None => ComponentHandle::generate_invalid::<T>()
+                None => {}
             }
         }
+
+        handle
     }
 
 	fn get_object<T>(&self) -> Object {
@@ -146,4 +152,27 @@ impl Object {
     }
 
     // TODO: algunas cosas mas
+}
+
+pub(in super::internal::gameplay) fn terminate_object(code: i32) -> () {
+    match *OBJECTS.lock() {
+        Ok(mut guardia) => {
+            match guardia.deref_mut().remove(code) {
+                Some(object) => {
+                    for i in object.children {
+                        i.destroy();
+                    }
+                    for i in object.components {
+                        i.destroy();
+                    }
+
+                    drop(object);
+                },
+                None => {}
+            }
+        },
+        Err(_) => {
+            panic!("ECS broke!");
+        }
+    }
 }

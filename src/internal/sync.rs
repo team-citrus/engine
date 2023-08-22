@@ -15,7 +15,6 @@ pub(super) enum Executing {
 
 lazy_static! {
     pub(super) static ref EXECUTING_MUTEX: Mutex<Executing> = Mutex::new(Executing::None);
-    pub(super) static ref ECS_ITER_MUTEX: Mutex<Executing> = Mutex::new(Executing::None);
     pub(super) static ref NEW_SCENE_LOADING: AtomicBool = AtomicBool::new(true);
     pub(super) static ref SCENE_CODE: AtomicI32 = AtomicI32::new(0);
 }
