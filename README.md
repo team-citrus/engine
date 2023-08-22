@@ -1,55 +1,79 @@
-# The Ecosystem Citrus Engine
+# The Citrus Engine
 
-The Ecosystem Variant of the Citrus Engine, created for the Citrus Engine.
-This will be used in the Citrus Game itself, and is highly optimized for it.
-As a bonus, it also demonstrates how the Citrus Engine can be adapted for your needs.
+The Citrus Engine, a game engine originally created for the Team Citrus project.
 
-***If you are looking for [the main Citrus Engine, it can be found here](https://github.com/team-citrus/engine/)***
+For this game engine, we have a simple goal in mind, **we want to create a simple, extendable, well documented, game engine**.
+We also intend to use this game engine in our future projects, and hope others adopt it as well.
+As well, by making the engine free software, we hope to set a precident in the game development world.
+
+***If you are looking to contribute, the style guide can be found at docs/style.md, and the contributing guide can be found at docs/contrib.md.***
 
 ## Compiling requirements
 
-- Python
-- SCons
 - Vulkan SDK
-- GLM
-- box2d
-- Bullet3
-- GNU Compiler Collection (+ mingw-w64 on windows)
-- Cargo
+- g++, or compatible C++ compiler (ie. clang, icc)
+- gcc, or compatible C compiler (ie. clang, icc)
+- cargo
+- cmake
 
 ## TODOs
 
+### High priority - ASAP
+
+- [ ] Convert the remaining C++ to C
 - [ ] Document stuff
   - [ ] Doxygen comments in the source code
   - [ ] Documenetation of design choices and functionality.
 - [ ] Write the graphics API
   - [ ] Write the UI API
+- [ ] Write the phyics API
+  - [ ] Box2d
+  - [ ] Bullet3
+  - [ ] Restore `physmain()`
 - [ ] Write the core API
-  - [x] Write the input system
+  - [ ] Write the input system
+    - [ ] Keyboard
+    - [ ] Mouse
+    - [ ] Controller
   - [ ] Meshes, verts, etc
     - [ ] Write or otherwise adopt a FBX loader
     - [ ] Write or otherwise adopt a binary format glTF loader
-    - [ ] `mesh::Mesh`
+    - [ ] `mesh`
+      - [ ] Vertex groups
       - [ ] Bones
-        - [x] Vertex Weights
-        - [ ] Other Bone data
-    - [ ] `mesh::MeshRenderer`
-- [x] Convert the project into Rust, with memory allocation and render code written in mixed C and C++.
+    - [ ] `mesh_renderer`
 - [ ] Create the rendering pipeline
 - [ ] Create the main loop
   - [x] `main()`
-  - [x] `gameplayMain()`
+  - [x] `ecs_execute()`
+  - [x] `physmain()`
   - [ ] `draw()`/`Vulkan::vkDraw()`
   - [ ] `mix()`
-- [ ] Multi-platform support/Portability
+
+### Medium priority - Before the next full release
+
+- [ ] Write a proper readme
+- [ ] Multi-arch support/Portability (Should be considered between medium and high priority)
+  - [ ] Generic implementations of CPU specific code (except AES)
+  - [ ] More detailed build options for different platforms
+  - [ ] AArch64 optimizations
+  - [x] AMD64 optimizations
+- [ ] Mult-platoform support/Portability
   - [x] Linux support
   - [x] Windows support
-  - [ ] Generic BSD/\*nix suppor
+  - [ ] Generic BSD/*nix support
+  - [ ] MacOS Support (low prority, just here for organizational purposes)
+
+### Low priority - within the next few releases
+
+- [ ] Raytracing rendering for Vulkan (Should be considered between medium and low priority)
+- [ ] Mobile support
+  - [ ] iOS (after MacOS support in terms of prority)
+  - [ ] Android (between *nix support and MacOS support in terms of prority)
+- [ ] VR support
+- [ ] IR support
+- [ ] C# support
 
 ### Should we somehow get the chance
 
 - [ ] Console support
-
-## Disclaimers
-
-All of the files located in soloud/ and include/sys/soloud are modified versions of files orginially created for the [SoLoud audio engine](https://github.com/jarikomppa/soloud).
