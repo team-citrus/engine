@@ -15,7 +15,7 @@ pub fn enter_threads() -> () {
 
     // There is a behind the scenes audio thread that we have no control over, not even soloud does.
     // We simply have to trust soloud to do what is best for us.
-    sound::internals::init_soloud();
+    crate::sound::internals::init_soloud();
     
     thread::spawn(|| render::render());
     gameplay();

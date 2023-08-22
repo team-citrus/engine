@@ -173,7 +173,7 @@ impl<C> ComponentHandle<C> {
     }
 }
 
-pub(in super::internal::gameplay) fn terminate_component(code: i32) {
+pub(in crate::internal::gameplay) fn terminate_component(code: i32) {
     match *COMPONENTS.lock() {
         Ok(mut guardia) => {
             match guardia.deref_mut().remove(code) {

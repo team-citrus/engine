@@ -89,7 +89,7 @@ impl Sound {
         let mut wav = audio::Wav::default();
         wav.load_mem(__citrus_engine_vendor_file_to_slice(self.file.as_bytes().as_ptr() as *const c_char, 0)).unwrap();
 
-        match audio_engine.lock() {
+        match AUDIO_ENGINE.lock() {
             Ok(mut guard) => {
                 if self.is3d {
                     self.handle = match self.parent {
@@ -125,7 +125,7 @@ impl Sound {
         let mut wav = audio::Wav::default();
         wav.load_mem(__citrus_engine_vendor_file_to_slice(self.file.as_bytes().as_ptr() as *const c_char, 0)).unwrap();
 
-        match audio_engine.lock() {
+        match AUDIO_ENGINE.lock() {
             Ok(mut guard) => {
                 if self.is3d {
                     self.handle = match self.parent {
@@ -158,7 +158,7 @@ impl Sound {
     }
 
     pub fn pause(&mut self) -> () {
-        match audio_engine.lock() {
+        match AUDIO_ENGINE.lock() {
             Ok(guard) => { guard.deref().pause(self.handle) },
             Err(err) => { panic!("The guard mutex of the audio engine has been corrupted. {}", err) }
         }
@@ -171,7 +171,7 @@ impl Sound {
     pub fn set_volume(&mut self, volume: f32) -> () {
         self.volume = volume;
         if self.handle.raw() != 0 {
-            match audio_engine.lock() {
+            match AUDIO_ENGINE.lock() {
                 Ok(mut guard) => {
                     guard.deref_mut().set_volume(self.handle, volume);
                 },
@@ -191,7 +191,7 @@ impl Sound {
     pub fn set_pan(&mut self, pan: f32) -> () {
         self.pan = pan;
         if self.handle.raw() != 0 && self.is3d == false {
-            match audio_engine.lock() {
+            match AUDIO_ENGINE.lock() {
                 Ok(mut guard) => {
                     guard.deref_mut().set_pan(self.handle, pan);
                 },
@@ -205,7 +205,7 @@ impl Sound {
             self.position = position;
 
             if self.handle.raw() != 0 {
-                match audio_engine.lock() {
+                match AUDIO_ENGINE.lock() {
                     Ok(mut guard) => {
                         guard.deref_mut().set_3d_source_position(self.handle, pos_x, pos_y, pos_z);
                     },

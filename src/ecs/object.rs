@@ -154,7 +154,7 @@ impl Object {
     // TODO: algunas cosas mas
 }
 
-pub(in super::internal::gameplay) fn terminate_object(code: i32) -> () {
+pub(in crate::internal::gameplay) fn terminate_object(code: i32) -> () {
     match *OBJECTS.lock() {
         Ok(mut guardia) => {
             match guardia.deref_mut().remove(code) {
