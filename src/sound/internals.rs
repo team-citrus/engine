@@ -13,8 +13,17 @@ pub(super) static AUDIO_ENGINE: Mutex<Soloud>;
 
 pub(in crate::internal::threads) fn init_soloud() -> () {
     match AUDIO_ENGINE.lock() {
-        Ok(guard) => { *guard.deref_mut() = Soloud::new(SoloudFlag::LeftHanded3D, Backend::Miniaudio,
-            48000 /* couldn't find actual docs, just assume Hz */, 1024, 2).unwrap(); }, // TODO: refine this.
-        Err(err) => { panic!("The guard mutex of the audio engine has been corrupted. {}", err) },
+        Ok(guard) => {
+            *guard = Soloud::new(
+                SoloudFlag::LeftHanded3D,
+                Backend::Miniaudio, 
+                48000 /* couldn't find actual docs, just assume Hz */, 
+                1024, 
+                2
+            ).unwrap();
+        }, // TODO: refine this.
+        Err(err) => {
+            panic!("The guard mutex of the audio engine has been corrupted. {}", err)
+        },
     }
 }
