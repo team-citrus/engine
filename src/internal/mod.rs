@@ -12,3 +12,4 @@ pub mod threads;
 pub(crate) mod vendor;
 mod alloc;
 mod sync;
+pub(crate) mod util;

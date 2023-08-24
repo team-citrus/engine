@@ -13,8 +13,14 @@ use std::{
     ops::{Deref, DerefMut},
     sync::Mutex,
 };
-use super::{ComponentHandle, Component, COMPONENTS, EcsHandle};
-use crate::{SlotMap, internal, internal::gameplay::COMPONENTS_FOR_DEATH, internal::gameplay::OBJECTS_FOR_DEATH};
+use super::{ComponentHandle, Component, COMPONENTS, EcsHandle, component};
+use crate::{
+    SlotMap,
+    internal,
+    internal::gameplay::COMPONENTS_FOR_DEATH,
+    internal::gameplay::OBJECTS_FOR_DEATH,
+    internal::util::unwrap_and_execute
+};
 use lazy_static::lazy_static;
 
 const OBJECT_HANDLE_MAGIC_NUMBER: i32 = 0x911628b5;
@@ -42,7 +48,7 @@ impl EcsHandle for Object {
         if self.is_valid() {
             match OBJECTS_FOR_DEATH.deref().lock() {
                 Ok(mut guardia) => {
-                    guardia.deref_mut().push(self.code);
+                    guardia.deref_mut().push(*self);
                 },
                 Err(_) => { panic!("The whole damn thing is broke!") }
             }
@@ -151,16 +157,44 @@ impl Object {
         }
     }
 
+    pub(in crate::internal::gameplay) fn update(&self) {
+        match self.get_mut_internals() {
+            Some(internal) => {
+                for i in &internal.components {
+                    match i.access_mut() { 
+                        Some(component) => component.update(*i),
+                        None => (),
+                    }
+                }
+            },
+            None => ()
+        }
+    }
+
+    pub(in crate::internal::gameplay) fn late_update(&self) {
+        match self.get_mut_internals() {
+            Some(internal) => {
+                for i in &internal.components {
+                    match i.access_mut() { 
+                        Some(component) => component.post_update(*i),
+                        None => ()
+                    }
+                }
+            },
+            None => (),
+        }
+    }
+
     // TODO: algunas cosas mas
 }
 
-pub(in crate::internal::gameplay) fn terminate_object(code: i32) -> () {
+pub(in crate::internal::gameplay) fn terminate_object(obj: Object, vector: &mut Vec<Object>) -> () {
     match *OBJECTS.lock() {
         Ok(mut guardia) => {
-            match guardia.deref_mut().remove(code) {
+            match guardia.deref_mut().remove(obj.code) {
                 Some(object) => {
                     for i in object.children {
-                        i.destroy();
+                        vector.push(i);
                     }
                     for i in object.components {
                         i.destroy();

@@ -7,7 +7,7 @@
 */
 
 use super::{Object, EcsHandle};
-use crate::{SlotMap, internal::gameplay::COMPONENTS_FOR_DEATH};
+use crate::{SlotMap, internal::{gameplay::COMPONENTS_FOR_DEATH, util::handle_mutex}};
 use std::{
     any::{Any, TypeId},
     marker::{Sized, Copy},
@@ -35,25 +35,25 @@ pub struct ComponentHandle<C: Component> {
 }
 
 pub trait Component: Any + Sized {
-    fn start(&mut self) {}
-    fn awake(&mut self) {}
+    fn start(&mut self, handle: ComponentHandle<Self>) {}
+    fn awake(&mut self, handle: ComponentHandle<Self>) {}
 
-    fn update(&mut self) {}
-    fn post_update(&mut self) {}
-    fn physics_update(&mut self) {}
-    fn gui_update(&mut self) {}
+    fn update(&mut self, handle: ComponentHandle<Self>) {}
+    fn post_update(&mut self, handle: ComponentHandle<Self>) {}
+    fn physics_update(&mut self, handle: ComponentHandle<Self>) {}
+    fn gui_update(&mut self, handle: ComponentHandle<Self>) {}
 
-    fn on_collision_start(&mut self /* TODO: algunas cosas mas */) {}
-    fn on_collision_stop(&mut self /* TODO: algunas cosas mas */) {}
-    fn on_collision(&mut self /* TODO: algunas cosas mas */) {}
+    fn on_collision_start(&mut self, handle: ComponentHandle<Self> /* TODO: algunas cosas mas */) {}
+    fn on_collision_stop(&mut self, handle: ComponentHandle<Self> /* TODO: algunas cosas mas */) {}
+    fn on_collision(&mut self, handle: ComponentHandle<Self> /* TODO: algunas cosas mas */) {}
 
-    fn on_trigger_enter(&mut self /* TODO: algunas cosas mas */) {}
-    fn on_trigger_exit(&mut self /* TODO: algunas cosas mas */) {}
-    fn on_trigger(&mut self /* TODO: algunas cosas mas */) {}
+    fn on_trigger_enter(&mut self, handle: ComponentHandle<Self> /* TODO: algunas cosas mas */) {}
+    fn on_trigger_exit(&mut self, handle: ComponentHandle<Self> /* TODO: algunas cosas mas */) {}
+    fn on_trigger(&mut self, handle: ComponentHandle<Self> /* TODO: algunas cosas mas */) {}
 
-    fn on_enable(&mut self) {}
-    fn on_disable(&mut self) {}
-    fn on_death(&mut self) {}
+    fn on_enable(&mut self, handle: ComponentHandle<Self>) {}
+    fn on_disable(&mut self, handle: ComponentHandle<Self>) {}
+    fn on_death(&mut self, handle: ComponentHandle<Self>) {}
 
     // TODO: algunas cosas mas
 }
@@ -71,10 +71,12 @@ impl<C> EcsHandle for ComponentHandle<C> {
     }
 
     fn is_valid(&self) -> bool {
+        let mut result = false;
         if self.magic_number == COMPONENT_HANDLE_MAGIC_NUMBER {
-            match COMPONENTS.deref().lock() {
-                Ok(guardia) => {
-                    match guardia.deref().get(self.code) {
+            handle_mutex(
+                COMPONENTS.deref(), 
+                |map: &SlotMap<i32, Box<dyn Component>>| {
+                    result = match map.get(self.code) {
                         Option::Some(value) => {
                             match value.downcast_ref::<C>() {
                                 Option::Some => true,
@@ -82,16 +84,12 @@ impl<C> EcsHandle for ComponentHandle<C> {
                             }
                         },
                         Option::None => false,
-                    }
-                },
-                Err(_) => {
-                    panic!("ECS broke.");
-                    false
+                    };
                 }
-            }
-        } else {
-            false
+            );
         }
+
+        result
     }
 
     fn get_component<T>(&self) -> ComponentHandle<T> {
@@ -135,7 +133,7 @@ impl<C> ComponentHandle<C> {
     pub fn access_mut(&mut self) -> Option<&mut C> {
         if self.magic_number == COMPONENT_HANDLE_MAGIC_NUMBER {
             match COMPONENTS.deref().lock() {
-                Ok(mut guardia ) => {
+                Ok(mut guardia) => {
                     guardia.deref_mut().get_mut(self.code)
                 },
                 Err(_) => {
@@ -173,19 +171,14 @@ impl<C> ComponentHandle<C> {
     }
 }
 
-pub(in crate::internal::gameplay) fn terminate_component(code: i32) {
-    match *COMPONENTS.lock() {
-        Ok(mut guardia) => {
-            match guardia.deref_mut().remove(code) {
-                Some(component) => {
-                    *component.on_death();
-                    drop(component);
-                },
-                None => {}
-            }
-        },
-        Err(_) => {
-            panic!("ECS broke!");
+pub(in crate::internal::gameplay) fn terminate_component(comp: ComponentHandle<dyn Component>) {
+    handle_mutex(COMPONENTS.deref(), |components: &mut SlotMap<i32, Box<dyn Component>>| {
+        match components.remove(comp.code) {
+            Some(component) => {
+                component.deref_mut().on_death(comp);
+                drop(component);
+            },
+            None => ()
         }
-    }
+    });
 }
